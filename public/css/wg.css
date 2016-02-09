@@ -1,0 +1,53 @@
+table{
+    width: 100%;
+    border-collapse: collapse;
+    padding: 5px;
+}
+
+tr:nth-child(even) {
+    background-color: #E0E0E0;
+}
+
+td {
+    padding: 2px;
+}
+
+.verticalLine {
+    border-left: thick solid #ff0000;
+}
+
+.table-header {
+    font-weight:bold;
+}
+
+.name-column {
+    width: 20%;
+    padding-left: 5px;
+}
+
+.description.column {
+    width: 60%;
+}
+
+.value-column {
+    width: 20%;
+    text-align: right;
+    padding-right: 5px;
+}
+
+.negative-panel {
+    background-color: #F0E0E0;
+}
+
+.positive-panel {
+    background-color: #E0F0E0;
+}
+
+.overview-name {
+    text-align: right;
+    font-weight: bold;
+}
+
+.overview-value {
+    
+}

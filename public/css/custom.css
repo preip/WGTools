@@ -1,0 +1,119 @@
+/**************************************************************************************************
+ * Navbar
+ **************************************************************************************************/
+
+.navbar-default {
+    /*background: linear-gradient(#, blue);*/
+    background-color: #f7f7f7;
+    background: linear-gradient(to bottom, #e7e7e7, #f7f7f7, #ffffff, #f7f7f7);
+}
+
+.navbar-nav li:hover {
+    background-color: #e7e7e7;
+}
+
+.anchor {
+    display: block;
+    position: relative;
+    top: -60px;
+    visibility: hidden;
+}
+
+/**************************************************************************************************
+ * Portfolio
+ **************************************************************************************************/
+
+.page-title {
+    background-color: #efefef;
+}
+
+.page-title h1 {
+    font-size: 500%;
+}
+
+.panel-project {
+    border-color: #efefef; /* was #bfbfbf*/
+    border-width: 2px;
+}
+/* The image for every project in the overview */
+.panel-project .thumbnail {
+    float:left;
+    margin-bottom:2px;
+    margin-left:0px;
+    margin-right:5px;
+}
+/* every odd numbered project image will be on the right */
+.panel-project:nth-child(odd) .thumbnail {
+    float:right;
+    margin-left:5px;
+    margin-right:0px;
+}
+.panel-project img {
+    width:200px;
+    height:200px;
+}
+.panel-project > .panel-heading {
+  color: #5f5f5f;
+  background-color: #efefef;
+  border-color: #efefef; /* was #bfbfbf */
+  border-width: 2px;
+}
+.panel-project > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #ccebd1;
+}
+.panel-project > .panel-heading .badge {
+  color: #def2de;
+  background-color: #44a942;
+}
+.panel-project > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #ccebd1;
+}
+.page-title {
+    text-align:center;
+}
+.project-title {
+    text-align: center;
+    margin: 0px;
+}
+.paragraph-headline {
+    text-align:center;
+}
+.jumbotron {
+    padding-left: 0px;
+}
+
+/**************************************************************************************************
+ * Portfolio Tags
+ **************************************************************************************************/
+
+.portfolio-tag-row {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: -8px;
+    margin-bottom: 10px;
+}
+.portfolio-tag-row > .label-default {
+    background-color: #9f9f9f;
+}
+.portfolio-tag-row a {
+    color:#dfdfdf;
+}
+.portfolio-tag-row a:hover {
+    color:#efefef;
+}
+.tag {
+    margin-left:2px;
+    margin-right:2px;
+}
+.tag:nth-child(1) {
+    margin-left:0px;
+}
+
+/**************************************************************************************************
+ * Sidebar
+ **************************************************************************************************/
+
+.sidebar-item {
+    margin-top: -8px;
+    margin-bottom: -8px;
+}
