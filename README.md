@@ -2,6 +2,6 @@
 
 ## How to Deploy
 
-Make sure to create a new file "./data/cash.json", which contains an empty json array.
-This will be changed in the future by beeing able to create initial example data by script.
-Real data should of course never be part of the repo.
+Make sure to run 'createDefaultDataFiles.js' the first time you deploy the program or every time
+the main data structures have changed. This ensures that you have a valid config file and the
+corresponding data files the program requires.

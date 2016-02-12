@@ -10,11 +10,32 @@ var cookies = require( "cookies" )
 var session = require('express-session');
 
 /**
+ * Configuration file
+ */
+var fs = require('fs');
+//try {
+    //fs.accessSync(__dirname + '/config.json', fs.F_OK | fs.R_OK);
+//} catch(err) {
+if (fs.existsSync(__dirname + '/config.json') == false) {
+    console.log('> ERROR: Config file doesn\'t exist or doesn\'t have read permissions.');
+    console.log('  Please execute "createExpampleData.js" to create all neccessary data objects.');
+    process.exit();
+}
+
+try {
+    var raw = fs.readFileSync(__dirname + '/config.json', 'utf8');
+    global.config = JSON.parse(raw);    
+} catch(err) {
+    console.log('> ERROR: Config file can\'t be parsed correctly.');
+    console.log('  Please make sure that "config.json" is a valid json-file.');
+    process.exit();
+}
+
+/**
  * Create Express setup and configuration
  */
 global.app = express();
-
-app.set('port', process.env.PORT || 63357);
+app.set('port', process.env.PORT || config.port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -22,7 +43,7 @@ app.use(bodyParser.json());
 app.use(cookies.express());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-    secret: 'foobar', // <- this should be a random number or something, but for testing this will be enough
+    secret: config.sessionSeed,
     saveUninitialized: true,
     resave: true
 }));
@@ -33,7 +54,7 @@ var env = process.env.NODE_ENV || 'development';
 /**
  * Controllers
  */
-var wgCashController = require('./controllers/cash')(__dirname + '/data/');
+var wgCashController = require('./controllers/cash')(path.join(__dirname, config.dataPath));
 var errorController = require('./controllers/error')();
 
 /**

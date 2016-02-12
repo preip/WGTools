@@ -22,12 +22,14 @@ module.exports = function(dataPath) {
     function saveData() {
         var fs = require('fs');
         var raw = JSON.stringify(_data, null, 4);
-        fs.writeFileSync(dataPath + 'cash.json', raw, 'utf8');
+        var path = require('path');
+        fs.writeFileSync(path.join(_dataPath, 'cash.json'), raw, 'utf8');
     }
     
     function loadData() {
         var fs = require('fs');
-        var raw = fs.readFileSync(dataPath + 'cash.json', 'utf8');
+        var path = require('path');
+        var raw = fs.readFileSync(path.join(_dataPath, 'cash.json'), 'utf8');
         var data = JSON.parse(raw);
         _data = data;
     }
