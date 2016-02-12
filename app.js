@@ -55,6 +55,7 @@ var env = process.env.NODE_ENV || 'development';
  * Controllers
  */
 var wgCashController = require('./controllers/cash')(path.join(__dirname, config.dataPath));
+var wgShoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath))
 var errorController = require('./controllers/error')();
 
 /**
@@ -64,6 +65,9 @@ app.get('/', function(res, req, next) { req.render('index', { title: 'WG Title P
 
 app.get('/cash', wgCashController.showCashPage);
 app.post('/cash', wgCashController.addNewEntry);
+
+app.get('/shoppingList', wgShoppingListController.showShoppingListPage);
+app.post('/shoppingList', wgShoppingListController.addNewEntry);
 
 /**
  * Error Handling

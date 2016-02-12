@@ -1,0 +1,26 @@
+extends templates/layout
+
+block content
+    .container
+        .panel.panel-default
+            .panel-heading Einkaufsliste
+            table(class="table table-condensed")
+                tr.table-header
+                    td.name-column Name
+                    td.value-column Anzahl
+                - for (var i = 0; i < shoppingData.length; i++) {
+                    - var currentItem = shoppingData[i]
+                    if shoppingData[i].isClaimed
+                        tr(class="success")
+                            td.name-column
+                                = currentItem.name
+                            td.value-column
+                                = currentItem.value
+                    else
+                        tr(class="active")
+                            td.name-column
+                                = currentItem.name
+                            td.value-column
+                                = currentItem.value
+                - }
+
