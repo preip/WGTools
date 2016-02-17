@@ -4,23 +4,38 @@ block content
     .container
         .panel.panel-default
             .panel-heading Einkaufsliste
-            table(class="table table-condensed")
+            table(class="table table-striped")
                 tr.table-header
                     td.name-column Name
-                    td.value-column Anzahl
+                    td.amount-column Anzahl
                 - for (var i = 0; i < shoppingData.length; i++) {
                     - var currentItem = shoppingData[i]
                     if shoppingData[i].isClaimed
-                        tr(class="success")
-                            td.name-column
+                        tr(class="shopping-list-item claimed", id="tablerow-" + i)
+                            td.item-name-column
                                 = currentItem.name
-                            td.value-column
-                                = currentItem.value
+                            td.amount-column
+                                = currentItem.amount
                     else
-                        tr(class="active")
-                            td.name-column
+                        tr(class="shopping-list-item active", id="tablerow-" + i)
+                            td.item-name-column
                                 = currentItem.name
-                            td.value-column
-                                = currentItem.value
+                            td.amount-column
+                                = currentItem.amount
                 - }
+    .container
+        .panel.panel-default
+            .panel-heading(style="background-color=#F16745") Item hinzufügen
+            .panel-body 
+                form(class="form-inline" action="/shoppingList", method="post")
+                    .form-group
+                        label(for='name')
+                            | Name
+                        input.form-control(type='text', id='name', name='name', required)
+                    .form-group
+                        label(for='amount')
+                            | Anzahl
+                        input.form-control(type='number', id='amount', name='amount', required)
+                    .form-group
+                        button.btn.btn-primary(type='submit') Absenden
 

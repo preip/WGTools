@@ -51,3 +51,31 @@ td {
 .overview-value {
     
 }
+
+.navbar-default {
+    background: #FFC65D;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #404040;
+}
+
+.item-name-column {
+    width: 50%;
+}
+
+.form-inline {
+    padding:10px;
+}
+.form-inline > * {
+    margin:15px 3px !important;
+}
+
+.form-inline > .form-group > label {
+    margin-right: 5px;
+}
+
+.panel-default > .panel-heading {
+    background-color: #F16745;
+    color: #404040;
+}

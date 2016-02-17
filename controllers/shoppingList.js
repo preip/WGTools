@@ -2,7 +2,7 @@ module.exports = function(dataPath) {
 	
 	const _dataPath = dataPath;
     
-    var _data = null;
+    var _data = [];
 
     module.showShoppingListPage = function(req, res, next) {
         if (_data === null)
@@ -12,9 +12,9 @@ module.exports = function(dataPath) {
 
      module.addNewEntry = function(req, res, next) {
         var name = req.body.name;
-        var isClaimed = req.body.description;
-        var value = req.body.value;
-        _data.push({ "name" : name, "value" : value, isClaimed: isClaimed});
+        var isClaimed = req.body.isClaimed;
+        var amount = req.body.amount;
+        _data.push({ "name" : name, "amount" : amount, isClaimed: isClaimed});
         saveData();
         res.render('shoppingList', { title: 'WG Einkaufsliste', shoppingData: _data});
     }
@@ -27,6 +27,7 @@ module.exports = function(dataPath) {
     }
     
     function loadData() {
+        debugger;
         var fs = require('fs');
         var path = require('path');
         var raw = fs.readFileSync(path.join(_dataPath, 'shoppingList.json'), 'utf8');

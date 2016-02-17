@@ -4,7 +4,7 @@ block content
     .container
         .panel.panel-default
             .panel-heading Current Cash Items
-            .panel-body some text
+            .panel-body
             table
                 tr.table-header
                     td.name-column Name
@@ -21,7 +21,7 @@ block content
                             = currentItem.value
                 - }
     .container
-        .panel.panel-primary
+        .panel.panel-default
             .panel-heading Add a new data entry
             .panel-body
                 form(action="/cash", method="post")
