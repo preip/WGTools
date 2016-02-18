@@ -47,12 +47,12 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     fs.writeFileSync(path.join(_dataPath, 'cash.json'), cashDataRaw, 'utf8');
 
     console.log('> Creating shoppingList file...');
-    var ShoppingListData = [
-        { "name": "Klopapier", "amount": "10", "isChecked": true},
-        { "name": "Klopapier", "amount": "10", "isChecked": false},
-        { "name": "Brot", "amount": "1", "isChecked": true},
+    var shoppingListData = [
+        { "name": "Met", "amount": "10", "isClaimed": true},
+        { "name": "Klopapier", "amount": "10", "isClaimed": false},
+        { "name": "Brot", "amount": "1", "isClaimed": true},
     ];
-    var shoppingListDataRaw = JSON.stringify(cashData, null, 4);
+    var shoppingListDataRaw = JSON.stringify(shoppingListData, null, 4);
     fs.writeFileSync(path.join(_dataPath, 'shoppingList.json'), shoppingListDataRaw, 'utf8');
 
     console.log('> Finished creating all default data files!');

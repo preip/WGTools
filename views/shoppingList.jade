@@ -10,14 +10,15 @@ block content
                     td.amount-column Anzahl
                 - for (var i = 0; i < shoppingData.length; i++) {
                     - var currentItem = shoppingData[i]
-                    if shoppingData[i].isClaimed
-                        tr(class="shopping-list-item claimed", id="tablerow-" + i)
+                    if currentItem.isClaimed
+                        tr(class="shopping-list-item danger", id=i)
                             td.item-name-column
                                 = currentItem.name
                             td.amount-column
                                 = currentItem.amount
+                    
                     else
-                        tr(class="shopping-list-item active", id="tablerow-" + i)
+                        tr(class="shopping-list-item active", id=i)
                             td.item-name-column
                                 = currentItem.name
                             td.amount-column
@@ -27,7 +28,7 @@ block content
         .panel.panel-default
             .panel-heading(style="background-color=#F16745") Item hinzufügen
             .panel-body 
-                form(class="form-inline" action="/shoppingList", method="post")
+                form(class="form-inline" action="/shoppingList/Create", method="post")
                     .form-group
                         label(for='name')
                             | Name

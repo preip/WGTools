@@ -67,7 +67,9 @@ app.get('/cash', wgCashController.showCashPage);
 app.post('/cash', wgCashController.addNewEntry);
 
 app.get('/shoppingList', wgShoppingListController.showShoppingListPage);
-app.post('/shoppingList', wgShoppingListController.addNewEntry);
+app.get('/shoppingList/GetAll', wgShoppingListController.getAll);
+app.post('/shoppingList/Create', wgShoppingListController.addNewEntry);
+app.post('/shoppingList/Update', wgShoppingListController.updateEntry);
 
 /**
  * Error Handling
