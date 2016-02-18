@@ -51,23 +51,46 @@ app.use(session({
 // set the environment to development
 var env = process.env.NODE_ENV || 'development';
 
+app.use(function(req,res,next) {
+    if (req.session !== undefined && req.session.loggedIn !== undefined) {
+        res.locals.loggedIn = req.session.loggedIn;
+        res.locals.username = req.session.username;
+    } else {
+        res.locals.loggedIn = false;
+    }
+    next();
+});
+// This is used for url parsing in the middle of a jade template
+app.locals.url = require('url');
+
 /**
  * Controllers
  */
-var wgCashController = require('./controllers/cash')(path.join(__dirname, config.dataPath));
-var wgShoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath))
+var accountController = require('./controllers/account')(path.join(__dirname, config.dataPath));
+var cashController = require('./controllers/cash')(path.join(__dirname, config.dataPath));
+var shoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath))
 var errorController = require('./controllers/error')();
 
 /**
  * Routes
  */
 app.get('/', function(res, req, next) { req.render('index', { title: 'WG Title Page'}); });
-
-app.get('/cash', wgCashController.showCashPage);
-app.post('/cash', wgCashController.addNewEntry);
-
-app.get('/shoppingList', wgShoppingListController.showShoppingListPage);
-app.post('/shoppingList', wgShoppingListController.addNewEntry);
+// Accounts
+app.get('/login', accountController.loginGet);
+app.post('/login', accountController.loginPost);
+app.get('/logout', accountController.logoutGet);
+app.get('/account/changePassword', accountController.isAuthenticated, accountController.changePasswordGet);
+app.post('/account/changePassword', accountController.isAuthenticated, accountController.changePasswordPost);
+app.get('/account/changePassword', accountController.isAuthenticated, accountController.changePasswordGet);
+app.post('/account/changePassword', accountController.isAuthenticated, accountController.changePasswordPost);
+app.get('/account/delete', accountController.isAuthenticated, accountController.deleteAccountGet);
+app.post('/account/delete', accountController.isAuthenticated, accountController.deleteAccountPost);
+// Cash
+app.get('/cash', cashController.showCashPage);
+app.post('/cash', cashController.addNewEntry);
+// Shopping List
+app.get('/shoppingList', shoppingListController.showShoppingListPage);
+app.post('/shoppingList', shoppingListController.addNewEntry);
 
 /**
  * Error Handling
