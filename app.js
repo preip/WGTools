@@ -81,13 +81,13 @@ app.post('/login', accountController.loginPost);
 app.get('/logout', accountController.logoutGet);
 app.get('/account/changePassword', accountController.isAuthenticated, accountController.changePasswordGet);
 app.post('/account/changePassword', accountController.isAuthenticated, accountController.changePasswordPost);
-app.get('/account/changePassword', accountController.isAuthenticated, accountController.changePasswordGet);
-app.post('/account/changePassword', accountController.isAuthenticated, accountController.changePasswordPost);
+app.get('/account/create', accountController.isAuthenticated, accountController.createAccountGet);
+app.post('/account/create', accountController.isAuthenticated, accountController.createAccountPost);
 app.get('/account/delete', accountController.isAuthenticated, accountController.deleteAccountGet);
 app.post('/account/delete', accountController.isAuthenticated, accountController.deleteAccountPost);
 // Cash
-app.get('/cash', cashController.showCashPage);
-app.post('/cash', cashController.addNewEntry);
+app.get('/cash', accountController.isAuthenticated, cashController.showCashPage);
+app.post('/cash', accountController.isAuthenticated, cashController.addNewEntry);
 // Shopping List
 app.get('/shoppingList', shoppingListController.showShoppingListPage);
 app.post('/shoppingList', shoppingListController.addNewEntry);

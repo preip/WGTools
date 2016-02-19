@@ -76,7 +76,6 @@ module.exports = function(dataPath) {
             return;
         }
         req.session.username = accData.username;
-        req.session.password = accData.password;
         req.session.autologin = true;
         req.session.loggedIn = true;
         // reset the cookie and thus its expire date
@@ -135,7 +134,6 @@ module.exports = function(dataPath) {
             return;
         }
         req.session.username = accData.username;
-        req.session.password = accData.password;
         req.session.autologin = autoLogin;
         req.session.loggedIn = true;
         // if the user wants to stay logged in, set the corresponding cookie
@@ -220,12 +218,10 @@ module.exports = function(dataPath) {
         
         accData.password = password1;
         setAccountData(username, accData);
-        req.session.password = newPwdHash;
         res.render('Accounts/changePassword', { title: 'Change Password', state: 'success'});
     }
     /**
-     * Checks if the current user is the admin and displays a the
-	 * create new account page if thats the case.
+     * Displays the create a new account page.
      *
      * @method createAccountGet
      * @param {object} [req] Node req object.
@@ -233,17 +229,29 @@ module.exports = function(dataPath) {
      * @param (object) [next] Node next object.
      */
     module.createAccountGet = function(req, res, next) {
-		// only the admin account is allowed to create new accounts, so display
-		// a corresponding message if any other user tries to create one
-		if (req.session.username != 'admin') {
-			res.render('Accounts/createAccount', { title: 'Create Account', state: 'adminError' });
-			return;
-		}
         res.render('Accounts/createAccount', { title: 'Create Account'});
     }
+    
+    module.createAccountPost = function(req, res, next) {
+        var username = req.body.username;
+		var password1 = req.body.newPassword;
+		var password2 = req.body.confirmPassword;
+		
+		if (password1 != password2) {
+			res.render('Accounts/createAccount', { title: 'Create Account', state: 'confirmWrong' });
+			return;
+		}
+        var accData = getAccountData(username);
+        if (accData !== null) {
+            res.render('Accounts/createAccount', { title: 'Create Account', state: 'usernameDuplicate' });
+            return;
+        }
+        accData = { 'username': username, 'password': password1 };
+        setAccountData(username, accData);
+        res.render('Accounts/createAccount', { title: 'Create Account', state: 'success'});
+    }
     /**
-     * Checks if the current user is not admin (which can't be deleted) and displays
-	 * a confirmation page, if thats not the case.
+     * Displays the delete account page.
      *
      * @method deleteAccountGet
      * @param {object} [req] Node req object.
@@ -251,20 +259,10 @@ module.exports = function(dataPath) {
      * @param (object) [next] Node next object.
      */
 	module.deleteAccountGet = function(req, res, next) {
-		// the admin account can't be removed, so if a user tries that, display
-		// a corresponding error message
-		if (req.session.username == 'admin') {
-			res.render('Accounts/deleteAccount', { title: 'Delete Account', state: 'adminError' });
-			return;
-		}
-		// otherwise display a conformation page to make sure the user isn't
-		// accidentally deleting the account
 		res.render('Accounts/deleteAccount', { title: 'Delete Account', state: 'confirm' });
 	}
     /**
-     * If the current user is not the admin and the user has confirmed the removal,
-	 * the corresponding account is removed from the database and the user gets
-	 * redirected to the login page.
+     * Removes the current user account from the database and redirects the user to the login page.
      *
      * @method deleteAccountPost
      * @param {object} [req] Node req object.
@@ -272,15 +270,9 @@ module.exports = function(dataPath) {
      * @param (object) [next] Node next object.
      */
 	module.deleteAccountPost = function(req, res, next) {
-		// the admin account can't be removed, so if a user tries that, display
-		// a corresponding error message
-		if (req.session.username == 'admin') {
-			res.render('Accounts/deleteAccount', { title: 'Delete Account', state: 'adminError' });
-			return;
-		}
 		// if the account was any other than the admin account, and the user confirmed the removal,
 		// the corresponding entry is deleted from the database
-        deleteAccountata(req.session.username);
+        deleteAccountData(req.session.username);
         deleteCookie(res);
         req.session.destroy();
         res.redirect('/login');
@@ -337,7 +329,7 @@ module.exports = function(dataPath) {
             loadAccountData();
         }
         for (var i = 0; i < _accountData.length; i++) {
-            if (_accountData[i].name === username)
+            if (_accountData[i].username === username)
                 return _accountData[i];
         }
         return null;
@@ -345,7 +337,7 @@ module.exports = function(dataPath) {
     
     function setAccountData(username, data) {
         for (var i = 0; i < _accountData.length; i++) {
-            if (_accountData[i].name === username) {
+            if (_accountData[i].username === username) {
                 _accountData[i] = data;
                 saveAccountData();
                 return;
@@ -358,7 +350,7 @@ module.exports = function(dataPath) {
     function deleteAccountData(username) {
         var accountIndex = -1;
         for (var i = 0; i < _accountData.length; i++) {
-            if (_accountData[i].name === username) {
+            if (_accountData[i].username === username) {
                 accountIndex = i;
                 break;
             }
@@ -371,7 +363,7 @@ module.exports = function(dataPath) {
     
     function saveAccountData() {
         var fs = require('fs');
-        var raw = JSON.stringify(_data, null, 4);
+        var raw = JSON.stringify(_accountData, null, 4);
         var path = require('path');
         fs.writeFileSync(path.join(_dataPath, 'accounts.json'), raw, 'utf8');
     }

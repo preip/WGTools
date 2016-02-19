@@ -5,12 +5,12 @@ block content
         .modal-content
             .panel.panel-default
                 .panel-heading
-                    = dict === undefined ? 'ERROR' : dict.get('deleteAccount', 'title')
+                    = 'Delete account for user '
                     = username
                 .panel-body
-                    = dict === undefined ? 'ERROR' : dict.get('deleteAccount', 'message')
+                    = 'Are you sure you want to delete the account?'
                     form(action='/account/delete', method='post')
                         button.btn.btn-primary.btn-block(type='submit')
-                            = dict === undefined ? 'ERROR' : dict.get('deleteAccount', 'submitButtonText')
-                        button.btn.btn-primary.btn-block()
-                            = dict === undefined ? 'ERROR' : dict.get('deleteAccount', 'abortButtonText')
+                            = 'Yes'
+                        button.btn.btn-primary.btn-block(type='button', onclick='location.href=\'/\';')
+                            = 'No'

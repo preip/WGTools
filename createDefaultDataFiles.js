@@ -42,15 +42,13 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
      */
     console.log('> Creating cash file...');
     var cashData = [
-        { "name" : "inhabitant_1", "description" : "payment_1", "value" : "10.56" },
-        { "name" : "inhabitant_2", "description" : "payment_2", "value" : "4.05" },
-        { "name" : "inhabitant_1", "description" : "payment_3", "value" : "17.75" },
-        { "name" : "inhabitant_3", "description" : "payment_1", "value" : "25.39" }
+        { "username" : "inhabitant_1", "description" : "payment_1", "value" : "10.56" },
+        { "username" : "inhabitant_2", "description" : "payment_2", "value" : "4.05" },
+        { "username" : "inhabitant_1", "description" : "payment_3", "value" : "17.75" },
+        { "username" : "inhabitant_3", "description" : "payment_1", "value" : "25.39" }
     ];
     var cashDataRaw = JSON.stringify(cashData, null, 4);
     fs.writeFileSync(path.join(_dataPath, 'cash.json'), cashDataRaw, 'utf8');
-
-    console.log('> Finished creating all default data files!');
     
     /**
      * Accounts
@@ -68,10 +66,13 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     var pwd3 = hash3.digest('hex').toString(_hashEncoding);
     
     var accountData = [
-        { "name" : "inhabitant_1", 'password' : pwd1 },
-        { "name" : "inhabitant_2", 'password' : pwd2 },
-        { "name" : "inhabitant_3", 'password' : pwd3 }
+        { "username" : "inhabitant_1", 'password' : pwd1 },
+        { "username" : "inhabitant_2", 'password' : pwd2 },
+        { "username" : "inhabitant_3", 'password' : pwd3 }
     ];
     var accountDataRaw = JSON.stringify(accountData, null, 4);
     fs.writeFileSync(path.join(_dataPath, 'accounts.json'), accountDataRaw, 'utf8');
+    
+    
+    console.log('> Finished creating all default data files!');
 });
