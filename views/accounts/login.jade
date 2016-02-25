@@ -1,6 +1,12 @@
 extends ../templates/layout
 
 block content
+    .alert.alert-danger(id='javaScriptWarning')
+        h4
+            = 'JavaScript is deactivated, but is needed to ensure a correct and secure transmission of your account data.'
+            br
+            = 'Please activate JavaScript and try again!'
+
     - if (state === undefined || state === 'login') {
     - } else if (state === 'info') {
         .alert.alert-info
@@ -44,10 +50,15 @@ block content
                                             input(type='checkbox', value='auto-login', id='autoLogin', name='autoLogin')
                                             = 'Remember Me'
                                 .form-group
-                                    button.btn.btn-primary.btn-block(type='submit')
+                                    button.btn.btn-primary.btn-block(type='submit', id='submitButton', disabled)
                                         = 'Sign in'
                                 a.pull-left
                                     = 'Create new account'
                                 a.pull-right
                                     = 'Need Help?'
     - }
+    
+    script.
+        var warning = document.getElementById('javaScriptWarning')
+        warning.parentNode.removeChild(warning)
+        document.getElementById('submitButton').disabled = false
