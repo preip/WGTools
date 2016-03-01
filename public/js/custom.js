@@ -7,7 +7,7 @@ $(document).ready(function() {
         $('#' + e.currentTarget.id).toggleClass('danger');
         var item = _shoppingListData[e.currentTarget.id];
         item.isClaimed = !item.isClaimed;
-        SendJSONToShoppingList(item);
+        SendJSONToShoppingList(JSON.stringify(item));
     });
 });
 
@@ -23,13 +23,12 @@ function GetShoppingListJSON() {
 }
 
 function SendJSONToShoppingList(data) {
-    $.post("/shoppinglist/Update", data)
-    .done(function(data) {
-        console.log("Post succesfull" + data);
-    })
-    .fail(function(data) {
-        console.log("Post failed" + data);
-    });
+    $.ajax({
+    url: '/shoppinglist/Update', 
+    type: 'POST', 
+    contentType: 'application/json', 
+    data: data}
+)
 }
 
 $(document).ready(function () {

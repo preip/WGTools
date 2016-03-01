@@ -8,22 +8,23 @@ block content
                 tr.table-header
                     td.name-column Name
                     td.amount-column Anzahl
-                - for (var i = 0; i < shoppingData.length; i++) {
-                    - var currentItem = shoppingData[i]
-                    if currentItem.isClaimed
-                        tr(class="shopping-list-item danger", id=i)
-                            td.item-name-column
-                                = currentItem.name
-                            td.amount-column
-                                = currentItem.amount
-                    
-                    else
-                        tr(class="shopping-list-item active", id=i)
-                            td.item-name-column
-                                = currentItem.name
-                            td.amount-column
-                                = currentItem.amount
-                - }
+                    - for (var i = 0; i < shoppingData.length; i++) {
+                        - var currentItem = shoppingData[i];
+                        - console.log(currentItem.isClaimed);
+                        - if (currentItem.isClaimed === true) {
+                            tr(class="shopping-list-item danger", id=i)
+                                td.item-name-column
+                                    = currentItem.isClaimed
+                                td.amount-column
+                                    = currentItem.amount
+                        - } else {
+                            tr(class="shopping-list-item active", id=i)
+                                td.item-name-column
+                                    = currentItem.isClaimed
+                                td.amount-column
+                                    = currentItem.amount                      
+                        - }
+                    - }
     .container
         .panel.panel-default
             .panel-heading(style="background-color=#F16745") Item hinzufügen

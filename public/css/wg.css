@@ -76,6 +76,7 @@ td {
 }
 
 .panel-default > .panel-heading {
-    background-color: #F16745;
-    color: #404040;
+    background-color:  #4CC3D9;
+    color: #FFFFFF;
+    font-size: 15pt;
 }

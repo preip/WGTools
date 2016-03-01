@@ -19,13 +19,10 @@ module.exports = function(dataPath) {
     }
 
     module.updateEntry = function(req, res, next) {
-        var data = req.body; 
+        var data = req.body;      
         for(var i in _data) {
             if (_data[i].name == data.name)
-            {
-                debugger;
                 _data[i].isClaimed = data.isClaimed;
-            }
         }
         saveData();
         res.send(data);
