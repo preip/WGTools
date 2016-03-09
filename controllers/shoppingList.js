@@ -15,7 +15,8 @@ module.exports = function(dataPath) {
         var amount = req.body.amount;
         _data.push({ "name" : name, "amount" : amount, isClaimed: false});
         saveData();
-        res.render('shoppingList', { title: 'WG Einkaufsliste', shoppingData: _data});
+        res.writeHead(301, {Location: '/shoppingList/'});
+        res.end();
     }
 
     module.updateEntry = function(req, res, next) {

@@ -16,7 +16,8 @@ module.exports = function(dataPath) {
         var value = req.body.value;
         _data.push({ "name" : name, "description" : description, "value" : value });
         saveData();
-        res.render('cash', { title: 'WG Cash Overview', cashData: _data, sumData: calcSums()});
+        res.writeHead(301, {Location: '/cash/'});
+        res.end();
     }
     
     function saveData() {

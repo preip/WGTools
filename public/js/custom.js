@@ -4,7 +4,7 @@ GetShoppingListJSON();
 
 $(document).ready(function() {
     $('.shopping-list-item').click(function(e){
-        $('#' + e.currentTarget.id).toggleClass('danger');
+        $('#' + e.currentTarget.id).toggleClass('strikethrough');
         var item = _shoppingListData[e.currentTarget.id];
         item.isClaimed = !item.isClaimed;
         SendJSONToShoppingList(JSON.stringify(item));

@@ -9,7 +9,17 @@ tr:nth-child(even) {
 }
 
 td {
+    position: relative;
     padding: 2px;
+}
+
+tr.strikethrough td:before {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-bottom: 1px solid #111;
+    width: 100%;
 }
 
 .verticalLine {
@@ -53,11 +63,11 @@ td {
 }
 
 .navbar-default {
-    background: #FFC65D;
+    background: #404040;
 }
 
 .navbar-default .navbar-nav>li>a {
-    color: #404040;
+    color: #FFFFFF;
 }
 
 .item-name-column {
@@ -76,7 +86,18 @@ td {
 }
 
 .panel-default > .panel-heading {
+    background-color: #404040;
+    color: #FFFFFF;
+    font-size: 15pt;
+}
+
+.panel-primary > .panel-heading {
     background-color:  #4CC3D9;
     color: #FFFFFF;
     font-size: 15pt;
+    border-color: #ddd;
+}
+
+.panel-primary {
+    border-color: #ddd;
 }

@@ -3,31 +3,30 @@ extends templates/layout
 block content
     .container
         .panel.panel-default
-            .panel-heading Einkaufsliste
+            .panel-heading Shopping List
             table(class="table table-striped")
                 tr.table-header
                     td.name-column Name
-                    td.amount-column Anzahl
+                    td.amount-column Amount
                     - for (var i = 0; i < shoppingData.length; i++) {
                         - var currentItem = shoppingData[i];
-                        - console.log(currentItem.isClaimed);
                         - if (currentItem.isClaimed === true) {
-                            tr(class="shopping-list-item danger", id=i)
+                            tr(class="shopping-list-item strikethrough", id=i)
                                 td.item-name-column
-                                    = currentItem.isClaimed
+                                    = currentItem.name
                                 td.amount-column
                                     = currentItem.amount
                         - } else {
-                            tr(class="shopping-list-item active", id=i)
+                            tr(class="shopping-list-item", id=i)
                                 td.item-name-column
-                                    = currentItem.isClaimed
+                                    = currentItem.name
                                 td.amount-column
                                     = currentItem.amount                      
                         - }
                     - }
     .container
-        .panel.panel-default
-            .panel-heading(style="background-color=#F16745") Item hinzufügen
+        .panel.panel-primary
+            .panel-heading Add Item
             .panel-body 
                 form(class="form-inline" action="/shoppingList/Create", method="post")
                     .form-group
@@ -36,8 +35,8 @@ block content
                         input.form-control(type='text', id='name', name='name', required)
                     .form-group
                         label(for='amount')
-                            | Anzahl
+                            | Amount
                         input.form-control(type='number', id='amount', name='amount', required)
                     .form-group
-                        button.btn.btn-primary(type='submit') Absenden
+                        button.btn.btn-primary(type='submit') Submit
 
