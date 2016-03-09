@@ -8,6 +8,7 @@ block content
                 tr.table-header
                     td.name-column Name
                     td.amount-column Amount
+                    td.button-column
                     - for (var i = 0; i < shoppingData.length; i++) {
                         - var currentItem = shoppingData[i];
                         - if (currentItem.isClaimed === true) {
@@ -16,12 +17,16 @@ block content
                                     = currentItem.name
                                 td.amount-column
                                     = currentItem.amount
+                                td.button-column
+                                    span
                         - } else {
                             tr(class="shopping-list-item", id=i)
                                 td.item-name-column
                                     = currentItem.name
                                 td.amount-column
-                                    = currentItem.amount                      
+                                    = currentItem.amount
+                                td.button-column
+                                    span                      
                         - }
                     - }
     .container

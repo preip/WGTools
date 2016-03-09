@@ -42,6 +42,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookies.express());
 app.use(express.static(path.join(__dirname, 'public')));
+/* Makes the fonts accessible */
+app.use('/fonts/', express.static(path.join(__dirname, '/fonts')));
 app.use(session({
     secret: config.sessionSeed,
     saveUninitialized: true,

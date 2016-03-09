@@ -22,6 +22,12 @@ tr.strikethrough td:before {
     width: 100%;
 }
 
+tr.strikethrough span::after {
+    float: right;
+    font-family: 'Glyphicons Halflings';
+    content: "\e083";
+}
+
 .verticalLine {
     border-left: thick solid #ff0000;
 }
