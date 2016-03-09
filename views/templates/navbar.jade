@@ -21,3 +21,36 @@
                 li 
                     a(href='/shoppingList')
                         | Shopping List
+            ul.nav.navbar-nav.navbar-right
+                - if (loggedIn === true) {
+                    li.dropdown
+                        a.dropdown-toggle(href='#', data-toggle='dropdown')
+                            font(size='+0')
+                                i.fa.fa-child
+                            strong
+                                = ' ' + username + ' '
+                            span.caret
+                        ul.dropdown-menu(role='menu')
+                            li
+                                a(href='/account/changePassword')
+                                    i.fa.fa-edit
+                                    = ' Change password'
+                            li
+                                a(href='/account/create')
+                                    i.fa.fa-users
+                                    = ' Create new account'
+                            li
+                                a(href='/account/delete')
+                                    i.fa.fa-trash-o
+                                    = ' Delete account'
+                - }
+                li
+                    - if (loggedIn === true) {
+                        a(href='/logout', data-toggle='tooltip', data-placement='bottom', title='Logout')
+                            font(size='+0')
+                                i.fa.fa-sign-out
+                    - } else {
+                        a(href='/login', data-toggle='tooltip', data-placement='bottom', title='Login')
+                            font(size='+1')
+                                i.fa.fa-sign-in
+                    - }

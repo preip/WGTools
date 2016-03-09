@@ -1,0 +1,68 @@
+extends ../templates/layout
+
+block content
+    .alert.alert-danger(id='javaScriptWarning')
+        h4
+            = 'JavaScript is deactivated, but is needed to ensure a correct and secure transmission of your account data.'
+            br
+            = 'Please activate JavaScript and try again!'
+
+    - if (state === undefined || state === 'login') {
+    - } else if (state === 'info') {
+        .alert.alert-info
+            h4
+                = 'You need to be logged in to access the requested page.'
+    - } else if (state === 'success') {
+        .alert.alert-success
+            h4
+                = 'The enteres account data was correct. Your are now logged in to the system.'
+    - } else if (state === 'failed') {
+        .alert.alert-danger
+            h4
+                = 'The entered username or password was wrong. Please make sure that the data is correct and try again.'
+    - } else if (state === 'invalid') {
+        .alert.alert-danger
+            h4
+                = 'The format submitted password was invalid. Please make sure JavaScript is enabled and the page is loaded without errors.'
+    - }
+
+    - if (state === undefined || state != 'success') {
+        .col-md-4.col-md-offset-4
+            .modal-content
+                .login-panel.panel.panel-default
+                    .panel-heading
+                        p.panel-title(style='text-align:center')
+                            strong
+                                = 'Sign in'
+                    .panel-body
+                        form(action="\login", method="post")
+                            fieldset
+                                .form-group
+                                    label(for='username')
+                                        h5
+                                            = 'Username'
+                                    input.form-control(type='text', id='username', name='username', required)
+                                .form-group
+                                    label(for='pwdPlain')
+                                        h5
+                                            = 'Password'
+                                    input.form-control(type='password', id='pwdPlain', required, onChange='setPwdHash(\'pwdPlain\', \'password\')')
+                                    input.form-control(type='hidden', id='password', name='password', value='')
+                                .form-group
+                                    .checkbox
+                                        label
+                                            input(type='checkbox', value='auto-login', id='autoLogin', name='autoLogin')
+                                            = 'Remember Me'
+                                .form-group
+                                    button.btn.btn-primary.btn-block(type='submit', id='submitButton', disabled)
+                                        = 'Sign in'
+                                a.pull-left
+                                    = 'Create new account'
+                                a.pull-right
+                                    = 'Need Help?'
+    - }
+    
+    script.
+        var warning = document.getElementById('javaScriptWarning')
+        warning.parentNode.removeChild(warning)
+        document.getElementById('submitButton').disabled = false

@@ -14,7 +14,7 @@ module.exports = function(dataPath) {
         var name = req.body.name;
         var description = req.body.description;
         var value = req.body.value;
-        _data.push({ "name" : name, "description" : description, "value" : value });
+        _data.push({ "username" : name, "description" : description, "value" : value });
         saveData();
         res.writeHead(301, {Location: '/cash/'});
         res.end();
@@ -40,16 +40,16 @@ module.exports = function(dataPath) {
         var total = 0.0;
         for (var i = 0; i < _data.length; i++) {
             var curData = _data[i];
-            if (sums[curData.name] === undefined)
-                sums[curData.name] = 0.0;
+            if (sums[curData.username] === undefined)
+                sums[curData.username] = 0.0;
             var val = parseFloat(curData.value);
-            sums[curData.name] += val;
+            sums[curData.username] += val;
             total += val;
         }
         var number = Object.keys(sums).length;
         var slice = total / number;
-        for (var name in sums) {
-            sums[name] = slice - sums[name];
+        for (var username in sums) {
+            sums[username] = slice - sums[username];
         }
         return sums;
     }

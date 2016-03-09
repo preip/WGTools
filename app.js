@@ -42,8 +42,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookies.express());
 app.use(express.static(path.join(__dirname, 'public')));
-/* Makes the fonts accessible */
-app.use('/fonts/', express.static(path.join(__dirname, '/fonts')));
 app.use(session({
     secret: config.sessionSeed,
     saveUninitialized: true,
@@ -53,25 +51,49 @@ app.use(session({
 // set the environment to development
 var env = process.env.NODE_ENV || 'development';
 
+app.use(function(req,res,next) {
+    if (req.session !== undefined && req.session.loggedIn !== undefined) {
+        res.locals.loggedIn = req.session.loggedIn;
+        res.locals.username = req.session.username;
+    } else {
+        res.locals.loggedIn = false;
+    }
+    next();
+});
+// This is used for url parsing in the middle of a jade template
+app.locals.url = require('url');
+
 /**
  * Controllers
  */
-var wgCashController = require('./controllers/cash')(path.join(__dirname, config.dataPath));
-var wgShoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath))
+var accountController = require('./controllers/account')(path.join(__dirname, config.dataPath));
+var cashController = require('./controllers/cash')(path.join(__dirname, config.dataPath));
+var shoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath))
 var errorController = require('./controllers/error')();
 
 /**
  * Routes
  */
 app.get('/', function(res, req, next) { req.render('index', { title: 'WG Title Page'}); });
+// Accounts
+app.get('/login', accountController.loginGet);
+app.post('/login', accountController.loginPost);
+app.get('/logout', accountController.logoutGet);
+app.get('/account/changePassword', accountController.isAuthenticated, accountController.changePasswordGet);
+app.post('/account/changePassword', accountController.isAuthenticated, accountController.changePasswordPost);
+app.get('/account/create', accountController.isAuthenticated, accountController.createAccountGet);
+app.post('/account/create', accountController.isAuthenticated, accountController.createAccountPost);
+app.get('/account/delete', accountController.isAuthenticated, accountController.deleteAccountGet);
+app.post('/account/delete', accountController.isAuthenticated, accountController.deleteAccountPost);
+// Cash
+app.get('/cash', accountController.isAuthenticated, cashController.showCashPage);
+app.post('/cash', accountController.isAuthenticated, cashController.addNewEntry);
+// Shopping List
 
-app.get('/cash', wgCashController.showCashPage);
-app.post('/cash', wgCashController.addNewEntry);
-
-app.get('/shoppingList', wgShoppingListController.showShoppingListPage);
-app.get('/shoppingList/GetAll', wgShoppingListController.getAll);
-app.post('/shoppingList/Create', wgShoppingListController.addNewEntry);
-app.post('/shoppingList/Update', wgShoppingListController.updateEntry);
+app.get('/shoppingList', shoppingListController.showShoppingListPage);
+app.get('/shoppingList/GetAll', shoppingListController.getAll);
+app.post('/shoppingList/Create', shoppingListController.addNewEntry);
+app.post('/shoppingList/Update', shoppingListController.updateEntry);
 
 /**
  * Error Handling
