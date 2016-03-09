@@ -24,8 +24,8 @@ tr.strikethrough td:before {
 
 tr.strikethrough span::after {
     float: right;
-    font-family: 'Glyphicons Halflings';
-    content: "\e083";
+    font-family: 'FontAwesome';
+    content: "\f00d";
 }
 
 .verticalLine {
