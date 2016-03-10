@@ -18,7 +18,8 @@ block content
                                 td.amount-column
                                     = currentItem.amount
                                 td.button-column
-                                    span
+                                    a(class="shopping-list-delete" type="button" href='' aria-label="Left Align")
+                                        span
                         - } else {
                             tr(class="shopping-list-item", id=i)
                                 td.item-name-column
@@ -26,7 +27,8 @@ block content
                                 td.amount-column
                                     = currentItem.amount
                                 td.button-column
-                                    span                      
+                                    a(class="shopping-list-delete" type="button" href='' aria-label="Left Align")
+                                        span                     
                         - }
                     - }
     .container

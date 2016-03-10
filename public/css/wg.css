@@ -13,19 +13,25 @@ td {
     padding: 2px;
 }
 
-tr.strikethrough td:before {
+tr.strikethrough td {
+    text-decoration: line-through;
+}
+
+/*
+tr.strikethrough td.item-name-column::before{
     content: " ";
     position: absolute;
     top: 50%;
     left: 0;
     border-bottom: 1px solid #111;
     width: 100%;
-}
+}*/
 
 tr.strikethrough span::after {
     float: right;
     font-family: 'FontAwesome';
     content: "\f00d";
+    color: black;
 }
 
 .verticalLine {

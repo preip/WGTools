@@ -19,6 +19,16 @@ module.exports = function(dataPath) {
         res.end();
     }
 
+    module.deleteEntry = function(req, res, next) {
+        var i = parseInt(req.query.Id);
+        if (i > -1) {
+            _data.splice(i, 1);
+        }
+        saveData();
+        res.writeHead(301, {Location: '/shoppingList/'});
+        res.end();
+    }
+
     module.updateEntry = function(req, res, next) {
         var data = req.body;      
         for(var i in _data) {

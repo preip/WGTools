@@ -89,11 +89,11 @@ app.post('/account/delete', accountController.isAuthenticated, accountController
 app.get('/cash', accountController.isAuthenticated, cashController.showCashPage);
 app.post('/cash', accountController.isAuthenticated, cashController.addNewEntry);
 // Shopping List
-
-app.get('/shoppingList', shoppingListController.showShoppingListPage);
-app.get('/shoppingList/GetAll', shoppingListController.getAll);
-app.post('/shoppingList/Create', shoppingListController.addNewEntry);
-app.post('/shoppingList/Update', shoppingListController.updateEntry);
+app.get('/shoppingList', accountController.isAuthenticated, shoppingListController.showShoppingListPage);
+app.get('/shoppingList/GetAll', accountController.isAuthenticated, shoppingListController.getAll);
+app.post('/shoppingList/Create', accountController.isAuthenticated, shoppingListController.addNewEntry);
+app.post('/shoppingList/Update', accountController.isAuthenticated, shoppingListController.updateEntry);
+app.delete('/shoppingList/Delete', accountController.isAuthenticated, shoppingListController.deleteEntry);
 
 /**
  * Error Handling

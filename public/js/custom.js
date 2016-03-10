@@ -1,17 +1,30 @@
 
 var _shoppingListData = [];
-GetShoppingListJSON();
+getShoppingListJSON();
 
 $(document).ready(function() {
     $('.shopping-list-item').click(function(e){
         $('#' + e.currentTarget.id).toggleClass('strikethrough');
         var item = _shoppingListData[e.currentTarget.id];
         item.isClaimed = !item.isClaimed;
-        SendJSONToShoppingList(JSON.stringify(item));
+        sendJSONToShoppingList(JSON.stringify(item));
+    });
+
+    $('.shopping-list-delete').click(function(e) {
+        var id = $(this).closest('tr').attr('id');
+        deleteEntry(id);
     });
 });
 
-function GetShoppingListJSON() {
+function deleteEntry(id) {
+    console.log('/shoppinglist/Delete' + '?' + $.param({"Id": id}));
+    $.ajax({
+        url: '/shoppinglist/Delete' + '?' + $.param({"Id": id}), 
+        type: 'Delete'}
+    )
+}
+
+function getShoppingListJSON() {
     $.get("/shoppinglist/GetAll")
     .done(function(data) {
         _shoppingListData = data;
@@ -22,13 +35,13 @@ function GetShoppingListJSON() {
     });
 }
 
-function SendJSONToShoppingList(data) {
+function sendJSONToShoppingList(data) {
     $.ajax({
-    url: '/shoppinglist/Update', 
-    type: 'POST', 
-    contentType: 'application/json', 
-    data: data}
-)
+        url: '/shoppinglist/Update', 
+        type: 'POST', 
+        contentType: 'application/json', 
+        data: data}
+    )
 }
 
 $(document).ready(function () {
