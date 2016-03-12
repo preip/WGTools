@@ -76,9 +76,9 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     
     console.log('> Creating shoppingList file...');
     var shoppingListData = [
-        { "name": "Met", "amount": "10", "isClaimed": true},
-        { "name": "Klopapier", "amount": "10", "isClaimed": false},
-        { "name": "Brot", "amount": "1", "isClaimed": true},
+        { "id": 0, "name": "Met", "amount": "10", "isClaimed": true},
+        { "id": 1, "name": "Klopapier", "amount": "10", "isClaimed": false},
+        { "id": 2, "name": "Brot", "amount": "1", "isClaimed": true},
     ];
     var shoppingListDataRaw = JSON.stringify(shoppingListData, null, 4);
     fs.writeFileSync(path.join(_dataPath, 'shoppingList.json'), shoppingListDataRaw, 'utf8');

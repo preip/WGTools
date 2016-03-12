@@ -3,6 +3,7 @@ module.exports = function(dataPath) {
 	const _dataPath = dataPath;
     
     var _data = null;
+    var _idCounter = 0;
 
     module.showShoppingListPage = function(req, res, next) {
         if (_data === null)
@@ -13,7 +14,8 @@ module.exports = function(dataPath) {
      module.addNewEntry = function(req, res, next) {
         var name = req.body.name;
         var amount = req.body.amount;
-        _data.push({ "name" : name, "amount" : amount, isClaimed: false});
+        _data.push({ "id" : _idCounter, "name" : name, "amount" : amount, isClaimed: false});
+        _idCounter++;
         saveData();
         res.writeHead(301, {Location: '/shoppingList/'});
         res.end();
@@ -21,22 +23,25 @@ module.exports = function(dataPath) {
 
     module.deleteEntry = function(req, res, next) {
         var i = parseInt(req.query.Id);
-        if (i > -1) {
-            _data.splice(i, 1);
-        }
+        var k = _data.map(function(x) { return x.id; }).indexOf(i);
+        
+        if (k > -1)
+            _data.splice(k, 1);
+
         saveData();
         res.writeHead(301, {Location: '/shoppingList/'});
         res.end();
     }
 
     module.updateEntry = function(req, res, next) {
-        var data = req.body;      
-        for(var i in _data) {
-            if (_data[i].name == data.name)
-                _data[i].isClaimed = data.isClaimed;
-        }
+        var i = parseInt(req.query.Id); 
+        var k = _data.map(function(x) { return x.id; }).indexOf(i);
+
+        if(_data[k])
+            _data[k].isClaimed = !_data[k].isClaimed;
+
         saveData();
-        res.send(data);
+        res.end();
     }
 
     module.getAll = function(req, res, next) {
@@ -57,6 +62,7 @@ module.exports = function(dataPath) {
         var raw = fs.readFileSync(path.join(_dataPath, 'shoppingList.json'), 'utf8');
         var data = JSON.parse(raw);
         _data = data;
+        _idCounter = _data.length + 1;
     }
 
 	return module;

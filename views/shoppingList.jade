@@ -12,7 +12,7 @@ block content
                     - for (var i = 0; i < shoppingData.length; i++) {
                         - var currentItem = shoppingData[i];
                         - if (currentItem.isClaimed === true) {
-                            tr(class="shopping-list-item strikethrough", id=i)
+                            tr(class="shopping-list-item strikethrough", id = currentItem.id)
                                 td.item-name-column
                                     = currentItem.name
                                 td.amount-column
@@ -21,7 +21,7 @@ block content
                                     a(class="shopping-list-delete" type="button" href='' aria-label="Left Align")
                                         span
                         - } else {
-                            tr(class="shopping-list-item", id=i)
+                            tr(class="shopping-list-item", id = currentItem.id)
                                 td.item-name-column
                                     = currentItem.name
                                 td.amount-column
