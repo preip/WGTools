@@ -202,7 +202,7 @@ module.exports = function(dataPath) {
      * @param (object) [next] Node next object.
      */   
     module.changePasswordGet = function(req, res, next) {
-        res.render('Accounts/changePassword', { title: 'Change Password'});
+        res.render('accounts/changePassword', { title: 'Change Password'});
     }
     /**
      * Checks if the old password of the user was correct and the new password
@@ -223,24 +223,24 @@ module.exports = function(dataPath) {
 
         if (isPasswordHashValid(oldPassword) === false || isPasswordHashValid(password1) === false
                 || isPasswordHashValid(password2) === false) {
-            res.render('Accounts/changePassword', { title: 'Change Password', state: 'invalid' });
+            res.render('accounts/changePassword', { title: 'Change Password', state: 'invalid' });
 			return;
         }
         
 		if (password1 !== password2) {
-			res.render('Accounts/changePassword', { title: 'Change Password', state: 'confirmWrong'});
+			res.render('accounts/changePassword', { title: 'Change Password', state: 'confirmWrong'});
 			return;
 		}
 
 		var accData = getAccountData(username);
         if (oldPassword != accData.password) {
-            res.render('Accounts/changePassword', { title: 'Change Password', state: 'wrongPassword'});
+            res.render('accounts/changePassword', { title: 'Change Password', state: 'wrongPassword'});
             return;
         }
         
         accData.password = password1;
         setAccountData(username, accData);
-        res.render('Accounts/changePassword', { title: 'Change Password', state: 'success'});
+        res.render('accounts/changePassword', { title: 'Change Password', state: 'success'});
     }
     /**
      * Displays the create a new account page.
@@ -251,7 +251,7 @@ module.exports = function(dataPath) {
      * @param (object) [next] Node next object.
      */
     module.createAccountGet = function(req, res, next) {
-        res.render('Accounts/createAccount', { title: 'Create Account'});
+        res.render('accounts/createAccount', { title: 'Create Account'});
     }
     
     module.createAccountPost = function(req, res, next) {
@@ -260,22 +260,22 @@ module.exports = function(dataPath) {
 		var password2 = req.body.confirmPassword;
 		
         if (isPasswordHashValid(password1) === false || isPasswordHashValid(password2) === false) {
-            res.render('Accounts/createAccount', { title: 'Create Account', state: 'invalid' });
+            res.render('accounts/createAccount', { title: 'Create Account', state: 'invalid' });
 			return;
         }
         
 		if (password1 != password2) {
-			res.render('Accounts/createAccount', { title: 'Create Account', state: 'confirmWrong' });
+			res.render('accounts/createAccount', { title: 'Create Account', state: 'confirmWrong' });
 			return;
 		}
         var accData = getAccountData(username);
         if (accData !== null) {
-            res.render('Accounts/createAccount', { title: 'Create Account', state: 'usernameDuplicate' });
+            res.render('accounts/createAccount', { title: 'Create Account', state: 'usernameDuplicate' });
             return;
         }
         accData = { 'username': username, 'password': password1 };
         setAccountData(username, accData);
-        res.render('Accounts/createAccount', { title: 'Create Account', state: 'success'});
+        res.render('accounts/createAccount', { title: 'Create Account', state: 'success'});
     }
     /**
      * Displays the delete account page.
@@ -286,7 +286,7 @@ module.exports = function(dataPath) {
      * @param (object) [next] Node next object.
      */
 	module.deleteAccountGet = function(req, res, next) {
-		res.render('Accounts/deleteAccount', { title: 'Delete Account', state: 'confirm' });
+		res.render('accounts/deleteAccount', { title: 'Delete Account', state: 'confirm' });
 	}
     /**
      * Removes the current user account from the database and redirects the user to the login page.
@@ -448,7 +448,7 @@ module.exports = function(dataPath) {
      * @param (string) [state] The with which the login page should be displayed.
      */
     function renderLoginPage(req, res, state) {
-        res.render('Accounts/login', { title: 'Login', state: state});
+        res.render('accounts/login', { title: 'Login', state: state});
     };
     
     return module;
