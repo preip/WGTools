@@ -7,6 +7,7 @@ $(document).ready(function() {
     $('.shopping-list-delete').click(function(e) {
         var id = $(this).closest('tr').attr('id');
         deleteEntry(id);
+        $(this).closest('tr').remove();
     });
 });
 
@@ -14,7 +15,8 @@ function deleteEntry(id) {
     console.log('/shoppinglist/Delete' + '?' + $.param({"Id": id}));
     $.ajax({
         url: '/shoppinglist/Delete' + '?' + $.param({"Id": id}), 
-        type: 'Delete'}
+        type: 'Delete'
+    }
     )
 }
 

@@ -41,6 +41,7 @@ module.exports = function(dataPath) {
             _data[k].isClaimed = !_data[k].isClaimed;
 
         saveData();
+        res.writeHead(301, {Location: '/shoppingList/'});
         res.end();
     }
 
@@ -62,7 +63,18 @@ module.exports = function(dataPath) {
         var raw = fs.readFileSync(path.join(_dataPath, 'shoppingList.json'), 'utf8');
         var data = JSON.parse(raw);
         _data = data;
-        _idCounter = _data.length + 1;
+        _idCounter = maxId(data);
+    }
+
+    function maxId(array) {
+        if (array.length === 0)
+            return 0;
+        var max = array[0].id;
+        for(i in array) {
+            if (array[i].id > max)
+                max = array[i].id;
+        }
+        return max + 1;
     }
 
 	return module;
