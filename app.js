@@ -64,9 +64,13 @@ app.use(function(req,res,next) {
 app.locals.url = require('url');
 
 /**
- * Controllers
+ * Data-Controller
  */
-var accountController = require('./controllers/account')(path.join(__dirname, config.dataPath));
+global.accountData = require('./controllers/accountData')(path.join(__dirname, config.dataPath));
+/**
+ * View-Models
+ */
+var accountController = require('./controllers/accountPresenter')();
 var cashController = require('./controllers/cash')(path.join(__dirname, config.dataPath));
 var shoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath))
 var errorController = require('./controllers/error')();
