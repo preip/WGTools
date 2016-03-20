@@ -1,14 +1,7 @@
-extends ../templates/layout
+extends accountTemplate
 
-block content
-    .alert.alert-danger(id='javaScriptWarning')
-        h4
-            = 'JavaScript is deactivated, but is needed to ensure a correct and secure transmission of your account data.'
-            br
-            = 'Please activate JavaScript and try again!'
-
-    - if (state === undefinded) {
-    - } else if (state === 'success') {
+block accStateMessages
+    - if (state === 'success') {
         .alert.alert-success
             h4
                 = 'The account was created successfully.'
@@ -26,38 +19,29 @@ block content
                 = 'The format submitted password was invalid. Please make sure JavaScript is enabled and the page is loaded without errors.'
     - }
     
-    - if (state !== 'success') {
-        .col-md-4.col-md-offset-4
-            //.modal-content
-            .panel.panel-default
-                .panel-heading
-                    = 'Create a new account'
-                .panel-body
-                    form(action='/account/create', method='post')
-                        fieldset
-                            .form-group
-                                label(for='username')
-                                    h5
-                                        = 'Enter the desired username'
-                                input.form-control(type='text', id='username', name='username', required)
-                            .form-group
-                                label(for='newPwdPlain')
-                                    h5
-                                        = 'Enter the desired password'
-                                input.form-control(type='password', id='newPwdPlain', required, onChange='setPwdHash(\'newPwdPlain\', \'newPassword\')')
-                                input.form-control(type='hidden', id='newPassword', name='newPassword', value='')
-                            .form-group
-                                label(for='confirmPwdHash')
-                                    h5
-                                        = 'Confirm the password'
-                                input.form-control(type='password', id='confirmPwdHash', required, onChange='setPwdHash(\'confirmPwdHash\', \'confirmPassword\')')
-                                input.form-control(type='hidden', id='confirmPassword', name='confirmPassword', value='')
-                            .form-group
-                                button.btn.btn-primary.btn-block(type='submit', id='submitButton', disabled)
-                                    = 'Create account'
-    - }
-    
-    script.
-        var warning = document.getElementById('javaScriptWarning')
-        warning.parentNode.removeChild(warning)
-        document.getElementById('submitButton').disabled = false
+block accHeadline
+    = 'Create a new account'
+
+block accContent
+    form(action='/account/create', method='post')
+        fieldset
+            .form-group
+                label(for='username')
+                    h5
+                        = 'Enter the desired username'
+                input.form-control(type='text', id='username', name='username', required)
+            .form-group
+                label(for='newPwdPlain')
+                    h5
+                        = 'Enter the desired password'
+                input.form-control(type='password', id='newPwdPlain', required, onChange='setPwdHash(\'newPwdPlain\', \'newPassword\')')
+                input.form-control(type='hidden', id='newPassword', name='newPassword', value='')
+            .form-group
+                label(for='confirmPwdHash')
+                    h5
+                        = 'Confirm the password'
+                input.form-control(type='password', id='confirmPwdHash', required, onChange='setPwdHash(\'confirmPwdHash\', \'confirmPassword\')')
+                input.form-control(type='hidden', id='confirmPassword', name='confirmPassword', value='')
+            .form-group
+                button.btn.btn-primary.btn-block(type='submit', id='submitButton', disabled)
+                    = 'Create account'
