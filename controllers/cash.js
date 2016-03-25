@@ -13,11 +13,26 @@ module.exports = function(dataPath) {
     module.addNewEntry = function(req, res, next) {
         var name = req.body.name;
         var description = req.body.description;
+        var date = req.body.date
         var value = req.body.value;
-        _data.push({ "username" : name, "description" : description, "value" : value });
+        _data.push({ "username" : name, "description" : description, "date" : date,
+            "value" : value });
+        _data.sort(compareEntries);
         saveData();
         res.writeHead(301, {Location: '/cash/'});
         res.end();
+    }
+    
+    function compareEntries(entry1, entry2) {
+        date1 = entry1.date.split('.');
+        date2 = entry2.date.split('.');
+        yearDiff = parseInt(date1[2]) - parseInt(date2[2])
+        if (yearDiff != 0)
+            return yearDiff
+        monthDiff = parseInt(date1[1]) - parseInt(date2[1])
+        if (monthDiff != 0)
+            return monthDiff
+        return parseInt(date1[0]) - parseInt(date2[0])
     }
     
     function saveData() {

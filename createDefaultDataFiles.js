@@ -42,10 +42,10 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
      */
     console.log('> Creating cash file...');
     var cashData = [
-        { "username" : "inhabitant_1", "description" : "payment_1", "value" : "10.56" },
-        { "username" : "inhabitant_2", "description" : "payment_2", "value" : "4.05" },
-        { "username" : "inhabitant_1", "description" : "payment_3", "value" : "17.75" },
-        { "username" : "inhabitant_3", "description" : "payment_1", "value" : "25.39" }
+        { "username" : "inhabitant_1", "description" : "payment_1", "date" : "01.01.2000", "value" : "10.56" },
+        { "username" : "inhabitant_2", "description" : "payment_2", "date" : "02.01.2000", "value" : "4.05" },
+        { "username" : "inhabitant_1", "description" : "payment_3", "date" : "01.02.2000", "value" : "17.75" },
+        { "username" : "inhabitant_3", "description" : "payment_1", "date" : "01.01.2001", "value" : "25.39" }
     ];
     var cashDataRaw = JSON.stringify(cashData, null, 4);
     fs.writeFileSync(path.join(_dataPath, 'cash.json'), cashDataRaw, 'utf8');

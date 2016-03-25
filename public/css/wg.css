@@ -42,16 +42,20 @@ tr.strikethrough span::after {
     font-weight:bold;
 }
 
-.name-column {
+.cash-name-column {
     width: 20%;
     padding-left: 5px;
 }
 
-.description.column {
-    width: 60%;
+.cash-description.column {
+    width: 40%;
 }
 
-.value-column {
+.cash-date-column {
+    width: 20%;
+}
+
+.cash-value-column {
     width: 20%;
     text-align: right;
     padding-right: 5px;
