@@ -8,7 +8,7 @@ module.exports = function(dataPath) {
         if (_data === null)
             loadData();
         res.render('cash', { title: 'WG Cash Overview', usernames: accountData.getUsernames(),
-            cashData: _data, sumData: calcSums()});
+            cashData: _data, sumData: calcSums(), datestring: getCurrentDateString()});
     };
     
     module.addNewEntry = function(req, res, next) {
@@ -22,6 +22,18 @@ module.exports = function(dataPath) {
         saveData();
         res.writeHead(301, {Location: '/cash/'});
         res.end();
+    }
+    
+    function getCurrentDateString() {
+        var date = new Date();
+        var datestring = ''
+        if (date.getDay() < 10)
+            datestring += '0';
+        datestring += String(date.getDay()) + '.';
+        if (date.getMonth() < 9)
+            datestring += '0';
+        datestring +=  String(date.getMonth() + 1) + '.' + String(date.getFullYear());
+        return datestring;
     }
     
     function compareEntries(entry1, entry2) {
