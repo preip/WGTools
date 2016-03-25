@@ -1,0 +1,34 @@
+extends ../templates/layout
+
+block content
+    .alert.alert-danger(id='javaScriptWarning')
+        h4
+            = 'JavaScript is deactivated, but is needed to ensure a correct and secure transmission of your account data.'
+            br
+            = 'Please activate JavaScript and try again!'
+            
+
+    - if (state !== undefinded) {
+        block accStateMessages
+    - }
+    - if (state === undefinded || state !== 'success') {
+        .col-md-4.col-md-offset-4
+            .modal-content
+                .login-panel.panel.panel-default
+                    .panel-heading
+                        p.panel-title(style='text-align:center')
+                            block accHeadline
+                    .panel-body
+                        block accContent
+    - }
+
+block scripts
+    script(type='text/javascript', src='/js/sha.js')
+    script(type='text/javascript', src='/js/accData.js')
+    script.
+        var warning = document.getElementById('javaScriptWarning');
+        if (warning !== null)
+            warning.parentNode.removeChild(warning);
+        var submitButton = document.getElementById('submitButton');
+        if (submitButton !== null)
+            submitButton.disabled = false
