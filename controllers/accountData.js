@@ -103,6 +103,19 @@ module.exports = function(dataPath) {
         }
     }
     /**
+     * Gets the names of all registered accounts.
+     *
+     * @method getUsernames
+     * @return (array) The list of all currently registered accounts
+     */
+    module.getUsernames = function() {
+        var accountNames = [];
+        for (var i = 0; i < _accountData.length; i++) {
+            accountNames.push(_accountData[i].username);
+        }
+        return accountNames;
+    }
+    /**
      * Checks if the given string of a password hash is valid by matching it against a set of rules.
      *
      * @method isPasswordHashValid
