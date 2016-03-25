@@ -63,6 +63,7 @@ module.exports = function() {
         // page content
         res.locals.loggedIn = true;
         res.locals.username = accData.username;
+        return next();
     };
     /**
      * Displays the long page if the user is not already logged in. If the user is logged in he
