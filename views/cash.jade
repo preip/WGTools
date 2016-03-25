@@ -33,10 +33,14 @@ block content
                             .form-group
                                 label(for='name')
                                     h5 name
-                                select.form-control(type='text', id='name', name='name', value='#{username}')
+                                select.form-control(type='text', id='name', name='name')
                                     - for (var i = 0; i < usernames.length; i++) {
-                                        option
-                                            = usernames[i]
+                                        -if (usernames[i] == username)
+                                            option(selected='selected')
+                                                = usernames[i]
+                                        - else
+                                            option
+                                                = usernames[i]
                                     - }
                         .col-sm-6
                             .form-group
