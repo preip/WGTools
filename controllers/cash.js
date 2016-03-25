@@ -7,7 +7,8 @@ module.exports = function(dataPath) {
     module.showCashPage = function(req, res, next) {
         if (_data === null)
             loadData();
-        res.render('cash', { title: 'WG Cash Overview', cashData: _data, sumData: calcSums()});
+        res.render('cash', { title: 'WG Cash Overview', usernames: accountData.getUsernames(),
+            cashData: _data, sumData: calcSums()});
     };
     
     module.addNewEntry = function(req, res, next) {

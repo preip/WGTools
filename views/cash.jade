@@ -32,7 +32,11 @@ block content
                             .form-group
                                 label(for='name')
                                     h5 name
-                                input.form-control(type='text', id='name', name='name', required)
+                                select.form-control(type='text', id='name', name='name', value='#{username}')
+                                    - for (var i = 0; i < usernames.length; i++) {
+                                        option
+                                            = usernames[i]
+                                    - }
                         .col-sm-6
                             .form-group
                                 label(for='description')
