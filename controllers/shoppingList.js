@@ -12,6 +12,7 @@ module.exports = function(dataPath) {
     };
 
      module.addNewEntry = function(req, res, next) {
+        loadData();
         var name = req.body.name;
         var amount = req.body.amount;
         _data.push({ "id" : _idCounter, "name" : name, "amount" : amount, isClaimed: false});

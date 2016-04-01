@@ -51,7 +51,7 @@ block content
                             .form-group
                                 label(for='date')
                                     h5 date
-                                input.form-control(type='date', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', id='datepicker', name='date', data-provider='datepicker', value='#{datestring}', required)
+                                input.form-control(type='text', id='datepicker', name='date', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
                         .col-sm-2
                             .form-group
                                 label(for='value')
@@ -88,5 +88,7 @@ block scripts
     script(type='text/javascript', src='/js/bootstrap-datepicker.min.js')
     script.
         $(function() {
-            $('#datepicker').datepicker({ format: 'dd.mm.yyyy' });
+            $('#datepicker').datepicker({ 
+                 format: 'dd.mm.yyyy'
+            }).datepicker("setDate", new Date());
         });
