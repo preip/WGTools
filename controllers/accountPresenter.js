@@ -201,7 +201,7 @@ module.exports = function() {
 			return;
 		}
 
-		var accData = getAccountData(username);
+		var accData = accountData.getUser(username);
         if (oldPassword != accData.password) {
             res.render('accounts/changePassword', { title: 'Change Password', state: 'wrongPassword'});
             return;
