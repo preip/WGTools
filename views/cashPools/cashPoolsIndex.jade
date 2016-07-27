@@ -21,3 +21,67 @@ block content
                             a(href="cashPools/" + currentItem.id)
                                 | To the pool
                 - }
+    .container
+            .panel.panel-primary
+                .panel-heading Add a new Pool
+                .panel-body 
+                    form(action="/cashPools", method="post")
+                        .row
+                            .col-sm-2
+                                .form-group
+                                    label(for='name')
+                                        h5 name
+                                    input.form-control(type='text', id='name', name='name', required)
+                            .col-sm-2
+                                .form-group
+                                    label(for='owner')
+                                        h5 owner                                  
+                                    select.form-control(type='text', id='owner', name='owner')
+                                        - for (var i = 0; i < usernames.length; i++) {
+                                            -if (usernames[i] == username)
+                                                option(selected='selected')
+                                                    = usernames[i]
+                                            - else
+                                                option
+                                                    = usernames[i]
+                                        - }       
+                            .col-sm-2
+                                .form-group
+                                    label(for='participants')
+                                        h5 participants                                  
+                                    select.form-control(type='text', id='participants', name='participants' multiple)
+                                        - for (var i = 0; i < usernames.length; i++) {
+                                            -if (usernames[i] == username)
+                                                option(selected='selected')
+                                                    = usernames[i]
+                                            - else
+                                                option
+                                                    = usernames[i]
+                                        - }
+                            .col-sm-2
+                                .form-group
+                                    label(for='startDate')
+                                        h5 start
+                                    input.form-control(type='text', class='datepicker', name='startDate', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
+                            .col-sm-2
+                                .form-group
+                                    label(for='endDate')
+                                        h5 end
+                                    input.form-control(type='text', class='datepicker', name='endDate', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
+                        .row
+                            .col-sm-10
+                            .col-sm-2
+                                button.btn.btn-primary.btn-block(type='submit') Submit
+                                
+
+block css
+    link(href='/css/bootstrap-datepicker.min.css', rel='stylesheet')
+                
+block scripts
+    script(type='text/javascript', src='/js/bootstrap-datepicker.min.js')
+    script.
+        $(function() {
+            $('.datepicker').datepicker({ 
+                 format: 'dd.mm.yyyy'
+            }).datepicker("setDate", new Date());
+        });

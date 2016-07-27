@@ -110,6 +110,8 @@ module.exports = function(dataPath) {
      */
     module.getUsernames = function() {
         var accountNames = [];
+        if (_accountData === null)
+            loadAccountData();
         for (var i = 0; i < _accountData.length; i++) {
             accountNames.push(_accountData[i].username);
         }

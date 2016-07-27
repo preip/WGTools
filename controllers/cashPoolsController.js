@@ -5,31 +5,57 @@ module.exports = function(dataPath) {
     var _data = null;
     
     module.showCashPoolsIndex = function(req, res, next) {
-        console.log("Index");
         if (_data === null)
             loadData();
         res.render('cashPools/cashPoolsIndex', { title: 'Cash Pools Index',
-            cashPoolsData: _data});
+            cashPoolsData: _data, usernames: accountData.getUsernames()});
     };
+    
+    function findPool(id) {
+        return _data.filter(function(value) {
+                return value.id == id;
+            })[0] || null;
+    }
     
     module.showCashPool = function(req, res, next) {
         if (_data === null)
             loadData();
         if (req.params.id != null) {
-            console.log("Pool:" + req.params.id);
-            var pool = _data.filter(function(value) {
-                return value.id == req.params.id;
-            })[0] || null;
-            
+            var pool = findPool(req.params.id); 
+        
             if (pool != null) {
                 res.render('cashPools/cashPoolsPool', {
-                    title: "Cash Pool" + pool.id,
-                    cashPoolData: pool
+                    title: pool.name,
+                    usernames: accountData.getUsernames(),
+                    cashData: pool.items,
+                    sumData: calcSums(pool.items),
+                    dateString: getCurrentDateString(),
+                    id: pool.id
                 });
-            }  
-        }
-        res.render('cashPools/cashPoolsIndex', { title: 'Cash Pools Index',
-            cashPoolsData: _data});
+            } else {
+                res.writeHead(301, {Location: '/cashPools'});
+                res.end(); 
+            }
+        } 
+    }
+    
+    module.addNewPool = function(req, res, next) {
+        //TODO: validation checking
+        //TODO: id management
+        _data.push({
+            id: Math.random(),
+            name: req.body.name,
+            owner: [req.body.owner],
+            participants: req.body.participants,
+            startDate: req.body.startDate,
+            endDate: req.body.endDate,
+            enforceTimeBounds: true,
+            status: "open",
+            items: [] 
+        });
+        saveData();
+        res.writeHead(301, {Location: '/cashPools'});
+        res.end();
     }
     
     module.addNewEntry = function(req, res, next) {
@@ -37,11 +63,20 @@ module.exports = function(dataPath) {
         var description = req.body.description;
         var date = req.body.date
         var value = req.body.value;
-        _data.push({ "username" : name, "description" : description, "date" : date,
-            "value" : value });
-        _data.sort(compareEntries);
-        saveData();
-        res.writeHead(301, {Location: '/cash/'});
+        
+        if (req.params.id != null) {
+            var pool = findPool(req.params.id)
+            
+            if (pool != null) {
+                pool.items.push({ "username" : name, "description" : description, "date" : date,
+                    "value" : value });
+                pool.items.sort(compareEntries);
+                saveData();
+            }
+            res.writeHead(301, {Location: '/cashPools/' + req.params.id});
+        } else {
+            res.writeHead(301, {Location: '/cashPools'});
+        }
         res.end();
     }
     
@@ -84,11 +119,11 @@ module.exports = function(dataPath) {
         _data = data;
     }
     
-    function calcSums() {
+    function calcSums(items) {
         var sums = {};
         var total = 0.0;
-        for (var i = 0; i < _data.length; i++) {
-            var curData = _data[i];
+        for (var i = 0; i < items.length; i++) {
+            var curData = items[i];
             if (sums[curData.username] === undefined)
                 sums[curData.username] = 0.0;
             var val = parseFloat(curData.value);

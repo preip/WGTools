@@ -1,0 +1,94 @@
+extends ../templates/layout
+
+block content
+    .container
+        .panel.panel-default
+            .panel-heading Current Cash Items
+            .panel-body
+            table
+                tr.table-header
+                    td.cash-name-column Name
+                    td.cash-description-column Description
+                    td.cash-date-column Date
+                    td.cash-value-column Value
+                - for (var i = 0; i < cashData.length; i++) {
+                    - var currentItem = cashData[i]
+                    tr
+                        td.cash-name-column
+                            = currentItem.username
+                        td.cash-description-column
+                            = currentItem.description
+                        td.cash-date-column
+                            = currentItem.date
+                        td.cash-value-column
+                            = currentItem.value
+                - }
+    .container
+        .panel.panel-primary
+            .panel-heading Add a new transaction
+            .panel-body 
+                form(action="/cashPools/" + id, method="post")
+                    .row
+                        .col-sm-2
+                            .form-group
+                                label(for='name')
+                                    h5 name
+                                select.form-control(type='text', id='name', name='name')
+                                    - for (var i = 0; i < usernames.length; i++) {
+                                        -if (usernames[i] == username)
+                                            option(selected='selected')
+                                                = usernames[i]
+                                        - else
+                                            option
+                                                = usernames[i]
+                                    - }
+                        .col-sm-6
+                            .form-group
+                                label(for='description')
+                                    h5 description
+                                input.form-control(type='text', id='description', name='description', required)
+                        .col-sm-2
+                            .form-group
+                                label(for='date')
+                                    h5 date
+                                input.form-control(type='text', id='datepicker', name='date', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
+                        .col-sm-2
+                            .form-group
+                                label(for='value')
+                                    h5 value
+                                input.form-control(type='text', pattern="^\\d+\\.\\d{2}", id='value', name='value', required)
+                    .row
+                        .col-sm-10
+                        .col-sm-2
+                            button.btn.btn-primary.btn-block(type='submit') Submit
+    .container
+        .panel.panel-default
+            .panel-heading Overview how much everyone needs to pay (red) or gets back (green)
+            .panel-body
+                - for (var key in sumData) {
+                    - var divClass = "negative-panel"
+                    - if (sumData[key] <= 0)
+                        - divClass = "positive-panel"
+                    .row(class=divClass)
+                        .col-xs-6.overview-name
+                            p
+                                = key
+                        .col-xs-6.overview-value
+                            p
+                                if (sumData[key] <= 0)
+                                    = sumData[key].toFixed(2) * -1
+                                else
+                                    = sumData[key].toFixed(2)
+                - }
+
+block css
+    link(href='/css/bootstrap-datepicker.min.css', rel='stylesheet')
+                
+block scripts
+    script(type='text/javascript', src='/js/bootstrap-datepicker.min.js')
+    script.
+        $(function() {
+            $('#datepicker').datepicker({ 
+                 format: 'dd.mm.yyyy'
+            }).datepicker("setDate", new Date());
+        });
