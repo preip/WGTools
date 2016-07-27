@@ -97,6 +97,124 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     ];
     var shoppingListDataRaw = JSON.stringify(shoppingListData, null, 4);
     fs.writeFileSync(path.join(_dataPath, 'shoppingList.json'), shoppingListDataRaw, 'utf8');
+    
+    console.log('> Creating cashPools file...');
+    var cashPoolsData = [
+        {
+            id: 10,
+            name: "Pool 1",
+            owner: [
+                {
+                    username: "inhabitant_1"
+                }
+            ],
+            participants: [
+                {
+                    username: "inhabitant_1"
+                },
+                {
+                    username: "inhabitant_2"
+                },
+                {
+                    username: "inhabitant_3"
+                }
+            ],
+            startDate: "01.07.2016",
+            endDate: "31.07.2016",
+            enforceTimeBounds: true,
+            status: "open | closed | settled",
+            items: [
+                {
+                    username: "inhabitant_1",
+                    description: "payment_1",
+                    date: "01.01.2000",
+                    value: "10.56"
+                },
+                {
+                    username: "inhabitant_2",
+                    description: "payment_2",
+                    date: "02.01.2000",
+                    value: "4.05"
+                },
+                {
+                    username: "inhabitant_1",
+                    description: "payment_3",
+                    date: "01.02.2000",
+                    value: "17.75"
+                },
+                {
+                    username: "inhabitant_3",
+                    description: "payment_1",
+                    date: "01.01.2001",
+                    value: "25.39"
+                },
+                {
+                    username: "inhabitant_1",
+                    description: "test",
+                    date: "27.07.2016",
+                    value: "10.12"
+                }
+            ]
+        },
+        {
+            id: 12,
+            name: "Pool 2",
+            owner: [
+                {
+                    username: "inhabitant_1"
+                }
+            ],
+            participants: [
+                {
+                    username: "inhabitant_1"
+                },
+                {
+                    username: "inhabitant_2"
+                },
+                {
+                    username: "inhabitant_3"
+                }
+            ],
+            startDate: "01.07.2016",
+            endDate: "31.07.2016",
+            enforceTimeBounds: true,
+            status: "open | closed | settled",
+            items: [
+                {
+                    username: "inhabitant_1",
+                    description: "payment_1",
+                    date: "01.01.2000",
+                    value: "10.56"
+                },
+                {
+                    username: "inhabitant_2",
+                    description: "payment_2",
+                    date: "02.01.2000",
+                    value: "4.05"
+                },
+                {
+                    username: "inhabitant_1",
+                    description: "payment_3",
+                    date: "01.02.2000",
+                    value: "17.75"
+                },
+                {
+                    username: "inhabitant_3",
+                    description: "payment_1",
+                    date: "01.01.2001",
+                    value: "25.39"
+                },
+                {
+                    username: "inhabitant_1",
+                    description: "test",
+                    date: "27.07.2016",
+                    value: "10.12"
+                }
+            ]
+        }
+    ];
+    var cashPoolsDataRaw = JSON.stringify(cashPoolsData, null, 4);
+    fs.writeFileSync(path.join(_dataPath, 'cashPools.json'), cashPoolsDataRaw, 'utf8');
 
     console.log('> Finished creating all default data files!');
 });

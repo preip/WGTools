@@ -40,7 +40,7 @@ module.exports = function(dataPath) {
     }
     
     module.addNewPool = function(req, res, next) {
-        //TODO: validation checking
+        //TODO: validation
         //TODO: id management
         _data.push({
             id: Math.random(),
@@ -59,6 +59,8 @@ module.exports = function(dataPath) {
     }
     
     module.addNewEntry = function(req, res, next) {
+        //TODO: validation
+        
         var name = req.body.name;
         var description = req.body.description;
         var date = req.body.date
