@@ -74,6 +74,7 @@ var accountController = require('./controllers/accountPresenter')();
 var cashController = require('./controllers/cash')(path.join(__dirname, config.dataPath));
 var shoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath))
 var errorController = require('./controllers/error')();
+var cashPoolController = require('./controllers/cashPoolsController')(path.join(__dirname, config.dataPath))
 
 /**
  * Routes
@@ -90,8 +91,12 @@ app.post('/account/create', accountController.isAuthenticated, accountController
 app.get('/account/delete', accountController.isAuthenticated, accountController.deleteAccountGet);
 app.post('/account/delete', accountController.isAuthenticated, accountController.deleteAccountPost);
 // Cash
-app.get('/cash', accountController.isAuthenticated, cashController.showCashPage);
-app.post('/cash', accountController.isAuthenticated, cashController.addNewEntry);
+app.get('/cash', cashController.showCashPage);
+app.post('/cash', cashController.addNewEntry);
+// CashPools
+app.get('/cashPools/:id', cashPoolController.showCashPool);
+app.get('/cashPools/', cashPoolController.showCashPoolsIndex);
+app.post('/cashPools', cashPoolController.addNewEntry);
 // Shopping List
 app.get('/shoppingList', accountController.isAuthenticated, shoppingListController.showShoppingListPage);
 app.get('/shoppingList/GetAll', accountController.isAuthenticated, shoppingListController.getAll);

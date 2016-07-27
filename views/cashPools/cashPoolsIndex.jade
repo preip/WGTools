@@ -1,0 +1,23 @@
+extends ../templates/layout
+
+block content
+    .container
+        .panel.panel-default
+            .panel-heading Pools
+            .panel-body
+            table
+                tr.table-header
+                    td.id-column Id
+                    td.name-column Name
+                    td.link-column Link
+                - for (var i = 0; i < cashPoolsData.length; i++) {
+                    - var currentItem = cashPoolsData[i]
+                    tr
+                        td.cash-name-column
+                            = currentItem.id
+                        td.cash-description-column
+                            = currentItem.name
+                        td.link-column
+                            a(href="cashPools/" + currentItem.id)
+                                | To the pool
+                - }
