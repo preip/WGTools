@@ -12,8 +12,8 @@ block content
                     td.cash-description-column Description
                     td.cash-date-column Date
                     td.cash-value-column Value
-                - for (var i = 0; i < cashData.length; i++) {
-                    - var currentItem = cashData[i]
+                - for (var i = 0; i < pool.items.length; i++) {
+                    - var currentItem = pool.items[i]
                     tr
                         td.cash-name-column
                             = currentItem.username
@@ -30,20 +30,20 @@ block content
             .panel.panel-primary
                 .panel-heading Add a new transaction
                 .panel-body 
-                    form(action="/cashPools/" + id, method="post")
+                    form(action="/cashPools/" + pool.id, method="post")
                         .row
                             .col-sm-2
                                 .form-group
                                     label(for='name')
                                         h5 name
                                     select.form-control(type='text', id='username', name='username')
-                                        - for (var i = 0; i < usernames.length; i++) {
-                                            -if (usernames[i] == username)
+                                        - for (var i = 0; i < pool.participants.length; i++) {
+                                            -if (pool.participants[i] == username)
                                                 option(selected='selected')
-                                                    = usernames[i]
+                                                    = pool.participants[i]
                                             - else
                                                 option
-                                                    = usernames[i]
+                                                    = pool.participants[i]
                                         - }
                             .col-sm-6
                                 .form-group

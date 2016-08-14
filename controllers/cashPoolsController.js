@@ -10,31 +10,7 @@ module.exports = function(dataPath) {
         res.render('cashPools/cashPoolsIndex', { title: 'Cash Pools Index',
             cashPoolsData: _data, usernames: accountData.getUsernames()});
     };
-    
-    function findPool(id) {
-        return _data.filter(function(value) {
-                return value.id == id;
-            })[0] || null;
-    }
-    
-    function isEntryInvalid(entry, pool) {
-        //TODO: NUll values checken.
-        if (entry.username == null)
-            return "The username is missing.";
-            
-        if (pool.enforceTimeBounds && 
-            (entry.date < pool.startDate || entry.date > pool.endDate))
-            return "The date of the entry is not in the pool range.";
-        
-        var tmp = pool.participants.find(function(value) {
-            return value === entry.username; 
-        })
-        if (tmp == null)
-            return "The user is not part of the pool"; 
-        
-        return false;
-    }
-    
+
     module.showCashPool = function(req, res, next) {
         if (_data === null)
             loadData();
@@ -44,11 +20,8 @@ module.exports = function(dataPath) {
             if (pool != null) {
                 res.render('cashPools/cashPoolsPool', {
                     title: pool.name,
-                    usernames: pool.participants,
-                    cashData: pool.items,
                     sumData: calcSums(pool),
                     dateString: getCurrentDateString(),
-                    id: pool.id,
                     pool: pool
                 });
             } else {
@@ -56,31 +29,6 @@ module.exports = function(dataPath) {
                 res.end(); 
             }
         } 
-    }
-    
-    function setPoolStatus(status, id, res) {
-        if (_data == null)
-            loadData();  
-            
-        if(!(status == "close" ||
-            status == "open" ||
-            status == "settled")) {
-                res.status(403);
-                res.send("Not a valid status");
-                return;
-        }
-            
-        var pool = findPool(id);
-        
-        if (pool != null) {
-            pool.status = status;
-            saveData();
-            res.writeHead(301, {Location: '/cashPools'});
-            res.end(); 
-        } else {
-            res.status(404);
-            res.send("Pool not found.");
-        }
     }
     
     module.openPool = function(req, res, next) {
@@ -217,6 +165,55 @@ module.exports = function(dataPath) {
             sums[username] = slice - sums[username];
         }
         return sums;
+    }
+    
+    function findPool(id) {
+        return _data.filter(function(value) {
+                return value.id == id;
+            })[0] || null;
+    }
+    
+    function isEntryInvalid(entry, pool) {
+        //TODO: NUll values checken.
+        if (entry.username == null)
+            return "The username is missing.";
+            
+        if (pool.enforceTimeBounds && 
+            (entry.date < pool.startDate || entry.date > pool.endDate))
+            return "The date of the entry is not in the pool range.";
+        
+        var tmp = pool.participants.find(function(value) {
+            return value === entry.username; 
+        })
+        if (tmp == null)
+            return "The user is not part of the pool"; 
+        
+        return false;
+    }
+    
+    function setPoolStatus(status, id, res) {
+        if (_data == null)
+            loadData();  
+            
+        if(!(status == "close" ||
+            status == "open" ||
+            status == "settled")) {
+                res.status(403);
+                res.send("Not a valid status");
+                return;
+        }
+            
+        var pool = findPool(id);
+        
+        if (pool != null) {
+            pool.status = status;
+            saveData();
+            res.writeHead(301, {Location: '/cashPools'});
+            res.end(); 
+        } else {
+            res.status(404);
+            res.send("Pool not found.");
+        }
     }
     
     return module;
