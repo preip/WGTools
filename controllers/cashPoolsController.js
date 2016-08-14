@@ -51,7 +51,7 @@ module.exports = function(dataPath) {
         if (_data == null)
             loadData();
         _data.push({
-            id: Math.random(),
+            id: Math.random() * Number.MAX_SAFE_INTEGER,
             name: req.body.name,
             owner: [req.body.owner],
             participants: req.body.participants,
@@ -128,18 +128,37 @@ module.exports = function(dataPath) {
         return parseInt(date1[0]) - parseInt(date2[0])
     }
     
-    function saveData() {
-        var fs = require('fs');
-        var raw = JSON.stringify(_data, null, 4);
+    function saveData(poolId) {
+        var fs = require('fs'); 
         var path = require('path');
-        fs.writeFileSync(path.join(_dataPath, 'cashPools.json'), raw, 'utf8');
+        
+        if (!fs.existsSync(path.join(_dataPath, 'cashPools')))
+            fs.mkdirSync(path.join(_dataPath, 'cashPools'));
+        
+        if (poolId == null) {
+            for(var i = 0; i < _data.length; ++i) {
+                var raw = JSON.stringify(_data[i], null, 4);
+                var tmpPath = _dataPath + '/cashPools';
+                fs.writeFileSync(path.join(tmpPath, _data[i].id.toString() + ".json"), raw, 'utf8');
+            }        
+        } else {
+            //TODO: safe specific pool with id poolId.
+        }
+        
     }
     
     function loadData() {
         var fs = require('fs');
         var path = require('path');
-        var raw = fs.readFileSync(path.join(_dataPath, 'cashPools.json'), 'utf8');
-        var data = JSON.parse(raw);
+        var tmpPath = _dataPath + '/cashPools';
+        var files = fs.readdirSync(tmpPath);
+        var data = [];
+        
+        for (var i = 0; i < files.length; i++) {
+            var raw = fs.readFileSync(path.join(tmpPath, files[i]), 'utf8');
+            data.push(JSON.parse(raw));
+        }
+        
         _data = data;
     }
     
