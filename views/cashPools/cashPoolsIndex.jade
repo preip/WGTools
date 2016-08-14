@@ -9,6 +9,8 @@ block content
                 tr.table-header
                     td.id-column Id
                     td.name-column Name
+                    td.status-column Status
+                    td.action-clumn Action
                     td.link-column Link
                 - for (var i = 0; i < cashPoolsData.length; i++) {
                     - var currentItem = cashPoolsData[i]
@@ -17,6 +19,22 @@ block content
                             = currentItem.id
                         td.cash-description-column
                             = currentItem.name
+                        td.status-column
+                            = currentItem.status
+                        td.action-column
+                            div.dropdown
+                                a(id='action_dropdown', data-target='#', data-toggle='dropdown', role='button')
+                                    | Action
+                                ul.dropdown-menu
+                                    li 
+                                        a(href='cashPools/' + currentItem.id + '/open')
+                                            | Open pool
+                                    li
+                                        a(href='cashPools/' + currentItem.id + '/close')
+                                            | Close pool
+                                    li
+                                        a(href='cashPools/' + currentItem.id + '/settel')
+                                            | Settel pool 
                         td.link-column
                             a(href="cashPools/" + currentItem.id)
                                 | To the pool
@@ -68,6 +86,11 @@ block content
                                     label(for='endDate')
                                         h5 end
                                     input.form-control(type='text', class='datepicker', name='endDate', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
+                            .col-sm-2
+                                .from-group
+                                    lable(for='enforceTimeBounds')
+                                        h5 time bounds
+                                    input(type='checkbox', name='enforceTimeBounds')
                         .row
                             .col-sm-10
                             .col-sm-2

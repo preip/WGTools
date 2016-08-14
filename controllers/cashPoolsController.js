@@ -17,6 +17,24 @@ module.exports = function(dataPath) {
             })[0] || null;
     }
     
+    function isEntryInvalid(entry, pool) {
+        //TODO: NUll values checken.
+        if (entry.username == null)
+            return "The username is missing.";
+            
+        if (pool.enforceTimeBounds && 
+            (entry.date < pool.startDate || entry.date > pool.endDate))
+            return "The date of the entry is not in the pool range.";
+        
+        var tmp = pool.participants.find(function(value) {
+            return value === entry.username; 
+        })
+        if (tmp == null)
+            return "The user is not part of the pool"; 
+        
+        return false;
+    }
+    
     module.showCashPool = function(req, res, next) {
         if (_data === null)
             loadData();
@@ -26,11 +44,12 @@ module.exports = function(dataPath) {
             if (pool != null) {
                 res.render('cashPools/cashPoolsPool', {
                     title: pool.name,
-                    usernames: accountData.getUsernames(),
+                    usernames: pool.participants,
                     cashData: pool.items,
-                    sumData: calcSums(pool.items),
+                    sumData: calcSums(pool),
                     dateString: getCurrentDateString(),
-                    id: pool.id
+                    id: pool.id,
+                    pool: pool
                 });
             } else {
                 res.writeHead(301, {Location: '/cashPools'});
@@ -39,9 +58,50 @@ module.exports = function(dataPath) {
         } 
     }
     
+    function setPoolStatus(status, id, res) {
+        if (_data == null)
+            loadData();  
+            
+        if(!(status == "close" ||
+            status == "open" ||
+            status == "settled")) {
+                res.status(403);
+                res.send("Not a valid status");
+                return;
+        }
+            
+        var pool = findPool(id);
+        
+        if (pool != null) {
+            pool.status = status;
+            saveData();
+            res.writeHead(301, {Location: '/cashPools'});
+            res.end(); 
+        } else {
+            res.status(404);
+            res.send("Pool not found.");
+        }
+    }
+    
+    module.openPool = function(req, res, next) {
+        setPoolStatus("open", req.params.id, res);
+    }
+    
+    module.closePool = function(req, res, next) {
+        setPoolStatus("close", req.params.id, res);
+    }
+    
+    module.settelPool = function(req, res, next) {
+        setPoolStatus("settled", req.params.id, res);
+    }
+   
+    
     module.addNewPool = function(req, res, next) {
         //TODO: validation
         //TODO: id management
+        
+        if (_data == null)
+            loadData();
         _data.push({
             id: Math.random(),
             name: req.body.name,
@@ -49,7 +109,7 @@ module.exports = function(dataPath) {
             participants: req.body.participants,
             startDate: req.body.startDate,
             endDate: req.body.endDate,
-            enforceTimeBounds: true,
+            enforceTimeBounds: req.body.enforceTimeBounds == 'on',
             status: "open",
             items: [] 
         });
@@ -58,28 +118,42 @@ module.exports = function(dataPath) {
         res.end();
     }
     
-    module.addNewEntry = function(req, res, next) {
-        //TODO: validation
-        
-        var name = req.body.name;
-        var description = req.body.description;
-        var date = req.body.date
-        var value = req.body.value;
-        
+    module.addNewEntry = function(req, res, next) {  
         if (req.params.id != null) {
-            var pool = findPool(req.params.id)
+            var pool = findPool(req.params.id);
             
-            if (pool != null) {
-                pool.items.push({ "username" : name, "description" : description, "date" : date,
-                    "value" : value });
-                pool.items.sort(compareEntries);
-                saveData();
+            if (pool == null) {
+                res.status(404);
+                res.send("Pool not found");
+                return;
             }
+            
+            if (pool.status != "open") {
+                res.status(403);
+                res.send("The pool is not open");
+                return;
+            }
+            
+            var tmp =  isEntryInvalid(req.body, pool);
+            if (tmp) {
+                res.status(400);
+                res.send(tmp);
+                return;
+            }
+            
+            var username = req.body.username;
+            var description = req.body.description;
+            var date = req.body.date
+            var value = req.body.value;
+            
+            pool.items.push({ "username" : username, "description" : description, "date" : date,
+                "value" : value });
+            pool.items.sort(compareEntries);
+            saveData();
+            
             res.writeHead(301, {Location: '/cashPools/' + req.params.id});
-        } else {
-            res.writeHead(301, {Location: '/cashPools'});
-        }
-        res.end();
+            res.end();
+        } 
     }
     
     function getCurrentDateString() {
@@ -121,11 +195,16 @@ module.exports = function(dataPath) {
         _data = data;
     }
     
-    function calcSums(items) {
+    function calcSums(pool) {
         var sums = {};
+        
+        pool.participants.forEach(function(value){
+          sums[value] = 0.0;  
+        });
+            
         var total = 0.0;
-        for (var i = 0; i < items.length; i++) {
-            var curData = items[i];
+        for (var i = 0; i < pool.items.length; i++) {
+            var curData = pool.items[i];
             if (sums[curData.username] === undefined)
                 sums[curData.username] = 0.0;
             var val = parseFloat(curData.value);

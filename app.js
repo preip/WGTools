@@ -97,6 +97,9 @@ app.post('/cash', cashController.addNewEntry);
 app.get('/cashPools/:id', cashPoolController.showCashPool);
 app.get('/cashPools', cashPoolController.showCashPoolsIndex);
 app.post('/cashPools/:id', cashPoolController.addNewEntry);
+app.get('/cashPools/:id/open', cashPoolController.openPool);
+app.get('/cashPools/:id/close', cashPoolController.closePool);
+app.get('/cashPools/:id/settel', cashPoolController.settelPool);
 app.post('/cashPools', cashPoolController.addNewPool);
 // Shopping List
 app.get('/shoppingList', accountController.isAuthenticated, shoppingListController.showShoppingListPage);

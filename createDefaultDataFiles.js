@@ -104,25 +104,16 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
             id: 10,
             name: "Pool 1",
             owner: [
-                {
-                    username: "inhabitant_1"
-                }
+                "inhabitant_2"
             ],
             participants: [
-                {
-                    username: "inhabitant_1"
-                },
-                {
-                    username: "inhabitant_2"
-                },
-                {
-                    username: "inhabitant_3"
-                }
+                "inhabitant_1",
+                "inhabitant_2",
             ],
             startDate: "01.07.2016",
             endDate: "31.07.2016",
             enforceTimeBounds: true,
-            status: "open | closed | settled",
+            status: "settled",
             items: [
                 {
                     username: "inhabitant_1",
@@ -159,26 +150,18 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
         {
             id: 12,
             name: "Pool 2",
-            owner: [
-                {
-                    username: "inhabitant_1"
-                }
+            owner: [  
+                 "inhabitant_1"
             ],
             participants: [
-                {
-                    username: "inhabitant_1"
-                },
-                {
-                    username: "inhabitant_2"
-                },
-                {
-                    username: "inhabitant_3"
-                }
+                "inhabitant_1",
+                "inhabitant_2",
+                "inhabitant_3"
             ],
             startDate: "01.07.2016",
             endDate: "31.07.2016",
             enforceTimeBounds: true,
-            status: "open | closed | settled",
+            status: "open",
             items: [
                 {
                     username: "inhabitant_1",

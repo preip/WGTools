@@ -1,9 +1,10 @@
 extends ../templates/layout
 
 block content
+    <!-- Table of the pool entries --> 
     .container
         .panel.panel-default
-            .panel-heading Current Cash Items
+            .panel-heading Current Cash Items #{pool.startDate} - #{pool.endDate} Status: #{pool.status}
             .panel-body
             table
                 tr.table-header
@@ -23,44 +24,47 @@ block content
                         td.cash-value-column
                             = currentItem.value
                 - }
-    .container
-        .panel.panel-primary
-            .panel-heading Add a new transaction
-            .panel-body 
-                form(action="/cashPools/" + id, method="post")
-                    .row
-                        .col-sm-2
-                            .form-group
-                                label(for='name')
-                                    h5 name
-                                select.form-control(type='text', id='name', name='name')
-                                    - for (var i = 0; i < usernames.length; i++) {
-                                        -if (usernames[i] == username)
-                                            option(selected='selected')
-                                                = usernames[i]
-                                        - else
-                                            option
-                                                = usernames[i]
-                                    - }
-                        .col-sm-6
-                            .form-group
-                                label(for='description')
-                                    h5 description
-                                input.form-control(type='text', id='description', name='description', required)
-                        .col-sm-2
-                            .form-group
-                                label(for='date')
-                                    h5 date
-                                input.form-control(type='text', id='datepicker', name='date', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
-                        .col-sm-2
-                            .form-group
-                                label(for='value')
-                                    h5 value
-                                input.form-control(type='text', pattern="^\\d+\\.\\d{2}", id='value', name='value', required)
-                    .row
-                        .col-sm-10
-                        .col-sm-2
-                            button.btn.btn-primary.btn-block(type='submit') Submit
+    <!-- Add new entries to the pool -->
+    if (pool.status == "open")
+        .container
+            .panel.panel-primary
+                .panel-heading Add a new transaction
+                .panel-body 
+                    form(action="/cashPools/" + id, method="post")
+                        .row
+                            .col-sm-2
+                                .form-group
+                                    label(for='name')
+                                        h5 name
+                                    select.form-control(type='text', id='username', name='username')
+                                        - for (var i = 0; i < usernames.length; i++) {
+                                            -if (usernames[i] == username)
+                                                option(selected='selected')
+                                                    = usernames[i]
+                                            - else
+                                                option
+                                                    = usernames[i]
+                                        - }
+                            .col-sm-6
+                                .form-group
+                                    label(for='description')
+                                        h5 description
+                                    input.form-control(type='text', id='description', name='description', required)
+                            .col-sm-2
+                                .form-group
+                                    label(for='date')
+                                        h5 date
+                                    input.form-control(type='text', id='datepicker', name='date', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
+                            .col-sm-2
+                                .form-group
+                                    label(for='value')
+                                        h5 value
+                                    input.form-control(type='text', pattern="^\\d+\\.\\d{2}", id='value', name='value', required)
+                        .row
+                            .col-sm-10
+                            .col-sm-2
+                                button.btn.btn-primary.btn-block(type='submit') Submit
+    <!-- Table with the calculated sums for the user -->
     .container
         .panel.panel-default
             .panel-heading Overview how much everyone needs to pay (red) or gets back (green)
