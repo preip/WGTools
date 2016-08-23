@@ -67,14 +67,15 @@ app.locals.url = require('url');
  * Data-Controller
  */
 global.accountData = require('./controllers/accountData')(path.join(__dirname, config.dataPath));
+var cashPoolData = require('./controllers/cashPoolsData')(path.join(__dirname, config.dataPath, 'cashPools'));
 /**
  * View-Models
  */
 var accountController = require('./controllers/accountPresenter')();
 var cashController = require('./controllers/cash')(path.join(__dirname, config.dataPath));
-var shoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath))
+var shoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath));
 var errorController = require('./controllers/error')();
-var cashPoolController = require('./controllers/cashPoolsController')(path.join(__dirname, config.dataPath))
+var cashPoolsController = require('./controllers/cashPoolsPresenter')(cashPoolData);
 
 /**
  * Routes
@@ -94,13 +95,13 @@ app.post('/account/delete', accountController.isAuthenticated, accountController
 app.get('/cash', cashController.showCashPage);
 app.post('/cash', cashController.addNewEntry);
 // CashPools
-app.get('/cashPools/:id', cashPoolController.showCashPool);
-app.get('/cashPools', cashPoolController.showCashPoolsIndex);
-app.post('/cashPools/:id', cashPoolController.addNewEntry);
-app.get('/cashPools/:id/open', cashPoolController.openPool);
-app.get('/cashPools/:id/close', cashPoolController.closePool);
-app.get('/cashPools/:id/settel', cashPoolController.settelPool);
-app.post('/cashPools', cashPoolController.addNewPool);
+app.get('/cashPools', cashPoolsController.showCashPoolsIndex);
+app.post('/cashPools', cashPoolsController.addNewPool);
+app.get('/cashPools/:id', cashPoolsController.showCashPool);
+app.post('/cashPools/:id', cashPoolsController.addNewEntryToPool);
+app.get('/cashPools/:id/open', cashPoolsController.openPool);
+app.get('/cashPools/:id/close', cashPoolsController.closePool);
+app.get('/cashPools/:id/settel', cashPoolsController.settelPool);
 // Shopping List
 app.get('/shoppingList', accountController.isAuthenticated, shoppingListController.showShoppingListPage);
 app.get('/shoppingList/GetAll', accountController.isAuthenticated, shoppingListController.getAll);

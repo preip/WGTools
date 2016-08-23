@@ -12,8 +12,8 @@ block content
                     td.status-column Status
                     td.action-clumn Action
                     td.link-column Link
-                - for (var i = 0; i < cashPoolsData.length; i++) {
-                    - var currentItem = cashPoolsData[i]
+                - for (var key in cashPoolsData) {
+                    - var currentItem = cashPoolsData[key]
                     tr
                         td.cash-name-column
                             = currentItem.id
