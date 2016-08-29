@@ -95,11 +95,11 @@ app.post('/account/delete', accountController.isAuthenticated, accountController
 app.get('/cash', cashController.showCashPage);
 app.post('/cash', cashController.addNewEntry);
 // CashPools
-app.get('/cashPools', cashPoolsController.showCashPoolsIndex);
-app.post('/cashPools', cashPoolsController.addNewPool);
-app.get('/cashPools/:id', cashPoolsController.showCashPool);
-app.post('/cashPools/:id', cashPoolsController.addNewEntryToPool);
-app.post('/cashPools/:id/setState', cashPoolsController.setState);
+app.get('/cashPools', accountController.isAuthenticated, cashPoolsController.showCashPoolsIndex);
+app.post('/cashPools', accountController.isAuthenticated, cashPoolsController.addNewPool);
+app.get('/cashPools/:id', accountController.isAuthenticated, cashPoolsController.showCashPool);
+app.post('/cashPools/:id', accountController.isAuthenticated, cashPoolsController.addNewEntryToPool);
+app.post('/cashPools/:id/setState', accountController.isAuthenticated, cashPoolsController.setState);
 // Shopping List
 app.get('/shoppingList', accountController.isAuthenticated, shoppingListController.showShoppingListPage);
 app.get('/shoppingList/GetAll', accountController.isAuthenticated, shoppingListController.getAll);
