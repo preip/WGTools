@@ -58,6 +58,14 @@ module.exports = function(dataPath) {
             status: "open",
             items: []
         };
+        
+        //Functions for pool handling
+        pool.addNewEntry = pool_addNewEntry;
+        pool.isEntryValid = pool_isEntryValid;
+        pool.compareEntries = pool_compareEntries;
+        pool.calcSums = pool_calcSums;
+        pool.setState = pool_setState;
+        
         _poolData[_nextId] = pool;
         savePool(pool);
         return _nextId++;
@@ -173,8 +181,8 @@ module.exports = function(dataPath) {
         return sums;
     }
     
-    function pool_setState(status) {
-        if (status !== 'open' || status !== 'closed' || status !== 'settled')
+    function pool_setState(status) {        
+        if (status !== "open" && status !== "closed" && status !== "settled")
             return false;
         this.status = status;
         savePool(this);

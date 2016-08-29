@@ -26,15 +26,15 @@ block content
                                 a(id='action_dropdown', data-target='#', data-toggle='dropdown', role='button')
                                     | Action
                                 ul.dropdown-menu
-                                    li 
-                                        a(href='cashPools/' + currentItem.id + '/open')
-                                            | Open pool
                                     li
-                                        a(href='cashPools/' + currentItem.id + '/close')
-                                            | Close pool
+                                        form(action='cashPools/' + currentItem.id + '/setState?state=open', method="post", class="inline") 
+                                            button.link-button(type='submit') Open Pool
                                     li
-                                        a(href='cashPools/' + currentItem.id + '/settel')
-                                            | Settel pool 
+                                        form(action='cashPools/' + currentItem.id + '/setState?state=closed', method="post", class="inline") 
+                                            button.link-button(type='submit') Close Pool
+                                    li
+                                        form(action='cashPools/' + currentItem.id + '/setState?state=settled', method="post", class="inline") 
+                                            button.link-button(type='submit') Settel Pool
                         td.link-column
                             a(href="cashPools/" + currentItem.id)
                                 | To the pool

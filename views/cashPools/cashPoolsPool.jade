@@ -92,7 +92,22 @@ block scripts
     script(type='text/javascript', src='/js/bootstrap-datepicker.min.js')
     script.
         $(function() {
-            $('#datepicker').datepicker({ 
-                 format: 'dd.mm.yyyy'
-            }).datepicker("setDate", new Date());
+            
+            var endDate = "#{pool.endDate}".split('.').reverse();
+            endDate = new Date(endDate);
+
+            var startDate = "#{pool.startDate}".split('.').reverse();
+            startDate = new Date(startDate);
+            
+            if (#{pool.enforceTimeBounds}) {
+                $('#datepicker').datepicker({ 
+                        format: 'dd.mm.yyyy',
+                        startDate: startDate,
+                        endDate: endDate
+                }).datepicker("setDate", new Date());
+            } else {
+                $('#datepicker').datepicker({ 
+                        format: 'dd.mm.yyyy'
+                }).datepicker("setDate", new Date());  
+            }
         });

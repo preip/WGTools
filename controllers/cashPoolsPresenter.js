@@ -28,22 +28,22 @@ module.exports = function(cashPoolData) {
         } 
     }
     
-    module.openPool = function(req, res, next) {
-        setPoolState("open", req.params.id, res);
-    }
-    
-    module.closePool = function(req, res, next) {
-        setPoolState("close", req.params.id, res);
-    }
-    
-    module.settelPool = function(req, res, next) {
-        setPoolState("settled", req.params.id, res);
+    module.setState = function(req, res, next) {
+        setPoolState(req.query.state, req.params.id, res);
     }
    
-    
     module.addNewPool = function(req, res, next) {
         //TODO: validation
-        //TODO: id management
+        //In the case that no participants are selected.
+        if (req.body.participants == null) {
+                res.status(401);
+                res.send("You have to select at least one participant");
+                return;
+        }
+        //In the case that there is only one participant.
+        if (typeof req.body.participants == 'string')
+            req.body.participants = [req.body.participants];
+        
         _cashPoolData.addNewPool(
             req.body.name,
             [req.body.owner],
@@ -89,7 +89,7 @@ module.exports = function(cashPoolData) {
             res.end();
         } 
     }
-    
+
     function getCurrentDateString() {
         var date = new Date();
         var datestring = ''
