@@ -86,10 +86,6 @@ tr.strikethrough span::after {
     color: #FFFFFF;
 }
 
-.item-name-column {
-    width: 50%;
-}
-
 .form-inline {
     padding:10px;
 }
@@ -136,4 +132,17 @@ tr.strikethrough span::after {
 }
 .link-button:active {
   color:red;
+}
+
+/**************************************************************************************************
+ * Cash Pools
+ **************************************************************************************************/
+ 
+ .pool-action-column {
+     width:1px;
+     white-space:nowrap;
+ }
+ 
+ .item-name-column {
+    width: 50%;
 }

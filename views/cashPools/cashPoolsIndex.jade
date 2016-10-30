@@ -1,44 +1,71 @@
 extends ../templates/layout
 
-block content
-    .container
+mixin poolTitle(status)
+    - if (status === 'open')
+        i.fa.fa-folder-open &nbsp;
+        = 'Open Pools'
+    - else if (status === 'closed')
+        i.fa.fa-folder &nbsp;
+        = 'Closed Pools'
+    - else if (status === 'settled')
+        i.fa.fa-money &nbsp;
+        = 'Settled Pools'
+    - else
+        = 'Unknown List'
+
+mixin poolDisclaimer(status)
+    p
+        - if (status === 'open')
+            = "This are the pools which are open and accept new entries."
+        - else if (status === 'closed')
+            = "This pools have been closed and don't accept new entries, but payments have now been settled yet."
+        - else if (status === 'settled')
+            = "This pools don't accept new entries and all payments have been settled. They are just here for reference."
+        - else
+            = "This pools have an unknown state. This should not happen, so please contact your admin if your see this."
+
+mixin poolTable(status)
+   .container
         .panel.panel-default
-            .panel-heading Pools
+            .panel-heading 
+                +poolTitle(status)
             .panel-body
-            table
-                tr.table-header
-                    td.id-column Id
-                    td.name-column Name
-                    td.status-column Status
-                    td.action-clumn Action
-                    td.link-column Link
-                - for (var key in cashPoolsData) {
-                    - var currentItem = cashPoolsData[key]
-                    tr
-                        td.cash-name-column
-                            = currentItem.id
-                        td.cash-description-column
-                            = currentItem.name
-                        td.status-column
-                            = currentItem.status
-                        td.action-column
-                            div.dropdown
-                                a(id='action_dropdown', data-target='#', data-toggle='dropdown', role='button')
-                                    | Action
-                                ul.dropdown-menu
-                                    li
-                                        form(action='cashPools/' + currentItem.id + '/setState?state=open', method="post", class="inline") 
-                                            button.link-button(type='submit') Open Pool
-                                    li
-                                        form(action='cashPools/' + currentItem.id + '/setState?state=closed', method="post", class="inline") 
-                                            button.link-button(type='submit') Close Pool
-                                    li
-                                        form(action='cashPools/' + currentItem.id + '/setState?state=settled', method="post", class="inline") 
-                                            button.link-button(type='submit') Settel Pool
-                        td.link-column
-                            a(href="cashPools/" + currentItem.id)
-                                | To the pool
-                - }
+                +poolDisclaimer(status)
+                table
+                    tr.table-header
+                        td Pool Name
+                        td Action
+                    - for (var key in cashPoolsData) {
+                        - var currentItem = cashPoolsData[key]
+                        - if (currentItem.status !== status)
+                            - continue
+                        tr
+                            td
+                                a(href='cashPools/' + currentItem.id)
+                                    = currentItem.name
+                            td.pool-action-column
+                                if (currentItem.status !== 'open')
+                                    form(action='cashPools/' + currentItem.id + '/setState?state=open', method="post", class="inline") 
+                                        button.btn.btn-primary(type='submit', data-toggle='tooltip', data-placement='bottom', title='Set pool status to open')
+                                            i.fa.fa-folder-open
+                                if (currentItem.status !== 'closed')
+                                    form(action='cashPools/' + currentItem.id + '/setState?state=closed', method="post", class="inline") 
+                                        button.btn.btn-primary(type='submit', data-toggle='tooltip', data-placement='bottom', title='Set pool status to closed')
+                                            i.fa.fa-folder
+                                if (currentItem.status !== 'settled')
+                                    form(action='cashPools/' + currentItem.id + '/setState?state=settled', method="post", class="inline") 
+                                        button.btn.btn-primary(type='submit', data-toggle='tooltip', data-placement='bottom', title='Set pool status to settled')
+                                            i.fa.fa-money
+                    - }
+
+block content
+    //- list of all opened cash pools
+    +poolTable('open')
+    //- list of all closed cash pools
+    +poolTable('closed')
+    //- list of all settled cash pools
+    +poolTable('settled')
+
     .container
             .panel.panel-primary
                 .panel-heading Add a new Pool
