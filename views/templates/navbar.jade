@@ -14,16 +14,11 @@
                     a(href='/')
                         | Home
                 li
-                    //- a(href='/cash' data-toggle='tooltip', data-placement='bottom', title='About')
-                    a(href='/cash')
-                        | Cash
-
+                    a(href='/cashPools')
+                        | CashPools
                 li 
                     a(href='/shoppingList')
                         | Shopping
-                li
-                    a(href='/cashPools')
-                        | CashPools
             ul.nav.navbar-nav.navbar-right
                 - if (loggedIn === true) {
                     li.dropdown

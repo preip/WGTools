@@ -37,18 +37,6 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
         fs.mkdirSync(_dataPath);
     var _hashAlgorithm = config.hashAlgorithm;
     var _hashEncoding = config.hashEncoding;
-    /**
-     * Cash Data File
-     */
-    console.log('> Creating cash file...');
-    var cashData = [
-        { "username" : "inhabitant_1", "description" : "payment_1", "date" : "01.01.2000", "value" : "10.56" },
-        { "username" : "inhabitant_2", "description" : "payment_2", "date" : "02.01.2000", "value" : "4.05" },
-        { "username" : "inhabitant_1", "description" : "payment_3", "date" : "01.02.2000", "value" : "17.75" },
-        { "username" : "inhabitant_3", "description" : "payment_1", "date" : "01.01.2001", "value" : "25.39" }
-    ];
-    var cashDataRaw = JSON.stringify(cashData, null, 4);
-    fs.writeFileSync(path.join(_dataPath, 'cash.json'), cashDataRaw, 'utf8');
     
     /**
      * Accounts
@@ -73,7 +61,9 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     var accountDataRaw = JSON.stringify(accountData, null, 4);
     fs.writeFileSync(path.join(_dataPath, 'accounts.json'), accountDataRaw, 'utf8');
     
-    
+    /**
+     * Shopping List
+     */
     console.log('> Creating shoppingList file...');
     var shoppingListData = [
         {
@@ -98,6 +88,9 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     var shoppingListDataRaw = JSON.stringify(shoppingListData, null, 4);
     fs.writeFileSync(path.join(_dataPath, 'shoppingList.json'), shoppingListDataRaw, 'utf8');
     
+    /**
+     * Cash Pools
+     */
     console.log('> Creating cashPools file...');
     var cashPool1Data = {
         id: 10,
