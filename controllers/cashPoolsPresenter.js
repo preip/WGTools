@@ -31,6 +31,10 @@ module.exports = function(cashPoolData) {
     module.setState = function(req, res, next) {
         setPoolState(req.query.state, req.params.id, res);
     }
+    
+    module.toggleUserState = function(req, res, next) {
+        togglePoolUserState(req.query.username, req.query.state, req.params.id, res);
+    }
    
     module.addNewPool = function(req, res, next) {
         //TODO: validation
@@ -115,6 +119,23 @@ module.exports = function(cashPoolData) {
             return;
         }
         res.writeHead(301, {Location: '/cashPools'});
+        res.end();
+    }
+    
+    function togglePoolUserState(username, status, id, res) {
+        pool = _cashPoolData.getPool(id);
+        if (pool === undefined) {
+            res.status(404);
+            res.send("Pool not found.");
+            return;
+        }
+        if (!pool.toggleStateForUser(username, status)) {
+            res.status(403);
+            res.send("invalid username or state.");
+            return;
+        }
+        
+        res.writeHead(301, {Location: '/cashPools/' + id});
         res.end();
     }
     

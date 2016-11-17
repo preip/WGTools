@@ -1,5 +1,70 @@
 extends ../templates/layout
 
+mixin getToggleButtonTooltip(name, type)
+    - if (type == 'closed')
+
+mixin toggleButton(active, tooltipText)
+    .toogle.slider
+        - if (active === true)
+            button.btn.toggle.button.active(type='submit', data-toggle='tooltip', data-placement='bottom', title=tooltipText)
+                p
+                    i.fa.fa-check
+        - else
+            button.btn.toggle.button.inactive(type='submit', data-toggle='tooltip', data-placement='bottom', title=tooltipText)
+                p
+                    i.fa.fa-close
+                    
+mixin statusIcon(active)
+    - if (active === true)
+        i.fa.fa-check
+    - else
+        i.fa.fa-close
+
+mixin balanceEntry(name)
+    tr(class=sumData[name]<=0 ? 'balance positive' : 'balance negative')
+        td.balance.name
+            = name
+        td.balance.balance
+            - if (sumData[name] <= 0)
+                = sumData[name].toFixed(2) * -1
+            - else
+                = sumData[name].toFixed(2)
+        td.balance.closed
+            - if (name === username && pool.status === 'open')
+                form(action=pool.id + '/toggleUserState?username=' + username + '&state=closed', method="post", class="inline")
+                    +toggleButton(pool.participants[name].closed, pool.participants[name].closed === false ? "Mark pool as closed" : "Mark pool as open")
+            - else
+                +statusIcon(pool.participants[name].closed)
+        td.balance.settled
+            -if (pool.status === 'open')
+                p -
+            -else if (name === username && pool.status === 'closed')
+                form(action=pool.id + '/toggleUserState?username=' + username + '&state=settled', method="post", class="inline")
+                    +toggleButton(pool.participants[name].settled, pool.participants[name].settled === false ? "Mark pool as settled" : "Mark pool as closed but not yet settled")
+            - else
+                +statusIcon(pool.participants[name].settled)
+    
+mexin blub(name)
+    - var divClass = "negative-panel"
+    - if (sumData[name] <= 0)
+        - divClass = "positive-panel"
+    .row(class=divClass)
+        .col-xs-5.overview-name
+            p
+                = name
+        .col-xs-5.overview-value
+            p
+                - if (sumData[name] <= 0)
+                    = sumData[name].toFixed(2) * -1
+                - else
+                    = sumData[name].toFixed(2)
+        .col-xs-2.overview-name
+            p
+                - if (pool.participants[name].closed === true)
+                    = 'x'
+                - else
+                    = 'o'
+
 block content
     <!-- Table of the pool entries --> 
     .container
@@ -37,13 +102,13 @@ block content
                                     label(for='name')
                                         h5 name
                                     select.form-control(type='text', id='username', name='username')
-                                        - for (var i = 0; i < pool.participants.length; i++) {
-                                            -if (pool.participants[i] == username)
+                                        - for (var name in pool.participants) {
+                                            -if (name == username)
                                                 option(selected='selected')
-                                                    = pool.participants[i]
+                                                    = name
                                             - else
                                                 option
-                                                    = pool.participants[i]
+                                                    = name
                                         - }
                             .col-sm-6
                                 .form-group
@@ -69,21 +134,16 @@ block content
         .panel.panel-default
             .panel-heading Overview how much everyone needs to pay (red) or gets back (green)
             .panel-body
-                - for (var key in sumData) {
-                    - var divClass = "negative-panel"
-                    - if (sumData[key] <= 0)
-                        - divClass = "positive-panel"
-                    .row(class=divClass)
-                        .col-xs-6.overview-name
-                            p
-                                = key
-                        .col-xs-6.overview-value
-                            p
-                                if (sumData[key] <= 0)
-                                    = sumData[key].toFixed(2) * -1
-                                else
-                                    = sumData[key].toFixed(2)
-                - }
+                table
+                    tr.table-header
+                        td.balance.name name
+                        td.balance.balance balance
+                        td.balance.closed closed
+                        td.balance.settled settled
+                    - for (var name in sumData) {
+                        +balanceEntry(name)
+                    - }
+                
 
 block css
     link(href='/css/bootstrap-datepicker.min.css', rel='stylesheet')

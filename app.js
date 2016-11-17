@@ -96,6 +96,7 @@ app.post('/cashPools', accountController.isAuthenticated, cashPoolsController.ad
 app.get('/cashPools/:id', accountController.isAuthenticated, cashPoolsController.showCashPool);
 app.post('/cashPools/:id', accountController.isAuthenticated, cashPoolsController.addNewEntryToPool);
 app.post('/cashPools/:id/setState', accountController.isAuthenticated, cashPoolsController.setState);
+app.post('/cashPools/:id/toggleUserState', accountController.isAuthenticated, cashPoolsController.toggleUserState);
 // Shopping List
 app.get('/shoppingList', accountController.isAuthenticated, shoppingListController.showShoppingListPage);
 app.get('/shoppingList/GetAll', accountController.isAuthenticated, shoppingListController.getAll);

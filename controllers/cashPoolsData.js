@@ -47,11 +47,18 @@ module.exports = function(dataPath) {
     }
     
     module.addNewPool = function(name, owner, participants, startDate, endDate, enforceTimeBounds) {
+        var participantsWithState = {};
+        for (var i = 0; i < participants.length; i++)
+            participantsWithState[participants[i]] = {
+                "closed" : false,
+                "settled" : false
+            };
+        
         pool = {
             id: _nextId,
             name: name,
             owner: owner,
-            participants: participants,
+            participants: participantsWithState,
             startDate: startDate,
             endDate: endDate,
             enforceTimeBounds: enforceTimeBounds,
@@ -109,6 +116,8 @@ module.exports = function(dataPath) {
             pool.compareEntries = pool_compareEntries;
             pool.calcSums = pool_calcSums;
             pool.setState = pool_setState;
+            pool.resetClosedState = pool_resetClosedState;
+            pool.toggleStateForUser = pool_toggleStateForUser;
             
             data[pool.id] = pool;
         }
@@ -126,6 +135,8 @@ module.exports = function(dataPath) {
         this.items.push(entry);
         this.items.sort(this.compareEntries);
         
+        this.resetClosedState();
+        
         savePool(this);
         return true;
     }
@@ -137,12 +148,10 @@ module.exports = function(dataPath) {
         if (this.enforceTimeBounds && (entry.date < this.startDate || entry.date > this.endDate))
             return false;
         
-        for (var i = 0; i < this.participants.length; i++) {
-            if (this.participants[i] === entry.username) {
-                return true;
-            }
-        }
-        return false;
+        if (!(entry.username in this.participants))
+            return false;
+        
+        return true;
     }
     
     function pool_compareEntries(entry1, entry2) {
@@ -159,20 +168,18 @@ module.exports = function(dataPath) {
     
     function pool_calcSums() {
         var sums = {};
-        
-        this.participants.forEach(function(value){
-          sums[value] = 0.0;  
-        });
-            
+        for (var name in this.participants) {
+            sums[name] = 0.0;
+        }
+
         var total = 0.0;
         for (var i = 0; i < this.items.length; i++) {
             var curData = this.items[i];
-            if (sums[curData.username] === undefined)
-                sums[curData.username] = 0.0;
             var val = parseFloat(curData.value);
             sums[curData.username] += val;
             total += val;
         }
+
         var number = Object.keys(sums).length;
         var slice = total / number;
         for (var username in sums) {
@@ -185,6 +192,42 @@ module.exports = function(dataPath) {
         if (status !== "open" && status !== "closed" && status !== "settled")
             return false;
         this.status = status;
+        savePool(this);
+        return true;
+    }
+    
+    function pool_resetClosedState() {
+        for (var username in this.participants) {
+            this.participants[username].closed = false;
+        }
+    }
+    
+    function pool_toggleStateForUser(username, status) {
+        if (!(username in this.participants))
+            return false;
+        if (status === "closed") {
+            this.participants[username].closed = !this.participants[username].closed;
+            // if every participant has marked to pool as closed, it will be closed automatically
+            var count = 0;
+            for (var name in this.participants)
+                if (this.participants[name].closed === true)
+                    count++;
+            if (count === Object.keys(this.participants).length)
+                this.status = "closed"
+        }
+        else if (status === "settled") {
+            this.participants[username].settled = !this.participants[username].settled;
+            // if every participant has marked to pool as closed, it will be closed automatically
+            var count = 0;
+            for (var name in this.participants)
+                if (this.participants[name].settled === true)
+                    count++;
+            if (count === Object.keys(this.participants).length)
+                this.status = "settled"
+        }
+        else
+            return false;
+        
         savePool(this);
         return true;
     }

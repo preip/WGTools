@@ -1,3 +1,8 @@
+
+/**************************************************************************************************
+ * General
+ **************************************************************************************************/
+
 table{
     width: 100%;
     border-collapse: collapse;
@@ -15,6 +20,84 @@ td {
 
 tr.strikethrough td {
     text-decoration: line-through;
+}
+
+/**************************************************************************************************
+ * Cash Pool - Balance Sheet
+ **************************************************************************************************/
+
+.balance.positive {
+    background-color: #E0F0E0;
+}
+ 
+.balance.negative {
+    background-color: #F0E0E0;
+}
+ 
+tr.balance td {
+    height: 42px;
+}
+
+td.balance.name {
+    text-align:right;
+}
+
+td.balance.balance {
+    text-align: left;
+}
+
+td.balance.closed {
+    width: 60px;
+    text-align : center;
+}
+
+td.balance.settled {
+    width: 60px;
+    text-align : center;
+}
+
+.toogle.slider {
+    position: relative;
+    display: inline-block;
+    background-color: gray;
+    width: 60px;
+    height: 34px;
+    border-radius: 17px
+}
+
+.toggle.button {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+.toggle.btn.inactive{
+    background-color: #e7e7e7;
+    color: black;
+}
+
+.toggle.btn.inactive p {
+    position: absolute;
+    font-size: 16pt;
+    left: 5px;
+    top: -1px;
+}
+
+.toggle.btn.active {
+    background-color: #e7e7e7; /* was #008CBA; */
+    color: black;              /* was white */
+    left: 28px;
+}
+
+.toggle.btn.active p {
+    position: absolute;
+    font-size: 16pt;
+    left: 3px;
+    top: -1px;
 }
 
 /*
@@ -138,11 +221,11 @@ tr.strikethrough span::after {
  * Cash Pools
  **************************************************************************************************/
  
- .pool-action-column {
-     width:1px;
-     white-space:nowrap;
- }
+.pool-action-column {
+    width:1px;
+    white-space:nowrap;
+}
  
- .item-name-column {
+.item-name-column {
     width: 50%;
 }
