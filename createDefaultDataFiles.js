@@ -18,11 +18,20 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     }
     rl.close();
     
+    var version;
+    try {
+        version = fs.readFileSync('./.version', 'utf8');;
+    } catch(err) {
+        console.log("Could not read version file. Program will now terminate...");
+        process.exit();
+    }
+    
     /**
      * Configuration File
      */
     console.log('> Creating config file...');
     var config = {
+        "version" : version,
         "port" : "63357",
         "dataPath" : "exampleData",
         "sessionSeed" : "secret",
@@ -98,10 +107,16 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
         owner: [
             "inhabitant_2"
         ],
-        participants: [
-            "inhabitant_1",
-            "inhabitant_2",
-        ],
+        participants: {
+            "inhabitant_1" : {
+                "closed": false,
+                "settled": false
+            },
+            "inhabitant_2" : {
+                "closed": false,
+                "settled": false
+            }
+        },
         startDate: "01.07.2016",
         endDate: "31.07.2016",
         enforceTimeBounds: true,
@@ -147,9 +162,18 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
                 "inhabitant_1"
         ],
         participants: [
-            "inhabitant_1",
-            "inhabitant_2",
-            "inhabitant_3"
+            "inhabitant_1" : {
+                "closed": false,
+                "settled": false
+            },
+            "inhabitant_2" : {
+                "closed": false,
+                "settled": false
+            },
+            "inhabitant_3" : {
+                "closed": false,
+                "settled": false
+            }
         ],
         startDate: "01.07.2016",
         endDate: "31.07.2016",
