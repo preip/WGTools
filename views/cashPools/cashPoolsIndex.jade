@@ -31,32 +31,32 @@ mixin poolTable(status)
                 +poolTitle(status)
             .panel-body
                 +poolDisclaimer(status)
-                table
-                    tr.table-header
-                        td Pool Name
-                        td Action
-                    - for (var key in cashPoolsData) {
-                        - var currentItem = cashPoolsData[key]
-                        - if (currentItem.status !== status)
-                            - continue
-                        tr
-                            td
-                                a(href='cashPools/' + currentItem.id)
-                                    = currentItem.name
-                            td.pool-action-column
-                                if (currentItem.status !== 'open')
-                                    form(action='cashPools/' + currentItem.id + '/setState?state=open', method="post", class="inline") 
-                                        button.btn.btn-primary(type='submit', data-toggle='tooltip', data-placement='bottom', title='Set pool status to open')
+                //- Create a subset containing only the pools with the specified state
+                - var pools = []
+                - for (var key in cashPoolsData) {
+                    - if (cashPoolsData[key].status === status)
+                        - pools.push(cashPoolsData[key])
+                - }
+                //- make sure the table is only shown if there are any pools present
+                - if (pools.length === 0) {
+                    p There are currently no pools in this category.
+                -  } else {
+                    table
+                        tr.table-header
+                            td 
+                            td Pool Name
+                        - for (var i = 0; i < pools.length; i++) {
+                            - var currentItem = pools[i]
+                            tr
+                                td.pool-action-column
+                                    a(href='cashPools/' + currentItem.id)
+                                        .icon(data-toggle='tooltip', data-placement='bottom', title='Open this pool')
                                             i.fa.fa-folder-open
-                                if (currentItem.status !== 'closed')
-                                    form(action='cashPools/' + currentItem.id + '/setState?state=closed', method="post", class="inline") 
-                                        button.btn.btn-primary(type='submit', data-toggle='tooltip', data-placement='bottom', title='Set pool status to closed')
-                                            i.fa.fa-folder
-                                if (currentItem.status !== 'settled')
-                                    form(action='cashPools/' + currentItem.id + '/setState?state=settled', method="post", class="inline") 
-                                        button.btn.btn-primary(type='submit', data-toggle='tooltip', data-placement='bottom', title='Set pool status to settled')
-                                            i.fa.fa-money
-                    - }
+                                td
+                                    a(href='cashPools/' + currentItem.id)
+                                        = currentItem.name
+                        - }
+                - }
 
 block content
     //- list of all opened cash pools

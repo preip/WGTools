@@ -22,6 +22,21 @@ tr.strikethrough td {
     text-decoration: line-through;
 }
 
+.icon {
+    color: white;
+    background-color: #337ab7;
+    display: inline-block;
+    border-radius: 4px;
+    padding: 4px 10px;
+    margin: 2px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
 /**************************************************************************************************
  * Cash Pool - Balance Sheet
  **************************************************************************************************/
@@ -222,8 +237,9 @@ tr.strikethrough span::after {
  **************************************************************************************************/
  
 .pool-action-column {
-    width:1px;
-    white-space:nowrap;
+    width: 1px;
+    margin: 2px;
+    white-space: nowrap;
 }
  
 .item-name-column {
