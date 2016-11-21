@@ -9,6 +9,11 @@ table{
     padding: 5px;
 }
 
+.table-header {
+    font-weight:bold;
+}
+
+
 tr:nth-child(even) {
     background-color: #E0E0E0;
 }
@@ -20,6 +25,74 @@ td {
 
 tr.strikethrough td {
     text-decoration: line-through;
+}
+
+.verticalLine {
+    border-left: thick solid #ff0000;
+}
+
+.form-inline {
+    padding:10px;
+}
+.form-inline > * {
+    margin:15px 3px !important;
+}
+
+.form-inline > .form-group > label {
+    margin-right: 5px;
+}
+
+.panel-default > .panel-heading {
+    background-color: #404040;
+    color: #FFFFFF;
+    font-size: 15pt;
+}
+
+.panel-primary > .panel-heading {
+    background-color:  #4CC3D9;
+    color: #FFFFFF;
+    font-size: 15pt;
+    border-color: #ddd;
+}
+
+.panel-primary {
+    border-color: #ddd;
+}
+
+.inline {
+  display: inline;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 1em;
+  font-family: serif;
+}
+
+.link-button:focus {
+  outline: none;
+}
+
+.link-button:active {
+  color:red;
+}
+
+/**************************************************************************************************
+ * Cash Pools list
+ **************************************************************************************************/
+ 
+.pool-action-column {
+    width: 1px;
+    margin: 2px;
+    white-space: nowrap;
+}
+ 
+.item-name-column {
+    width: 50%;
 }
 
 .icon {
@@ -115,30 +188,9 @@ td.balance.settled {
     top: -1px;
 }
 
-/*
-tr.strikethrough td.item-name-column::before{
-    content: " ";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    border-bottom: 1px solid #111;
-    width: 100%;
-}*/
-
-tr.strikethrough span::after {
-    float: right;
-    font-family: 'FontAwesome';
-    content: "\f00d";
-    color: black;
-}
-
-.verticalLine {
-    border-left: thick solid #ff0000;
-}
-
-.table-header {
-    font-weight:bold;
-}
+/**************************************************************************************************
+ * Cash Pool - List of entries
+ **************************************************************************************************/
 
 .cash-name-column {
     width: 15%;
@@ -159,22 +211,20 @@ tr.strikethrough span::after {
     padding-right: 5px;
 }
 
-.negative-panel {
-    background-color: #F0E0E0;
+/**************************************************************************************************
+ * Shopping List
+ *************************************************************************************************/
+ 
+tr.strikethrough span::after {
+    float: right;
+    font-family: 'FontAwesome';
+    content: "\f00d";
+    color: black;
 }
 
-.positive-panel {
-    background-color: #E0F0E0;
-}
-
-.overview-name {
-    text-align: right;
-    font-weight: bold;
-}
-
-.overview-value {
-    
-}
+/**************************************************************************************************
+ * Navigation bar
+ *************************************************************************************************/
 
 .navbar-default {
     background: #404040;
@@ -182,66 +232,4 @@ tr.strikethrough span::after {
 
 .navbar-default .navbar-nav>li>a {
     color: #FFFFFF;
-}
-
-.form-inline {
-    padding:10px;
-}
-.form-inline > * {
-    margin:15px 3px !important;
-}
-
-.form-inline > .form-group > label {
-    margin-right: 5px;
-}
-
-.panel-default > .panel-heading {
-    background-color: #404040;
-    color: #FFFFFF;
-    font-size: 15pt;
-}
-
-.panel-primary > .panel-heading {
-    background-color:  #4CC3D9;
-    color: #FFFFFF;
-    font-size: 15pt;
-    border-color: #ddd;
-}
-
-.panel-primary {
-    border-color: #ddd;
-}
-
-.inline {
-  display: inline;
-}
-
-.link-button {
-  background: none;
-  border: none;
-  color: blue;
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: 1em;
-  font-family: serif;
-}
-.link-button:focus {
-  outline: none;
-}
-.link-button:active {
-  color:red;
-}
-
-/**************************************************************************************************
- * Cash Pools
- **************************************************************************************************/
- 
-.pool-action-column {
-    width: 1px;
-    margin: 2px;
-    white-space: nowrap;
-}
- 
-.item-name-column {
-    width: 50%;
 }
