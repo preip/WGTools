@@ -43,27 +43,6 @@ mixin balanceEntry(name)
                     +toggleButton(pool.participants[name].settled, pool.participants[name].settled === false ? "Mark pool as settled" : "Mark pool as closed but not yet settled")
             - else
                 +statusIcon(pool.participants[name].settled)
-    
-mexin blub(name)
-    - var divClass = "negative-panel"
-    - if (sumData[name] <= 0)
-        - divClass = "positive-panel"
-    .row(class=divClass)
-        .col-xs-5.overview-name
-            p
-                = name
-        .col-xs-5.overview-value
-            p
-                - if (sumData[name] <= 0)
-                    = sumData[name].toFixed(2) * -1
-                - else
-                    = sumData[name].toFixed(2)
-        .col-xs-2.overview-name
-            p
-                - if (pool.participants[name].closed === true)
-                    = 'x'
-                - else
-                    = 'o'
 
 block content
     <!-- Table of the pool entries --> 
