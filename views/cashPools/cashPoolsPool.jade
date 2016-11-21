@@ -56,6 +56,7 @@ block content
                     td.cash-description-column Description
                     td.cash-date-column Date
                     td.cash-value-column Value
+                - var total = 0.0;
                 - for (var i = 0; i < pool.items.length; i++) {
                     - var currentItem = pool.items[i]
                     tr
@@ -67,7 +68,17 @@ block content
                             = currentItem.date
                         td.cash-value-column
                             = currentItem.value
+                    - total += parseFloat(currentItem.value)
                 - }
+                tr
+                    td.cash-name-column
+                    td.cash-description-column
+                        b Total:
+                    td.cash-date-column 
+                    td.cash-value-column
+                        b
+                            = total
+                    
     <!-- Add new entries to the pool -->
     if (pool.status == "open")
         .container
