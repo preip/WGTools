@@ -77,7 +77,7 @@ block content
                     td.cash-date-column 
                     td.cash-value-column
                         b
-                            = total
+                            = total.toFixed(2)
                     
     <!-- Add new entries to the pool -->
     if (pool.status == "open")
