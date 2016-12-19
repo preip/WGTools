@@ -18,7 +18,7 @@ mixin poolDisclaimer(status)
         - if (status === 'open')
             = "These are the pools which are open and accept new entries."
         - else if (status === 'closed')
-            = "These pools have been closed and don't accept new entries, but payments have now been settled yet."
+            = "These pools have been closed and don't accept new entries, but payments have not been settled yet."
         - else if (status === 'settled')
             = "These pools don't accept new entries and all payments have been settled. They are just here for reference."
         - else
