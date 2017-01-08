@@ -65,13 +65,7 @@ module.exports = function(dataPath) {
             status: "open",
             items: []
         };
-        
-        //Functions for pool handling
-        pool.addNewEntry = pool_addNewEntry;
-        pool.isEntryValid = pool_isEntryValid;
-        pool.compareEntries = pool_compareEntries;
-        pool.calcSums = pool_calcSums;
-        pool.setState = pool_setState;
+        attachPoolMethods(pool);
         
         _poolData[_nextId] = pool;
         savePool(pool);
@@ -110,19 +104,23 @@ module.exports = function(dataPath) {
             var pool = JSON.parse(raw);
             if (pool.id > maxId)
                 maxId = pool.id;
-            // attach methods to pool
-            pool.addNewEntry = pool_addNewEntry;
-            pool.isEntryValid = pool_isEntryValid;
-            pool.compareEntries = pool_compareEntries;
-            pool.calcSums = pool_calcSums;
-            pool.setState = pool_setState;
-            pool.resetClosedState = pool_resetClosedState;
-            pool.toggleStateForUser = pool_toggleStateForUser;
+            attachPoolMethods(pool);
+
             
             data[pool.id] = pool;
         }
         _poolData = data;
         _nextId = maxId + 1;
+    }
+    
+    function attachPoolMethods(pool) {
+        pool.addNewEntry = pool_addNewEntry;
+        pool.isEntryValid = pool_isEntryValid;
+        pool.compareEntries = pool_compareEntries;
+        pool.calcSums = pool_calcSums;
+        pool.setState = pool_setState;
+        pool.resetClosedState = pool_resetClosedState;
+        pool.toggleStateForUser = pool_toggleStateForUser;
     }
     
     //----------------------------------------------------------------------------------------------
