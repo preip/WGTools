@@ -16,13 +16,13 @@ mixin poolTitle(status)
 mixin poolDisclaimer(status)
     p
         - if (status === 'open')
-            = "This are the pools which are open and accept new entries."
+            = "These are the pools which are open and accept new entries."
         - else if (status === 'closed')
-            = "This pools have been closed and don't accept new entries, but payments have now been settled yet."
+            = "These pools have been closed and don't accept new entries, but payments have not been settled yet."
         - else if (status === 'settled')
-            = "This pools don't accept new entries and all payments have been settled. They are just here for reference."
+            = "These pools don't accept new entries and all payments have been settled. They are just here for reference."
         - else
-            = "This pools have an unknown state. This should not happen, so please contact your admin if your see this."
+            = "These pools have an unknown state. This should not happen, so please contact your admin if your see this."
 
 mixin poolTable(status)
    .container
