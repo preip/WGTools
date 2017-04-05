@@ -145,5 +145,5 @@ app.use(function(err, req, res, next) {
  * Run Server
  */
 app.listen(app.get('port'), function() {
-    console.log("> Express server listening on http://localhost:%d", app.get('port'));
+    console.log("> Express server listening on http://localhost/WGTool:%d", app.get('port'));
 });
