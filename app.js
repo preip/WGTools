@@ -73,6 +73,7 @@ var cashPoolData = require('./controllers/cashPoolsData')(path.join(__dirname, c
  */
 var accountController = require('./controllers/accountPresenter')();
 var cashPoolsController = require('./controllers/cashPoolsPresenter')(cashPoolData);
+var calendarController = require('./controllers/calendar')();
 var shoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath));
 var errorController = require('./controllers/error')();
 
@@ -103,6 +104,8 @@ app.get('/shoppingList/GetAll', accountController.isAuthenticated, shoppingListC
 app.post('/shoppingList/Create', accountController.isAuthenticated, shoppingListController.addNewEntry);
 app.post('/shoppingList/Update', accountController.isAuthenticated, shoppingListController.updateEntry);
 app.delete('/shoppingList/Delete', accountController.isAuthenticated, shoppingListController.deleteEntry);
+// Calendar
+app.get('/calendar', calendarController.showCalendar);
 
 /**
  * Error Handling
