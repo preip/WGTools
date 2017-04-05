@@ -1,44 +1,71 @@
 extends ../templates/layout
 
-block content
-    .container
+mixin poolTitle(status)
+    - if (status === 'open')
+        i.fa.fa-folder-open &nbsp;
+        = 'Open Pools'
+    - else if (status === 'closed')
+        i.fa.fa-folder &nbsp;
+        = 'Closed Pools'
+    - else if (status === 'settled')
+        i.fa.fa-money &nbsp;
+        = 'Settled Pools'
+    - else
+        = 'Unknown List'
+
+mixin poolDisclaimer(status)
+    p
+        - if (status === 'open')
+            = "These are the pools which are open and accept new entries."
+        - else if (status === 'closed')
+            = "These pools have been closed and don't accept new entries, but payments have not been settled yet."
+        - else if (status === 'settled')
+            = "These pools don't accept new entries and all payments have been settled. They are just here for reference."
+        - else
+            = "These pools have an unknown state. This should not happen, so please contact your admin if your see this."
+
+mixin poolTable(status)
+   .container
         .panel.panel-default
-            .panel-heading Pools
+            .panel-heading 
+                +poolTitle(status)
             .panel-body
-            table
-                tr.table-header
-                    td.id-column Id
-                    td.name-column Name
-                    td.status-column Status
-                    td.action-clumn Action
-                    td.link-column Link
+                +poolDisclaimer(status)
+                //- Create a subset containing only the pools with the specified state
+                - var pools = []
                 - for (var key in cashPoolsData) {
-                    - var currentItem = cashPoolsData[key]
-                    tr
-                        td.cash-name-column
-                            = currentItem.id
-                        td.cash-description-column
-                            = currentItem.name
-                        td.status-column
-                            = currentItem.status
-                        td.action-column
-                            div.dropdown
-                                a(id='action_dropdown', data-target='#', data-toggle='dropdown', role='button')
-                                    | Action
-                                ul.dropdown-menu
-                                    li
-                                        form(action='cashPools/' + currentItem.id + '/setState?state=open', method="post", class="inline") 
-                                            button.link-button(type='submit') Open Pool
-                                    li
-                                        form(action='cashPools/' + currentItem.id + '/setState?state=closed', method="post", class="inline") 
-                                            button.link-button(type='submit') Close Pool
-                                    li
-                                        form(action='cashPools/' + currentItem.id + '/setState?state=settled', method="post", class="inline") 
-                                            button.link-button(type='submit') Settel Pool
-                        td.link-column
-                            a(href="cashPools/" + currentItem.id)
-                                | To the pool
+                    - if (cashPoolsData[key].status === status)
+                        - pools.push(cashPoolsData[key])
                 - }
+                //- make sure the table is only shown if there are any pools present
+                - if (pools.length === 0) {
+                    p There are currently no pools in this category.
+                -  } else {
+                    table
+                        tr.table-header
+                            td 
+                            td Pool Name
+                        - for (var i = 0; i < pools.length; i++) {
+                            - var currentItem = pools[i]
+                            tr
+                                td.pool-action-column
+                                    a(href='cashPools/' + currentItem.id)
+                                        .icon(data-toggle='tooltip', data-placement='bottom', title='Open this pool')
+                                            i.fa.fa-folder-open
+                                td
+                                    a(href='cashPools/' + currentItem.id)
+                                        = currentItem.name
+                        - }
+                - }
+
+block content
+    //- list of all opened cash pools
+    +poolTable('open')
+    //- list of all closed cash pools
+    +poolTable('closed')
+    //- list of all settled cash pools
+    +poolTable('settled')
+
     .container
             .panel.panel-primary
                 .panel-heading Add a new Pool

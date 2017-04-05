@@ -1,8 +1,18 @@
+
+/**************************************************************************************************
+ * General
+ **************************************************************************************************/
+
 table{
     width: 100%;
     border-collapse: collapse;
     padding: 5px;
 }
+
+.table-header {
+    font-weight:bold;
+}
+
 
 tr:nth-child(even) {
     background-color: #E0E0E0;
@@ -17,77 +27,8 @@ tr.strikethrough td {
     text-decoration: line-through;
 }
 
-/*
-tr.strikethrough td.item-name-column::before{
-    content: " ";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    border-bottom: 1px solid #111;
-    width: 100%;
-}*/
-
-tr.strikethrough span::after {
-    float: right;
-    font-family: 'FontAwesome';
-    content: "\f00d";
-    color: black;
-}
-
 .verticalLine {
     border-left: thick solid #ff0000;
-}
-
-.table-header {
-    font-weight:bold;
-}
-
-.cash-name-column {
-    width: 15%;
-    padding-left: 5px;
-}
-
-.cash-description.column {
-    width: 60%;
-}
-
-.cash-date-column {
-    width: 15%;
-}
-
-.cash-value-column {
-    width: 10%;
-    text-align: right;
-    padding-right: 5px;
-}
-
-.negative-panel {
-    background-color: #F0E0E0;
-}
-
-.positive-panel {
-    background-color: #E0F0E0;
-}
-
-.overview-name {
-    text-align: right;
-    font-weight: bold;
-}
-
-.overview-value {
-    
-}
-
-.navbar-default {
-    background: #404040;
-}
-
-.navbar-default .navbar-nav>li>a {
-    color: #FFFFFF;
-}
-
-.item-name-column {
-    width: 50%;
 }
 
 .form-inline {
@@ -131,9 +72,164 @@ tr.strikethrough span::after {
   font-size: 1em;
   font-family: serif;
 }
+
 .link-button:focus {
   outline: none;
 }
+
 .link-button:active {
   color:red;
+}
+
+/**************************************************************************************************
+ * Cash Pools list
+ **************************************************************************************************/
+ 
+.pool-action-column {
+    width: 1px;
+    margin: 2px;
+    white-space: nowrap;
+}
+ 
+.item-name-column {
+    width: 50%;
+}
+
+.icon {
+    color: white;
+    background-color: #337ab7;
+    display: inline-block;
+    border-radius: 4px;
+    padding: 4px 10px;
+    margin: 2px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+/**************************************************************************************************
+ * Cash Pool - Balance Sheet
+ **************************************************************************************************/
+
+.balance.positive {
+    background-color: #E0F0E0;
+}
+ 
+.balance.negative {
+    background-color: #F0E0E0;
+}
+ 
+tr.balance td {
+    height: 42px;
+}
+
+td.balance.name {
+    text-align:right;
+}
+
+td.balance.balance {
+    text-align: left;
+}
+
+td.balance.closed {
+    width: 60px;
+    text-align : center;
+}
+
+td.balance.settled {
+    width: 60px;
+    text-align : center;
+}
+
+.toogle.slider {
+    position: relative;
+    display: inline-block;
+    background-color: gray;
+    width: 60px;
+    height: 34px;
+    border-radius: 17px
+}
+
+.toggle.button {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+.toggle.btn.inactive{
+    background-color: #e7e7e7;
+    color: black;
+}
+
+.toggle.btn.inactive p {
+    position: absolute;
+    font-size: 16pt;
+    left: 5px;
+    top: -1px;
+}
+
+.toggle.btn.active {
+    background-color: #e7e7e7; /* was #008CBA; */
+    color: black;              /* was white */
+    left: 28px;
+}
+
+.toggle.btn.active p {
+    position: absolute;
+    font-size: 16pt;
+    left: 3px;
+    top: -1px;
+}
+
+/**************************************************************************************************
+ * Cash Pool - List of entries
+ **************************************************************************************************/
+
+.cash-name-column {
+    width: 15%;
+    padding-left: 5px;
+}
+
+.cash-description.column {
+    width: 60%;
+}
+
+.cash-date-column {
+    width: 15%;
+}
+
+.cash-value-column {
+    width: 10%;
+    text-align: right;
+    padding-right: 5px;
+}
+
+/**************************************************************************************************
+ * Shopping List
+ *************************************************************************************************/
+ 
+tr.strikethrough span::after {
+    float: right;
+    font-family: 'FontAwesome';
+    content: "\f00d";
+    color: black;
+}
+
+/**************************************************************************************************
+ * Navigation bar
+ *************************************************************************************************/
+
+.navbar-default {
+    background: #404040;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #FFFFFF;
 }
