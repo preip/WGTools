@@ -4,4 +4,8 @@ block content
     #calendar
 
 block scripts
+    script.
+        function getInitialEvents() {
+            return !{JSON.stringify(events).replace(/<\//g, '<\\/')};
+        }
     script(type='text/javascript', src='/js/calendar.js')

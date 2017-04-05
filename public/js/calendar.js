@@ -1,6 +1,8 @@
 $(document).ready(function() {
 
     $('#calendar').fullCalendar({
+        
+        //header button configuration
         header: {
             left: 'today, prev, next',
             center: 'title',
@@ -15,48 +17,41 @@ $(document).ready(function() {
         aspectRatio: 1.5,
         selectable: true,
         eventLimit: true,
-        events: [
-            {
-                title: 'Test',
-                start: '2017-04-020',
-                allDay: true
-            },
-            {
-                title: 'Test',
-                start: '2017-04-019',
-                allDay: true
-            },
-            {
-                title: 'PutzenKatja',
-                start: '2017-04-019',
-                allDay: true
-            }
-        ],
-        
+        events: getInitialEvents(),  
         select: addEvent,
         eventClick: removeEvent
     })
     
     
-    function removeEvent(event, jsEvent, view) {
+    function removeEvent(event) {
         if(confirm("Remove event?")) {
             $('#calendar').fullCalendar('removeEvents', event._id);
         }
     }
     
     function addEvent(start, end) {
-				var title = prompt('Event Title:');
-				var eventData;
-				if (title) {
-					eventData = {
-						title: title,
-						start: start,
-						end: end,
-                        allDay: true
-					};
-					$('#calendar').fullCalendar('renderEvent', eventData, true);
-				}
-				$('#calendar').fullCalendar('unselect');
-			}
+        var title = prompt('Event Title:');
+        var eventData;
+        if (title) {
+            eventData = {
+                title: title,
+                start: start,
+                end: end,
+                allDay: true
+            };
+            $('#calendar').fullCalendar('renderEvent', eventData, true);
+            var events = $('#calendar').fullCalendar('clientEvents');
+            for(var i in events) {
+                events[i].source = null;
+            }
+            console.log(events);
+            $.ajax({
+                url: '/calendar/save', 
+                type: 'POST',
+                data: events
+            })
+        }
+        $('#calendar').fullCalendar('unselect');
+    }
 
 });
