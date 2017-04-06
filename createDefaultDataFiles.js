@@ -98,6 +98,63 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     fs.writeFileSync(path.join(_dataPath, 'shoppingList.json'), shoppingListDataRaw, 'utf8');
     
     /**
+     * Calendar
+     */
+    console.log('> Creating calendar file...');
+    var calendarData = [
+        {
+            "title": "Patrick Bad",
+            "start": "2017-04-08",
+            "end": "2017-04-09",
+            "allDay": true,
+            "_id": "_fc1",
+            "className": [],
+            "_allDay": true,
+            "_start": "2017-04-08",
+            "_end": "2017-04-09",
+            "source": null
+        },
+        {
+            "title": "Simon Bad",
+            "start": "2017-04-15",
+            "end": "2017-04-16",
+            "allDay": true,
+            "_id": "_fc2",
+            "className": [],
+            "_allDay": true,
+            "_start": "2017-04-15",
+            "_end": "2017-04-16",
+            "source": null
+        },
+        {
+            "title": "Katja Flur",
+            "start": "2017-04-22",
+            "end": "2017-04-23",
+            "allDay": true,
+            "_id": "_fc3",
+            "className": [],
+            "_allDay": true,
+            "_start": "2017-04-22",
+            "_end": "2017-04-23",
+            "source": null
+        },
+        {
+            "title": "Philipp Bad",
+            "start": "2017-04-29",
+            "end": "2017-04-30",
+            "allDay": true,
+            "_id": "_fc4",
+            "className": [],
+            "_allDay": true,
+            "_start": "2017-04-29",
+            "_end": "2017-04-30",
+            "source": null
+        }
+    ]
+    var calendarDataRaw = JSON.stringify(calendarData, null, 4);
+    fs.writeFileSync(path.join(_dataPath, 'calendar.json'), calendarDataRaw, 'utf8');
+    
+    /**
      * Cash Pools
      */
     console.log('> Creating cashPools file...');
@@ -161,12 +218,12 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
         owner: [  
                 "inhabitant_1"
         ],
-        participants: [
+        participants: {
             "inhabitant_1" : {
                 "closed": false,
                 "settled": false
             },
-            "inhabitant_2" : {
+            "inhabitant_2": {
                 "closed": false,
                 "settled": false
             },
@@ -174,7 +231,7 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
                 "closed": false,
                 "settled": false
             }
-        ],
+        },
         startDate: "01.07.2016",
         endDate: "31.07.2016",
         enforceTimeBounds: true,

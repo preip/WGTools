@@ -105,8 +105,8 @@ app.post('/shoppingList/Create', accountController.isAuthenticated, shoppingList
 app.post('/shoppingList/Update', accountController.isAuthenticated, shoppingListController.updateEntry);
 app.delete('/shoppingList/Delete', accountController.isAuthenticated, shoppingListController.deleteEntry);
 // Calendar
-app.get('/calendar', calendarController.showCalendar);
-app.post('/calendar/Save', calendarController.saveEvents);
+app.get('/calendar', accountController.isAuthenticated, calendarController.showCalendar);
+app.post('/calendar/Save', accountController.isAuthenticated, calendarController.saveEvents);
 
 /**
  * Error Handling
