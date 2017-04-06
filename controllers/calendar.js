@@ -24,12 +24,7 @@ module.exports = function(dataPath) {
     };
     
     module.saveEvents = function(req, res, next) {
-        debugger;
-        var body = "";
-        req.on('data', function (chunk) {
-            body += chunk;
-        });
-        _events = req.body.events;
+        _events = JSON.parse(req.body.events);
         saveData();
         res.writeHead(301, {Location: '/calendar/'});
         res.end();
