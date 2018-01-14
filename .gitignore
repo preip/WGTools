@@ -36,3 +36,9 @@ node_modules
 .htaccess
 config.json
 data
+
+# Stuff
+.vscode/
+exampleData/
+package-lock.json
+
