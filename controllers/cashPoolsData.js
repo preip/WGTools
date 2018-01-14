@@ -119,7 +119,7 @@ module.exports = function(dataPath) {
         pool.compareEntries = pool_compareEntries;
         pool.calcSums = pool_calcSums;
         pool.setState = pool_setState;
-        pool.resetClosedState = pool_resetClosedState;
+        //pool.resetClosedState = pool_resetClosedState;
         pool.toggleStateForUser = pool_toggleStateForUser;
     }
     
@@ -133,7 +133,7 @@ module.exports = function(dataPath) {
         this.items.push(entry);
         this.items.sort(this.compareEntries);
         
-        this.resetClosedState();
+        //this.resetClosedState();
         
         savePool(this);
         return true;
@@ -194,11 +194,13 @@ module.exports = function(dataPath) {
         return true;
     }
     
+    /*
     function pool_resetClosedState() {
         for (var username in this.participants) {
             this.participants[username].closed = false;
         }
     }
+    */
     
     function pool_toggleStateForUser(username, status) {
         if (!(username in this.participants))
