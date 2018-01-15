@@ -40,7 +40,7 @@ module.exports = function(cashPoolData) {
     }
     
     module.toggleUserState = function(req, res, next) {
-        togglePoolUserState(req.query.username, req.query.state, req.params.id, res);
+        togglePoolUserState(req.session.username, req.query.state, req.params.id, res);
     }
    
     module.addNewPool = function(req, res, next) {
