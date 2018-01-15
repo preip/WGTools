@@ -47,9 +47,10 @@ mixin poolTable(status)
                             td Pool Name
                         - for (var i = 0; i < pools.length; i++) {
                             - var currentItem = pools[i]
-                            tr
+                            tr(requires-action=currentItem.requiresActionOfUser.toString())
                                 td.pool-action-column
                                     a(href='cashPools/' + currentItem.id)
+
                                         .icon(data-toggle='tooltip', data-placement='bottom', title='Open this pool')
                                             i.fa.fa-folder-open
                                 td

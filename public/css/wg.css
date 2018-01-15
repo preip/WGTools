@@ -23,6 +23,10 @@ td {
     padding: 2px;
 }
 
+tr[requires-action="true"] {
+    background: #f8b20b;
+}
+
 tr.strikethrough td {
     text-decoration: line-through;
 }

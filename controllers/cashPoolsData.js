@@ -119,6 +119,7 @@ module.exports = function(dataPath) {
         pool.compareEntries = pool_compareEntries;
         pool.calcSums = pool_calcSums;
         pool.setState = pool_setState;
+        pool.setRequiresActionOfUser = pool_setRequiresActionOfUser;
         //pool.resetClosedState = pool_resetClosedState;
         pool.toggleStateForUser = pool_toggleStateForUser;
     }
@@ -127,6 +128,28 @@ module.exports = function(dataPath) {
     // Pool specific methods
     //----------------------------------------------------------------------------------------------
     
+
+    /* Sets the state of the pool for the current user */
+    function pool_setRequiresActionOfUser(username) {
+        if (!(username in this.participants))
+            return false;
+
+        var close = false, settle = false;
+
+        //Does anyone want to change the status of the pool?
+        for(var name in this.participants) {
+            close = close || this.participants[name].closed;
+            settle = settle || this.participants[name].settled;
+        }
+
+        //Has the use not checked the field?
+        this.requiresActionOfUser = close && !this.participants[username].closed
+         || settle  && !this.participants[username].settled;
+
+        return true;
+    }
+
+
     function pool_addNewEntry(entry) {
         if (this.status !== 'open' || !this.isEntryValid(entry))
             return false;

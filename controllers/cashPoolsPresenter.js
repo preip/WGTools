@@ -3,9 +3,16 @@ module.exports = function(cashPoolData) {
     const _cashPoolData = cashPoolData;
     
     module.showCashPoolsIndex = function(req, res, next) {
+        var pools = _cashPoolData.getPools();
+
+        //Adds the requires action attribute for the requesting user
+        for(var pool in pools){
+            pools[pool].setRequiresActionOfUser(req.session.username);
+        }
+
         res.render('cashPools/cashPoolsIndex', {
             title: 'Cash Pools Index',
-            cashPoolsData: _cashPoolData.getPools(),
+            cashPoolsData: pools,
             usernames: accountData.getUsernames()
             });
     };
