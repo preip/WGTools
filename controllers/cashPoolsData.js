@@ -131,8 +131,10 @@ module.exports = function(dataPath) {
 
     /* Sets the state of the pool for the current user */
     function pool_setRequiresActionOfUser(username) {
-        if (!(username in this.participants))
+        if (!(username in this.participants)) {
+            this.requiresActionOfUser = false;
             return false;
+        }
 
         var close = false, settle = false;
 
