@@ -68,11 +68,12 @@ app.locals.url = require('url');
  */
 global.accountData = require('./controllers/accountData')(path.join(__dirname, config.dataPath));
 var cashPoolData = require('./controllers/cashPoolsData')(path.join(__dirname, config.dataPath, 'cashPools'));
+var settlementsData = require('./controllers/settlementsData')(path.join(__dirname, config.dataPath), cashPoolData)
 /**
  * View-Models
  */
 var accountController = require('./controllers/accountPresenter')();
-var cashPoolsController = require('./controllers/cashPoolsPresenter')(cashPoolData);
+var cashPoolsController = require('./controllers/cashPoolsPresenter')(cashPoolData, settlementsData);
 var calendarController = require('./controllers/calendar')(path.join(__dirname, config.dataPath));
 var shoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath));
 var errorController = require('./controllers/error')();
@@ -98,6 +99,7 @@ app.get('/cashPools/:id', accountController.isAuthenticated, cashPoolsController
 app.post('/cashPools/:id', accountController.isAuthenticated, cashPoolsController.addNewEntryToPool);
 app.post('/cashPools/:id/setState', accountController.isAuthenticated, cashPoolsController.setState);
 app.post('/cashPools/:id/toggleUserState', accountController.isAuthenticated, cashPoolsController.toggleUserState);
+app.post('/settlements', accountController.isAuthenticated, cashPoolsController.addNewSettlement);
 // Shopping List
 app.get('/shoppingList', accountController.isAuthenticated, shoppingListController.showShoppingListPage);
 app.get('/shoppingList/GetAll', accountController.isAuthenticated, shoppingListController.getAll);

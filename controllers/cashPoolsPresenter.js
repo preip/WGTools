@@ -1,20 +1,27 @@
-module.exports = function(cashPoolData) {
+module.exports = function(cashPoolData, settlementData) {
     
     const _cashPoolData = cashPoolData;
+    const _settlementData = settlementData;
     
     module.showCashPoolsIndex = function(req, res, next) {
         var pools = _cashPoolData.getPools();
 
+        var settlementPools = [];
         //Adds the requires action attribute for the requesting user
+        //and gets all pools that can be used for settlements
         for(var pool in pools){
             pools[pool].setRequiresActionOfUser(req.session.username);
+            if (pools[pool].status === "closed" 
+                && !_settlementData.isPoolInSettlement(pool))
+                settlementPools.push({id: pools[pool].id, name: pools[pool].name});
         }
 
         res.render('cashPools/cashPoolsIndex', {
             title: 'Cash Pools Index',
             cashPoolsData: pools,
+            settlementPools: settlementPools,
             usernames: accountData.getUsernames()
-            });
+        });
     };
 
     module.showCashPool = function(req, res, next) {
@@ -99,6 +106,29 @@ module.exports = function(cashPoolData) {
             res.writeHead(301, {Location: '/cashPools/' + req.params.id});
             res.end();
         } 
+    }
+
+    module.addNewSettlement = function(req, res, next) {
+        //TODO: Check if all pools and users exist.
+
+        //In the case that no pools are selected.
+        if (req.body.pools == null) {
+            res.status(401);
+            res.send("You have to select at least one pool");
+            return;
+        }
+
+        //In the case that there is only one participant.
+        if (typeof req.body.pools == 'string')
+        req.body.pools = [req.body.pools];
+        
+        _settlementData.addNewSettlement(
+            req.body.name,
+            req.body.pools
+        );
+
+        res.writeHead(301, {Location: '/cashPools'});
+        res.end();
     }
 
     function getCurrentDateString() {

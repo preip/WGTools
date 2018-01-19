@@ -11,7 +11,7 @@ module.exports = function(dataPath) {
      * @final
      */
     const _dataPath = dataPath;
-    
+ 
     var _nextId = 0;
     
     /**
@@ -21,7 +21,7 @@ module.exports = function(dataPath) {
      * @type array
      */
     var _poolData = null;
-    
+  
     //----------------------------------------------------------------------------------------------
     // Public Methods
     //----------------------------------------------------------------------------------------------
@@ -31,16 +31,16 @@ module.exports = function(dataPath) {
             loadData();
         return _poolData;
     }
-    
+
     module.getPool = function(id) {
         if (_poolData === null) {
             loadData();
         }
         return _poolData[id];
     }
-    
+
     module.setPool = function(pool) {
-        if (pool === undefined || pool.id === undefined)
+        if (pool == undefined || pool.id == undefined)
             return;
         _poolData[pool.id] = pool;
         savePool(pool);
@@ -71,7 +71,7 @@ module.exports = function(dataPath) {
         savePool(pool);
         return _nextId++;
     }
-    
+   
     //----------------------------------------------------------------------------------------------
     // File system related methods
     //----------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ module.exports = function(dataPath) {
         var raw = JSON.stringify(pool, null, 4);
         fs.writeFileSync(path.join(_dataPath, pool.id.toString() + ".json"), raw, 'utf8');
     }
-    
+   
     function saveData() {
         for (var id in _poolData)
             savePool(_poolData[id]);
@@ -112,7 +112,7 @@ module.exports = function(dataPath) {
         _poolData = data;
         _nextId = maxId + 1;
     }
-    
+   
     function attachPoolMethods(pool) {
         pool.addNewEntry = pool_addNewEntry;
         pool.isEntryValid = pool_isEntryValid;
