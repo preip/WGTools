@@ -31,27 +31,48 @@ module.exports = function(dataPath, cashPoolData) {
 
     module.getSettlements = function() {
         if (_settlementData === null)
-            loadData();
+            loadData();    
         return _settlementData;
     }
 
-    module.getSettlement = function(id) {
+    module.getSettlement = function(id, username) {
         //TODO: Check if id exist
         if (_settlementData === null)
             loadData();
-        
-        for(var poolId in _settlementData[id].pools) {
-            //Calc summary.    
+
+        var settlement = _settlementData[id];
+        if(settlement == null)
+            return null;
+
+        var pools = _settlementData[id].pools;
+        var poolData = [];
+        settlement.items = [];
+        for(var i = 0; i < pools.length; ++i) {
+            var pool = _cashPoolData.getPool(pools[i]);
+            var sums = pool.calcSums();
+            poolData.push({
+                id: pool.id,
+                name: pool.name,
+                sums: sums
+            });
+            settlement.items.push({
+                "username": username,
+                "description": pool.name,
+                "date": pool.endDate,
+                "value": sums[username] || 0
+            });
         }
         
-        return _settlementData[id];
+        settlement.poolData = poolData;
+
+        return settlement;
     }
 
     module.setSettlement = function(settlement) {
         if (settlement == undefined || settlement.id == undefined)
             return;
         _settlementData[settlement.id] = settlement;
-        saveSettlements();
+        saveData();
     }
 
     module.addNewSettlement = function(name, pools) {
@@ -64,7 +85,8 @@ module.exports = function(dataPath, cashPoolData) {
             var participants = pool.participants;
             for(var participant in participants) {
                 participantsWithState[participant] = {
-                    "settled": false
+                    "settled": false,
+                    "closed": false
                 };
             }
         }
@@ -111,6 +133,11 @@ module.exports = function(dataPath, cashPoolData) {
         
         if (!fs.existsSync(_dataPath))
             fs.mkdirSync(_dataPath);
+
+        for(var id in _settlementData) {
+            delete _settlementData.poolData;
+            delete _settlementData.requiresActionOfUser;
+        }
         
         var raw = JSON.stringify(_settlementData, null, 4);
         fs.writeFileSync(path.join(_dataPath, "settlements.json"), raw, 'utf8'); 
@@ -136,13 +163,33 @@ module.exports = function(dataPath, cashPoolData) {
     }
 
     function attachSettlementMethods(settlement) {
-        return;
+        settlement.setRequiresActionOfUser = settlement_setRequiresActionOfUser;
+        settlement.calcSums =settlement_calcSums;
     }
     
     //----------------------------------------------------------------------------------------------
-    // Pool specific methods
+    // Settlement specific methods
     //----------------------------------------------------------------------------------------------
     
+    /* Sets the state of the pool for the current user */
+    function settlement_setRequiresActionOfUser(username) {
+        //Is the user part of this settlement?
+        if (!(username in this.participants)) {
+            this.requiresActionOfUser = false;
+            return false;
+        }
+
+        var settle = false;
+
+        //Does anyone want to change the status of the pool?
+        for(var name in this.participants) {
+            settle = settle || this.participants[name].settled;
+        }
+
+        //Has the use not checked the field?
+        this.requiresActionOfUser = settle && !this.participants[username].settled;
+    }
+
     function pool_compareEntries(entry1, entry2) {
         date1 = entry1.date.split('.');
         date2 = entry2.date.split('.');
@@ -155,25 +202,18 @@ module.exports = function(dataPath, cashPoolData) {
         return parseInt(date1[0]) - parseInt(date2[0])
     }
     
-    function pool_calcSums() {
+    function settlement_calcSums() {
         var sums = {};
         for (var name in this.participants) {
             sums[name] = 0.0;
         }
 
-        var total = 0.0;
-        for (var i = 0; i < this.items.length; i++) {
-            var curData = this.items[i];
-            var val = parseFloat(curData.value);
-            sums[curData.username] += val;
-            total += val;
+        for(var i = 0; i < this.poolData.length; ++i) {
+            for(var participant in this.poolData[i].sums) {
+                sums[participant] += this.poolData[i].sums[participant] || 0;
+            }
         }
 
-        var number = Object.keys(sums).length;
-        var slice = total / number;
-        for (var username in sums) {
-            sums[username] = slice - sums[username];
-        }
         return sums;
     }
     

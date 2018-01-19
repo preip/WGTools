@@ -5,8 +5,10 @@ module.exports = function(cashPoolData, settlementData) {
     
     module.showCashPoolsIndex = function(req, res, next) {
         var pools = _cashPoolData.getPools();
+        var settlements = _settlementData.getSettlements();
 
         var settlementPools = [];
+        //TODO: Move to settlementData
         //Adds the requires action attribute for the requesting user
         //and gets all pools that can be used for settlements
         for(var pool in pools){
@@ -16,9 +18,14 @@ module.exports = function(cashPoolData, settlementData) {
                 settlementPools.push({id: pools[pool].id, name: pools[pool].name});
         }
 
+        for(var settlement in settlements) {
+            settlements[settlement].setRequiresActionOfUser(req.session.username);
+        }
+
         res.render('cashPools/cashPoolsIndex', {
             title: 'Cash Pools Index',
             cashPoolsData: pools,
+            settlementData: settlements,
             settlementPools: settlementPools,
             usernames: accountData.getUsernames()
         });
@@ -34,6 +41,24 @@ module.exports = function(cashPoolData, settlementData) {
                     sumData: pool.calcSums(),
                     dateString: getCurrentDateString(),
                     pool: pool
+                });
+            } else {
+                res.writeHead(301, {Location: '/cashPools'});
+                res.end(); 
+            }
+        } 
+    }
+
+    module.showSettlement = function(req, res, next) {
+        if (req.params.id != null) {
+            var settlement = _settlementData.getSettlement(req.params.id, req.session.username);
+        
+            if (settlement !== undefined) {
+                res.render('cashPools/cashPoolsPool', {
+                    title: settlement.name,
+                    sumData: settlement.calcSums(),
+                    dateString: getCurrentDateString(),
+                    pool: settlement
                 });
             } else {
                 res.writeHead(301, {Location: '/cashPools'});

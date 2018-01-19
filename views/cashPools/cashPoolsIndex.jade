@@ -59,13 +59,50 @@ mixin poolTable(status)
                         - }
                 - }
 
+mixin settlementTable(status)
+   .container
+        .panel.panel-default
+            .panel-heading 
+                +poolTitle(status)
+            .panel-body
+                +poolDisclaimer(status)
+                //- Create a subset containing only the pools with the specified state
+                - var pools = []
+                - for (var key in settlementData) {
+                    - if (settlementData[key].status === status)
+                        - pools.push(settlementData[key])
+                - }
+                //- make sure the table is only shown if there are any pools present
+                - if (pools.length === 0) {
+                    p There are currently no settlements in this category.
+                -  } else {
+                    table
+                        tr.table-header
+                            td 
+                            td Settlement Name
+                        - for (var i = 0; i < pools.length; i++) {
+                            - var currentItem = pools[i]
+                            tr(requires-action=currentItem.requiresActionOfUser.toString())
+                                td.pool-action-column
+                                    a(href='settlements/' + currentItem.id)
+
+                                        .icon(data-toggle='tooltip', data-placement='bottom', title='Open this settlement')
+                                            i.fa.fa-folder-open
+                                td
+                                    a(href='settlements/' + currentItem.id)
+                                        = currentItem.name
+                        - }
+                - }
+
 block content
     //- list of all opened cash pools
-    +poolTable('open')
+    +poolTable('open', cashPoolsData)
     //- list of all closed cash pools
-    +poolTable('closed')
+    +poolTable('closed', cashPoolsData)
+    //- list of all open settlements
+    +settlementTable('open', settlementData)
     //- list of all settled cash pools
-    +poolTable('settled')
+    +poolTable('settled', cashPoolsData)
 
     .container
             .panel.panel-primary
