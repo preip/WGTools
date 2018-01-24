@@ -101,6 +101,7 @@ app.post('/cashPools/:id/setState', accountController.isAuthenticated, cashPools
 app.post('/cashPools/:id/toggleUserState', accountController.isAuthenticated, cashPoolsController.toggleUserState);
 app.post('/settlements', accountController.isAuthenticated, cashPoolsController.addNewSettlement);
 app.get('/settlements/:id', accountController.isAuthenticated, cashPoolsController.showSettlement);
+app.post('/settlements/:id/toggleUserState', accountController.isAuthenticated, cashPoolsController.toggleSettlementUserState);
 // Shopping List
 app.get('/shoppingList', accountController.isAuthenticated, shoppingListController.showShoppingListPage);
 app.get('/shoppingList/GetAll', accountController.isAuthenticated, shoppingListController.getAll);

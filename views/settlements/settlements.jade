@@ -1,8 +1,5 @@
 extends ../templates/layout
 
-mixin getToggleButtonTooltip(name, type)
-    - if (type == 'closed')
-
 mixin toggleButton(active, tooltipText)
     .toogle.slider
         - if (active === true)
@@ -21,26 +18,15 @@ mixin statusIcon(active)
         i.fa.fa-close
 
 mixin balanceEntry(name)
-    tr(class=sumData[name]<=0 ? 'balance positive' : 'balance negative')
+    tr(class=sumData[name]<=0 ? 'balance negative' : 'balance positive')
         td.balance.name
             = name
         td.balance.balance
-            - if (sumData[name] <= 0)
-                = sumData[name].toFixed(2) * -1
-            - else
-                = sumData[name].toFixed(2)
-        td.balance.closed
-            - if (name === username && pool.status === 'open')
-                form(action=pool.id + '/toggleUserState?username=' + username + '&state=closed', method="post", class="inline")
-                    +toggleButton(pool.participants[name].closed, pool.participants[name].closed === false ? "Mark pool as closed" : "Mark pool as open")
-            - else
-                +statusIcon(pool.participants[name].closed)
+                = sumData[name].toFixed(2) 
         td.balance.settled
-            -if (pool.status === 'open')
-                p -
-            -else if (name === username && pool.status === 'closed')
+            -if (name === username && pool.status === 'open')
                 form(action=pool.id + '/toggleUserState?username=' + username + '&state=settled', method="post", class="inline")
-                    +toggleButton(pool.participants[name].settled, pool.participants[name].settled === false ? "Mark pool as settled" : "Mark pool as closed but not yet settled")
+                    +toggleButton(pool.participants[name].settled, pool.participants[name].settled === false ? "Mark settlement as settled" : "Mark settlement as open")
             - else
                 +statusIcon(pool.participants[name].settled)
 
@@ -48,7 +34,7 @@ block content
     <!-- Table of the pool entries --> 
     .container
         .panel.panel-default
-            .panel-heading Current Cash Items #{pool.startDate} - #{pool.endDate} Status: #{pool.status}
+            .panel-heading Settlement overview #{pool.startDate} - #{pool.endDate} Status: #{pool.status}
             .panel-body
             table
                 tr.table-header
@@ -78,47 +64,7 @@ block content
                     td.cash-value-column
                         b
                             = total.toFixed(2)
-                    
-    <!-- Add new entries to the pool -->
-    if (pool.status == "open")
-        .container
-            .panel.panel-primary
-                .panel-heading Add a new transaction
-                .panel-body 
-                    form(action="/cashPools/" + pool.id, method="post")
-                        .row
-                            .col-sm-2
-                                .form-group
-                                    label(for='name')
-                                        h5 name
-                                    select.form-control(type='text', id='username', name='username')
-                                        - for (var name in pool.participants) {
-                                            -if (name == username)
-                                                option(selected='selected')
-                                                    = name
-                                            - else
-                                                option
-                                                    = name
-                                        - }
-                            .col-sm-6
-                                .form-group
-                                    label(for='description')
-                                        h5 description
-                                    input.form-control(type='text', id='description', name='description', required)
-                            .col-sm-2
-                                .form-group
-                                    label(for='date')
-                                        h5 date
-                                    input.form-control(type='text', id='datepicker', name='date', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
-                            .col-sm-2
-                                .form-group
-                                    label(for='value')
-                                        h5 value
-                                    input.form-control(type='text', pattern="^\\d+\\.\\d{2}", id='value', name='value', required)
-                        .row
-                            .col-sm-10
-                            .col-sm-2
-                                button.btn.btn-primary.btn-block(type='submit') Submit
+
     <!-- Table with the calculated sums for the user -->
     .container
         .panel.panel-default
@@ -128,7 +74,6 @@ block content
                     tr.table-header
                         td.balance.name name
                         td.balance.balance balance
-                        td.balance.closed closed
                         td.balance.settled settled
                     - for (var name in sumData) {
                         +balanceEntry(name)

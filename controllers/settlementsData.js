@@ -36,7 +36,6 @@ module.exports = function(dataPath, cashPoolData) {
     }
 
     module.getSettlement = function(id, username) {
-        //TODO: Check if id exist
         if (_settlementData === null)
             loadData();
 
@@ -78,20 +77,16 @@ module.exports = function(dataPath, cashPoolData) {
     module.addNewSettlement = function(name, pools) {
         if (_settlementData === null)
             loadData();
-
         var participantsWithState = {};
         for(var i = 0; i < pools.length; ++i) {
             var pool = _cashPoolData.getPool(pools[i]);
             var participants = pool.participants;
             for(var participant in participants) {
                 participantsWithState[participant] = {
-                    "settled": false,
-                    "closed": false
+                    "settled": false
                 };
             }
         }
-
-        //TODO: Check if pools exist
         
         var settlement = {
             id: _nextId,
@@ -135,8 +130,9 @@ module.exports = function(dataPath, cashPoolData) {
             fs.mkdirSync(_dataPath);
 
         for(var id in _settlementData) {
-            delete _settlementData.poolData;
-            delete _settlementData.requiresActionOfUser;
+            delete _settlementData[id].poolData;
+            delete _settlementData[id].requiresActionOfUser;
+            delete _settlementData[id].items;
         }
         
         var raw = JSON.stringify(_settlementData, null, 4);
@@ -165,6 +161,7 @@ module.exports = function(dataPath, cashPoolData) {
     function attachSettlementMethods(settlement) {
         settlement.setRequiresActionOfUser = settlement_setRequiresActionOfUser;
         settlement.calcSums =settlement_calcSums;
+        settlement.toggleStateForUser = settlement_toggleStateForUser;
     }
     
     //----------------------------------------------------------------------------------------------
@@ -215,6 +212,30 @@ module.exports = function(dataPath, cashPoolData) {
         }
 
         return sums;
+    }
+
+    function settlement_toggleStateForUser(username, status) {
+        if (!(username in this.participants))
+            return false;
+        if (status === "settled" && this.status != "settled") {
+            this.participants[username].settled = !this.participants[username].settled;
+            // if every participant has marked to pool as closed, it will be closed automatically
+            var count = 0;
+            for (var name in this.participants)
+                if (this.participants[name].settled === true)
+                    count++;
+            if (count === Object.keys(this.participants).length) {
+                this.status = "settled"
+                for(var i = 0; i < this.pools.length; ++i) {
+                    _cashPoolData.getPool(this.pools[i]).setState("settled");
+                }
+            }
+        }
+        else
+            return false;
+        
+        saveData();
+        return true;
     }
     
     return module;

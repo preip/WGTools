@@ -54,7 +54,7 @@ module.exports = function(cashPoolData, settlementData) {
             var settlement = _settlementData.getSettlement(req.params.id, req.session.username);
         
             if (settlement !== undefined) {
-                res.render('cashPools/cashPoolsPool', {
+                res.render('settlements/settlements', {
                     title: settlement.name,
                     sumData: settlement.calcSums(),
                     dateString: getCurrentDateString(),
@@ -73,6 +73,10 @@ module.exports = function(cashPoolData, settlementData) {
     
     module.toggleUserState = function(req, res, next) {
         togglePoolUserState(req.session.username, req.query.state, req.params.id, res);
+    }
+
+    module.toggleSettlementUserState = function(req, res, next) {
+        toggleSettlementUserState(req.session.username, req.query.state, req.params.id, res);
     }
    
     module.addNewPool = function(req, res, next) {
@@ -198,6 +202,23 @@ module.exports = function(cashPoolData, settlementData) {
         }
         
         res.writeHead(301, {Location: '/cashPools/' + id});
+        res.end();
+    }
+
+    function toggleSettlementUserState(username, status, id, res) {
+        settlement = _settlementData.getSettlement(id);
+        if (settlement === undefined) {
+            res.status(404);
+            res.send("Settlement not found.");
+            return;
+        }
+        if (!settlement.toggleStateForUser(username, status)) {
+            res.status(403);
+            res.send("invalid username or state.");
+            return;
+        }
+        
+        res.writeHead(301, {Location: '/settlements/' + id});
         res.end();
     }
     
