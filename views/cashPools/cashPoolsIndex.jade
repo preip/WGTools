@@ -24,89 +24,124 @@ mixin poolDisclaimer(status)
         - else
             = "These pools have an unknown state. This should not happen, so please contact your admin if your see this."
 
-mixin poolTable(status)
+mixin poolTableBody(status)
+    +poolDisclaimer(status)
+    //- Create a subset containing only the pools with the specified state
+    - var pools = []
+    - for (var key in cashPoolsData) {
+        - if (cashPoolsData[key].status === status)
+            - pools.push(cashPoolsData[key])
+    - }
+    //- make sure the table is only shown if there are any pools present
+    - if (pools.length === 0) {
+        p There are currently no pools in this category.
+    -  } else {
+        table
+            tr.table-header
+                td 
+                td Pool Name
+            - for (var i = 0; i < pools.length; i++) {
+                - var currentItem = pools[i]
+                tr(requires-action=currentItem.requiresActionOfUser.toString())
+                    td.pool-action-column
+                        a(href='cashPools/' + currentItem.id)
+
+                            .icon(data-toggle='tooltip', data-placement='bottom', title='Open this pool')
+                                i.fa.fa-folder-open
+                    td
+                        a(href='cashPools/' + currentItem.id)
+                            = currentItem.name
+            - }
+    - }
+
+mixin settlementTableBody(status)
+    p
+    - if (status === 'open')
+        = "These are the settlements which are open and need to be settled."
+    - else if (status === 'settled')
+        = "These settlements have been settled. They are just here for reference."
+    //- Create a subset containing only the pools with the specified state
+    - var pools = []
+    - for (var key in settlementData) {
+        - if (settlementData[key].status === status)
+            - pools.push(settlementData[key])
+    - }
+    //- make sure the table is only shown if there are any pools present
+    - if (pools.length === 0) {
+        p There are currently no settlements in this category.
+    -  } else {
+        table
+            tr.table-header
+                td 
+                td Settlement Name
+            - for (var i = 0; i < pools.length; i++) {
+                - var currentItem = pools[i]
+                tr(requires-action=currentItem.requiresActionOfUser.toString())
+                    td.pool-action-column
+                        a(href='settlements/' + currentItem.id)
+
+                            .icon(data-toggle='tooltip', data-placement='bottom', title='Open this settlement')
+                                i.fa.fa-folder-open
+                    td
+                        a(href='settlements/' + currentItem.id)
+                            = currentItem.name
+            - }
+    - }
+
+mixin poolTable(status, collapse)
    .container
         .panel.panel-default
             .panel-heading 
                 +poolTitle(status)
+
+                -if(collapse)
+                    i.fa.fa-chevron-down(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+                -else
+                    i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+            
+            -if(collapse)
+                .panel-body(class="collapse")
+                    +poolTableBody(status)
+            -else
+                .panel-body
+                    +poolTableBody(status)
+                    
+
+mixin settlementTable(status, collapse)
+   .container
+        .panel.panel-default
+            .panel-heading 
+                - if (status === 'open')
+                    i.fa.fa-folder-open &nbsp;
+                    = 'Open Settlements'
+                - else if (status === 'settled')
+                    i.fa.fa-money &nbsp;
+                    = 'Settled Settlements'
+
+                -if(collapse)
+                    i.fa.fa-chevron-down(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+                -else
+                    i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+            
+            -if(collapse)
+                .panel-body(class="collapse")
+                    +settlementTableBody(status)
+            -else
+                .panel-body
+                    +settlementTableBody(status)
                 
-                i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
-            .panel-body
-                +poolDisclaimer(status)
-                //- Create a subset containing only the pools with the specified state
-                - var pools = []
-                - for (var key in cashPoolsData) {
-                    - if (cashPoolsData[key].status === status)
-                        - pools.push(cashPoolsData[key])
-                - }
-                //- make sure the table is only shown if there are any pools present
-                - if (pools.length === 0) {
-                    p There are currently no pools in this category.
-                -  } else {
-                    table
-                        tr.table-header
-                            td 
-                            td Pool Name
-                        - for (var i = 0; i < pools.length; i++) {
-                            - var currentItem = pools[i]
-                            tr(requires-action=currentItem.requiresActionOfUser.toString())
-                                td.pool-action-column
-                                    a(href='cashPools/' + currentItem.id)
-
-                                        .icon(data-toggle='tooltip', data-placement='bottom', title='Open this pool')
-                                            i.fa.fa-folder-open
-                                td
-                                    a(href='cashPools/' + currentItem.id)
-                                        = currentItem.name
-                        - }
-                - }
-
-mixin settlementTable(status)
-   .container
-        .panel.panel-default
-            .panel-heading 
-                +poolTitle(status)
-
-                i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
-            .panel-body
-                +poolDisclaimer(status)
-                //- Create a subset containing only the pools with the specified state
-                - var pools = []
-                - for (var key in settlementData) {
-                    - if (settlementData[key].status === status)
-                        - pools.push(settlementData[key])
-                - }
-                //- make sure the table is only shown if there are any pools present
-                - if (pools.length === 0) {
-                    p There are currently no settlements in this category.
-                -  } else {
-                    table
-                        tr.table-header
-                            td 
-                            td Settlement Name
-                        - for (var i = 0; i < pools.length; i++) {
-                            - var currentItem = pools[i]
-                            tr(requires-action=currentItem.requiresActionOfUser.toString())
-                                td.pool-action-column
-                                    a(href='settlements/' + currentItem.id)
-
-                                        .icon(data-toggle='tooltip', data-placement='bottom', title='Open this settlement')
-                                            i.fa.fa-folder-open
-                                td
-                                    a(href='settlements/' + currentItem.id)
-                                        = currentItem.name
-                        - }
-                - }
 
 block content
     //- list of all opened cash pools
-    +poolTable('open', cashPoolsData)
+    +poolTable('open', false)
     //- list of all closed cash pools
-    +poolTable('closed', cashPoolsData)
+    +poolTable('closed', true)
     //- list of all open settlements
-    +settlementTable('open', settlementData)
+    +settlementTable('open', false)
+    //- list of all settled settlements
+    +settlementTable('settled', true)
     //- list of all settled cash pools
-    +poolTable('settled', cashPoolsData)
+    +poolTable('settled', true)
 
     .container
             .panel.panel-primary
