@@ -29,6 +29,8 @@ mixin poolTable(status)
         .panel.panel-default
             .panel-heading 
                 +poolTitle(status)
+                
+                i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
             .panel-body
                 +poolDisclaimer(status)
                 //- Create a subset containing only the pools with the specified state
@@ -64,6 +66,8 @@ mixin settlementTable(status)
         .panel.panel-default
             .panel-heading 
                 +poolTitle(status)
+
+                i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
             .panel-body
                 +poolDisclaimer(status)
                 //- Create a subset containing only the pools with the specified state
@@ -191,9 +195,20 @@ block css
                 
 block scripts
     script(type='text/javascript', src='/js/bootstrap-datepicker.min.js')
-    script.
+    script(type='text/javascript').
         $(function() {
             $('.datepicker').datepicker({ 
                  format: 'dd.mm.yyyy'
             }).datepicker("setDate", new Date());
         });
+        function toggle_list_collapse(object) {
+            var panel = object.parentNode.nextElementSibling;
+
+            if(object.className == "fa fa-chevron-down") {
+                object.setAttribute("class", "fa fa-chevron-up");
+                panel.setAttribute("class", "panel-body");
+            } else {
+                object.setAttribute("class", "fa fa-chevron-down");
+                panel.setAttribute("class", "panel-body collapse");
+            }
+        }
