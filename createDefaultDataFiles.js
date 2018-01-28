@@ -96,6 +96,16 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     ];
     var shoppingListDataRaw = JSON.stringify(shoppingListData, null, 4);
     fs.writeFileSync(path.join(_dataPath, 'shoppingList.json'), shoppingListDataRaw, 'utf8');
+
+    /**
+     * Settlements
+     */
+    console.log('> Creating Settlements file...');
+    var settlementsData = [
+
+    ];
+    var settlementsDataRaw = JSON.stringify(settlementsData, null, 4);
+    fs.writeFileSync(path.join(_dataPath, 'settlements.json'), settlementsDataRaw, 'utf8');
     
     /**
      * Calendar
