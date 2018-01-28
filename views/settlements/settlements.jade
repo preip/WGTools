@@ -18,11 +18,11 @@ mixin statusIcon(active)
         i.fa.fa-close
 
 mixin balanceEntry(name)
-    tr(class=sumData[name]<=0 ? 'balance negative' : 'balance positive')
+    tr(class=sumData[name]<=0 ? 'balance positive' : 'balance negative')
         td.balance.name
             = name
         td.balance.balance
-                = sumData[name].toFixed(2) 
+                = sumData[name].toFixed(2) * -1
         td.balance.settled
             -if (name === username && pool.status === 'open')
                 form(action=pool.id + '/toggleUserState?username=' + username + '&state=settled', method="post", class="inline")
@@ -49,12 +49,13 @@ block content
                         td.cash-name-column
                             = currentItem.username
                         td.cash-description-column
-                            = currentItem.description
+                            a(href='/cashPools/' + currentItem.id)
+                                = currentItem.description
                         td.cash-date-column
                             = currentItem.date
                         td.cash-value-column
-                            = currentItem.value
-                    - total += parseFloat(currentItem.value)
+                            = parseFloat(currentItem.value) * -1 
+                    - total += parseFloat(currentItem.value) 
                 - }
                 tr
                     td.cash-name-column
@@ -63,7 +64,7 @@ block content
                     td.cash-date-column 
                     td.cash-value-column
                         b
-                            = total.toFixed(2)
+                            = total.toFixed(2) * -1
 
     <!-- Table with the calculated sums for the user -->
     .container

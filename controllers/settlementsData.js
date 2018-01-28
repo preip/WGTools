@@ -58,6 +58,7 @@ module.exports = function(dataPath, cashPoolData) {
                 "username": username,
                 "description": pool.name,
                 "date": pool.endDate,
+                "id": pool.id,
                 "value": sums[username] || 0
             });
         }
