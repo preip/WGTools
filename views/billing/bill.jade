@@ -31,7 +31,7 @@ mixin balanceEntry(name)
                 +statusIcon(pool.participants[name].settled)
 
 block content
-    <!-- Table of the pool entries --> 
+    <!-- Table of the bill entries --> 
     .container
         .panel.panel-default
             .panel-heading Settlement overview #{pool.startDate} - #{pool.endDate} Status: #{pool.status}
@@ -54,7 +54,7 @@ block content
                         td.cash-date-column
                             = currentItem.date
                         td.cash-value-column
-                            = parseFloat(currentItem.value) * -1 
+                            = (parseFloat(currentItem.value)).toFixed(2) * -1 
                     - total += parseFloat(currentItem.value) 
                 - }
                 tr
@@ -79,31 +79,3 @@ block content
                     - for (var name in sumData) {
                         +balanceEntry(name)
                     - }
-                
-
-block css
-    link(href='/css/bootstrap-datepicker.min.css', rel='stylesheet')
-                
-block scripts
-    script(type='text/javascript', src='/js/bootstrap-datepicker.min.js')
-    script.
-        $(function() {
-            
-            var endDate = "#{pool.endDate}".split('.').reverse();
-            endDate = new Date(endDate);
-
-            var startDate = "#{pool.startDate}".split('.').reverse();
-            startDate = new Date(startDate);
-            
-            if (#{pool.enforceTimeBounds}) {
-                $('#datepicker').datepicker({ 
-                        format: 'dd.mm.yyyy',
-                        startDate: startDate,
-                        endDate: endDate
-                }).datepicker("setDate", new Date());
-            } else {
-                $('#datepicker').datepicker({ 
-                        format: 'dd.mm.yyyy'
-                }).datepicker("setDate", new Date());  
-            }
-        });

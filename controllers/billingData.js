@@ -22,30 +22,29 @@ module.exports = function(dataPath, cashPoolData) {
      * @property _accountData
      * @type array
      */
-    var _settlementData = null;
+    var _billingData = null;
 
     
     //----------------------------------------------------------------------------------------------
     // Public Methods
     //----------------------------------------------------------------------------------------------
 
-    module.getSettlements = function() {
-        if (_settlementData === null)
+    module.getBills = function() {
+        if (_billingData === null)
             loadData();    
-        return _settlementData;
+        return _billingData;
     }
 
-    module.getSettlement = function(id, username) {
-        if (_settlementData === null)
+    module.getBill = function(id, username) {
+        if (_billingData === null)
             loadData();
+        var bill = _billingData[id];
+        if(bill === null || bill === undefined)
+            return undefined;
 
-        var settlement = _settlementData[id];
-        if(settlement == null)
-            return null;
-
-        var pools = _settlementData[id].pools;
+        var pools = _billingData[id].pools;
         var poolData = [];
-        settlement.items = [];
+        bill.items = [];
         for(var i = 0; i < pools.length; ++i) {
             var pool = _cashPoolData.getPool(pools[i]);
             var sums = pool.calcSums();
@@ -54,7 +53,7 @@ module.exports = function(dataPath, cashPoolData) {
                 name: pool.name,
                 sums: sums
             });
-            settlement.items.push({
+            bill.items.push({
                 "username": username,
                 "description": pool.name,
                 "date": pool.endDate,
@@ -63,20 +62,22 @@ module.exports = function(dataPath, cashPoolData) {
             });
         }
         
-        settlement.poolData = poolData;
+        bill.poolData = poolData;
 
-        return settlement;
+        return bill;
     }
 
-    module.setSettlement = function(settlement) {
-        if (settlement == undefined || settlement.id == undefined)
+    module.setBill = function(bill) {
+        if (_billingData === null)
+            loadData();
+        if (bill == undefined || bill.id == undefined)
             return;
-        _settlementData[settlement.id] = settlement;
+        _billingData[bill.id] = bill;
         saveData();
     }
 
-    module.addNewSettlement = function(name, pools) {
-        if (_settlementData === null)
+    module.addNewBill = function(name, pools) {
+        if (_billingData === null)
             loadData();
         var participantsWithState = {};
         for(var i = 0; i < pools.length; ++i) {
@@ -89,27 +90,43 @@ module.exports = function(dataPath, cashPoolData) {
             }
         }
         
-        var settlement = {
+        var bill = {
             id: _nextId,
             name: name,
             pools: pools,
             participants: participantsWithState,
             status: "open"
         };
-        attachSettlementMethods(settlement);
+        attachSettlementMethods(bill);
         
-        _settlementData[_nextId] = settlement;
+        _billingData[_nextId] = bill;
         saveData();
         return _nextId++;
     }
-
-    //Returns if the Pool is in an existing settlement.
-    module.isPoolInSettlement = function(id) {
-        if (_settlementData === null)
+    
+    module.getBillCandidatePools = function() {
+        if (_billingData === null)
             loadData();
- 
-        for(var settlement in _settlementData) {
-            var pools = _settlementData[settlement].pools;
+        var result = [];
+        var pools = _cashPoolData.getPools();
+        for(var pool in pools){
+            //pools[pool].setRequiresActionOfUser(req.session.username);
+            if (pools[pool].status === "closed" && !isPoolInBill(pool))
+                result.push({id: pools[pool].id, name: pools[pool].name});
+        }
+        return result;
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // Private Methods
+    //----------------------------------------------------------------------------------------------
+    
+    function isPoolInBill(id) {
+        if (_billingData === null)
+            loadData();
+        var pools = _cashPoolData.getPools();
+        for(var bill in _billingData) {
+            var pools = _billingData[bill].pools;
             for(var i = 0; i < pools.length; ++i) {
                 if(pools[i] === id)
                     return true;
@@ -130,14 +147,14 @@ module.exports = function(dataPath, cashPoolData) {
         if (!fs.existsSync(_dataPath))
             fs.mkdirSync(_dataPath);
 
-        for(var id in _settlementData) {
-            delete _settlementData[id].poolData;
-            delete _settlementData[id].requiresActionOfUser;
-            delete _settlementData[id].items;
+        for(var id in _billingData) {
+            delete _billingData[id].poolData;
+            delete _billingData[id].requiresActionOfUser;
+            delete _billingData[id].items;
         }
         
-        var raw = JSON.stringify(_settlementData, null, 4);
-        fs.writeFileSync(path.join(_dataPath, "settlements.json"), raw, 'utf8'); 
+        var raw = JSON.stringify(_billingData, null, 4);
+        fs.writeFileSync(path.join(_dataPath, "billing.json"), raw, 'utf8'); 
     }
     
     function loadData() {
@@ -145,33 +162,31 @@ module.exports = function(dataPath, cashPoolData) {
         var path = require('path');
         var maxId = 0;
 
-        //Settlements
-        var raw = fs.readFileSync(path.join(_dataPath, "settlements.json"), 'utf8');
-        var settlements = JSON.parse(raw);
-        for(var settlement in settlements) {
-            attachSettlementMethods(settlements[settlement]);
+        var raw = fs.readFileSync(path.join(_dataPath, "billing.json"), 'utf8');
+        var billingData = JSON.parse(raw);
+        for(var bill in billingData) {
+            attachBillMethods(billingData[bill]);
 
-            if (settlements[settlement].id > maxId)
-                maxId = settlements[settlement].id;
+            if (billingData[bill].id > maxId)
+                maxId = billingData[bill].id;
         }
 
-        _settlementData = settlements;
+        _billingData = billingData;
         _nextId = maxId + 1;
     }
 
-    function attachSettlementMethods(settlement) {
-        settlement.setRequiresActionOfUser = settlement_setRequiresActionOfUser;
-        settlement.calcSums =settlement_calcSums;
-        settlement.toggleStateForUser = settlement_toggleStateForUser;
+    function attachBillMethods(bill) {
+        bill.setRequiresActionOfUser = bill_setRequiresActionOfUser;
+        bill.calcSums = bill_calcSums;
+        bill.toggleStateForUser = bill_toggleStateForUser;
     }
     
     //----------------------------------------------------------------------------------------------
-    // Settlement specific methods
+    // Bill specific methods
     //----------------------------------------------------------------------------------------------
     
-    /* Sets the state of the pool for the current user */
-    function settlement_setRequiresActionOfUser(username) {
-        //Is the user part of this settlement?
+    function bill_setRequiresActionOfUser(username) {
+        //Is the user part of this bill?
         if (!(username in this.participants)) {
             this.requiresActionOfUser = false;
             return false;
@@ -187,20 +202,8 @@ module.exports = function(dataPath, cashPoolData) {
         //Has the use not checked the field?
         this.requiresActionOfUser = settle && !this.participants[username].settled;
     }
-
-    function pool_compareEntries(entry1, entry2) {
-        date1 = entry1.date.split('.');
-        date2 = entry2.date.split('.');
-        yearDiff = parseInt(date1[2]) - parseInt(date2[2])
-        if (yearDiff != 0)
-            return yearDiff
-        monthDiff = parseInt(date1[1]) - parseInt(date2[1])
-        if (monthDiff != 0)
-            return monthDiff
-        return parseInt(date1[0]) - parseInt(date2[0])
-    }
     
-    function settlement_calcSums() {
+    function bill_calcSums() {
         var sums = {};
         for (var name in this.participants) {
             sums[name] = 0.0;
@@ -215,12 +218,13 @@ module.exports = function(dataPath, cashPoolData) {
         return sums;
     }
 
-    function settlement_toggleStateForUser(username, status) {
+    function bill_toggleStateForUser(username, status) {
         if (!(username in this.participants))
             return false;
         if (status === "settled" && this.status != "settled") {
             this.participants[username].settled = !this.participants[username].settled;
-            // if every participant has marked to pool as closed, it will be closed automatically
+            // if every participant has marked the bill as settled, the bill itself and all pools
+            // will be settled automatically
             var count = 0;
             for (var name in this.participants)
                 if (this.participants[name].settled === true)
@@ -240,4 +244,4 @@ module.exports = function(dataPath, cashPoolData) {
     }
     
     return module;
-}
+};

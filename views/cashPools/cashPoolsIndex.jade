@@ -42,7 +42,8 @@ mixin poolTableBody(status)
                 td Pool Name
             - for (var i = 0; i < pools.length; i++) {
                 - var currentItem = pools[i]
-                tr(requires-action=currentItem.requiresActionOfUser.toString())
+                //tr(requires-action=currentItem.requiresActionOfUser.toString())
+                tr
                     td.pool-action-column
                         a(href='cashPools/' + currentItem.id)
 
@@ -50,40 +51,6 @@ mixin poolTableBody(status)
                                 i.fa.fa-folder-open
                     td
                         a(href='cashPools/' + currentItem.id)
-                            = currentItem.name
-            - }
-    - }
-
-mixin settlementTableBody(status)
-    p
-    - if (status === 'open')
-        = "These are the settlements which are open and need to be settled."
-    - else if (status === 'settled')
-        = "These settlements have been settled. They are just here for reference."
-    //- Create a subset containing only the pools with the specified state
-    - var pools = []
-    - for (var key in settlementData) {
-        - if (settlementData[key].status === status)
-            - pools.push(settlementData[key])
-    - }
-    //- make sure the table is only shown if there are any pools present
-    - if (pools.length === 0) {
-        p There are currently no settlements in this category.
-    -  } else {
-        table
-            tr.table-header
-                td 
-                td Settlement Name
-            - for (var i = 0; i < pools.length; i++) {
-                - var currentItem = pools[i]
-                tr(requires-action=currentItem.requiresActionOfUser.toString())
-                    td.pool-action-column
-                        a(href='settlements/' + currentItem.id)
-
-                            .icon(data-toggle='tooltip', data-placement='bottom', title='Open this settlement')
-                                i.fa.fa-folder-open
-                    td
-                        a(href='settlements/' + currentItem.id)
                             = currentItem.name
             - }
     - }
@@ -107,40 +74,11 @@ mixin poolTable(status, collapse)
                     +poolTableBody(status)
                     
 
-mixin settlementTable(status, collapse)
-   .container
-        .panel.panel-default
-            .panel-heading 
-                - if (status === 'open')
-                    i.fa.fa-folder-open &nbsp;
-                    = 'Open Settlements'
-                - else if (status === 'settled')
-                    i.fa.fa-money &nbsp;
-                    = 'Settled Settlements'
 
-                -if(collapse)
-                    i.fa.fa-chevron-down(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
-                -else
-                    i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
-            
-            -if(collapse)
-                .panel-body(class="collapse")
-                    +settlementTableBody(status)
-            -else
-                .panel-body
-                    +settlementTableBody(status)
-                
 
 block content
-    //- list of all opened cash pools
     +poolTable('open', false)
-    //- list of all closed cash pools
     +poolTable('closed', true)
-    //- list of all open settlements
-    +settlementTable('open', false)
-    //- list of all settled settlements
-    +settlementTable('settled', true)
-    //- list of all settled cash pools
     +poolTable('settled', true)
 
     .container
@@ -199,31 +137,6 @@ block content
                             .col-sm-10
                             .col-sm-2
                                 button.btn.btn-primary.btn-block(type='submit') Submit
-    
-    .container
-        .panel.panel-primary
-            .panel-heading Create new settlement
-            .panel-body 
-                form(action="/settlements", method="post")
-                    .row
-                        .col-sm-2
-                            .form-group
-                                label(for='name')
-                                    h5 name
-                                input.form-control(type='text', id='name', name='name', required)     
-                        .col-sm-2
-                            .form-group
-                                label(for='available Pools')
-                                    h5 available Pools                                  
-                                select.form-control(type='text', id='pools', name='pools' multiple)
-                                    - for (var key in settlementPools) {
-                                            option(value=settlementPools[key].id)
-                                                = settlementPools[key].name
-                                    - }
-                    .row
-                        .col-sm-10
-                        .col-sm-2
-                            button.btn.btn-primary.btn-block(type='submit') Submit                     
 
 block css
     link(href='/css/bootstrap-datepicker.min.css', rel='stylesheet')

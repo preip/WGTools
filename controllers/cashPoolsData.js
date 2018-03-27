@@ -105,8 +105,6 @@ module.exports = function(dataPath) {
             if (pool.id > maxId)
                 maxId = pool.id;
             attachPoolMethods(pool);
-
-            
             data[pool.id] = pool;
         }
         _poolData = data;
@@ -242,7 +240,7 @@ module.exports = function(dataPath) {
         }
         else if (status === "settled") {
             this.participants[username].settled = !this.participants[username].settled;
-            // if every participant has marked to pool as closed, it will be closed automatically
+            // if every participant has marked to pool as settled, it will be settled automatically
             var count = 0;
             for (var name in this.participants)
                 if (this.participants[name].settled === true)

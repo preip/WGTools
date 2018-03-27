@@ -66,14 +66,16 @@ app.locals.url = require('url');
 /**
  * Data-Controller
  */
+global.utils = require('./controllers/utils')();
 global.accountData = require('./controllers/accountData')(path.join(__dirname, config.dataPath));
 var cashPoolData = require('./controllers/cashPoolsData')(path.join(__dirname, config.dataPath, 'cashPools'));
-var settlementsData = require('./controllers/settlementsData')(path.join(__dirname, config.dataPath), cashPoolData)
+var billingData = require('./controllers/billingData')(path.join(__dirname, config.dataPath), cashPoolData)
 /**
  * View-Models
  */
 var accountController = require('./controllers/accountPresenter')();
-var cashPoolsController = require('./controllers/cashPoolsPresenter')(cashPoolData, settlementsData);
+var cashPoolsController = require('./controllers/cashPoolsPresenter')(cashPoolData, billingData);
+var billingController = require('./controllers/billingPresenter')(billingData);
 var calendarController = require('./controllers/calendar')(path.join(__dirname, config.dataPath));
 var shoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath));
 var errorController = require('./controllers/error')();
@@ -99,9 +101,10 @@ app.get('/cashPools/:id', accountController.isAuthenticated, cashPoolsController
 app.post('/cashPools/:id', accountController.isAuthenticated, cashPoolsController.addNewEntryToPool);
 app.post('/cashPools/:id/setState', accountController.isAuthenticated, cashPoolsController.setState);
 app.post('/cashPools/:id/toggleUserState', accountController.isAuthenticated, cashPoolsController.toggleUserState);
-app.post('/settlements', accountController.isAuthenticated, cashPoolsController.addNewSettlement);
-app.get('/settlements/:id', accountController.isAuthenticated, cashPoolsController.showSettlement);
-app.post('/settlements/:id/toggleUserState', accountController.isAuthenticated, cashPoolsController.toggleSettlementUserState);
+app.get('/billing', accountController.isAuthenticated, billingController.showBillingIndex)
+app.post('/billing', accountController.isAuthenticated, billingController.addNewBill);
+app.get('/billing/:id', accountController.isAuthenticated, billingController.showBill);
+app.post('/billing/:id/toggleUserState', accountController.isAuthenticated, billingController.toggleBillUserState);
 // Shopping List
 app.get('/shoppingList', accountController.isAuthenticated, shoppingListController.showShoppingListPage);
 app.get('/shoppingList/GetAll', accountController.isAuthenticated, shoppingListController.getAll);
