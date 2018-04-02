@@ -98,14 +98,14 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     fs.writeFileSync(path.join(_dataPath, 'shoppingList.json'), shoppingListDataRaw, 'utf8');
 
     /**
-     * Settlements
+     * billing
      */
-    console.log('> Creating Settlements file...');
-    var settlementsData = [
+    console.log('> Creating billing file...');
+    var billingData = [
 
     ];
-    var settlementsDataRaw = JSON.stringify(settlementsData, null, 4);
-    fs.writeFileSync(path.join(_dataPath, 'settlements.json'), settlementsDataRaw, 'utf8');
+    var billingDataRaw = JSON.stringify(billingData, null, 4);
+    fs.writeFileSync(path.join(_dataPath, 'billing.json'), billingDataRaw, 'utf8');
     
     /**
      * Calendar
