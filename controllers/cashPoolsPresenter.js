@@ -3,14 +3,14 @@ module.exports = function(cashPoolData, settlementData) {
     const _cashPoolData = cashPoolData;
     
     module.showCashPoolsIndex = function(req, res, next) {
-        var pools = _cashPoolData.getPools();
-
+        var pools = _cashPoolData.getPools(); 
 
 
         res.render('cashPools/cashPoolsIndex', {
             title: 'Cash Pools Index',
             cashPoolsData: pools,
-            usernames: accountData.getUsernames()
+            usernames: accountData.getUsernames(),
+            requiresActionOfUser: requiresActionOfUserMap(req.session.username, pools)
         });
     };
 
@@ -96,6 +96,35 @@ module.exports = function(cashPoolData, settlementData) {
             res.writeHead(301, {Location: '/cashPools/' + req.params.id});
             res.end();
         } 
+    }
+
+    /* Checks for all pools if a user action is required */
+    function requiresActionOfUserMap(username, pools) {
+        var obj = {};
+        for(var pool in pools) {
+            obj[pool] = requiresActionOfUser(username, pools[pool].participants);
+        }
+        return obj;
+    }
+
+    /* Sets the state of the pool for the current user */
+    function requiresActionOfUser(username, participants) {
+        if (!(username in participants)) {
+            return false;
+        }
+
+        var close = false, settle = false;
+        //Does anyone want to change the status of the pool?
+        for(var name in participants) {
+            close = close || participants[name].closed;
+            settle = settle || participants[name].settled;
+        }
+
+        //Has the user not checked the field?
+        var requiresActionOfUser = close && !participants[username].closed
+            || settle  && !participants[username].settled;
+
+        return requiresActionOfUser;
     }
     
     function setPoolState(status, id, res) {

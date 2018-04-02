@@ -42,8 +42,7 @@ mixin poolTableBody(status)
                 td Pool Name
             - for (var i = 0; i < pools.length; i++) {
                 - var currentItem = pools[i]
-                //tr(requires-action=currentItem.requiresActionOfUser.toString())
-                tr
+                tr(requires-action=requiresActionOfUser[currentItem.id].toString())
                     td.pool-action-column
                         a(href='cashPools/' + currentItem.id)
 
