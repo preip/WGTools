@@ -101,9 +101,7 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
      * billing
      */
     console.log('> Creating billing file...');
-    var billingData = [
-
-    ];
+    var billingData = {};
     var billingDataRaw = JSON.stringify(billingData, null, 4);
     fs.writeFileSync(path.join(_dataPath, 'billing.json'), billingDataRaw, 'utf8');
     
@@ -208,7 +206,7 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
                 value: "17.75"
             },
             {
-                username: "inhabitant_3",
+                username: "inhabitant_2",
                 description: "payment_1",
                 date: "01.01.2001",
                 value: "25.39"
