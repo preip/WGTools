@@ -24,17 +24,17 @@ mixin balanceEntry(name)
         td.balance.balance
                 = sumData[name].toFixed(2) * -1
         td.balance.settled
-            -if (name === username && pool.status === 'open')
-                form(action=pool.id + '/toggleUserState?username=' + username + '&state=settled', method="post", class="inline")
-                    +toggleButton(pool.participants[name].settled, pool.participants[name].settled === false ? "Mark settlement as settled" : "Mark settlement as open")
+            -if (name === username && bill.status === 'open')
+                form(action=bill.id + '/toggleUserState?username=' + username + '&state=settled', method="post", class="inline")
+                    +toggleButton(bill.participants[name].settled, bill.participants[name].settled === false ? "Mark bill as settled" : "Mark bill as open")
             - else
-                +statusIcon(pool.participants[name].settled)
+                +statusIcon(bill.participants[name].settled)
 
 block content
     <!-- Table of the bill entries --> 
     .container
         .panel.panel-default
-            .panel-heading Settlement overview #{pool.startDate} - #{pool.endDate} Status: #{pool.status}
+            .panel-heading Billing overview #{bill.startDate} - #{bill.endDate} Status: #{bill.status}
             .panel-body
             table
                 tr.table-header
@@ -43,8 +43,8 @@ block content
                     td.cash-date-column Date
                     td.cash-value-column Value
                 - var total = 0.0;
-                - for (var i = 0; i < pool.items.length; i++) {
-                    - var currentItem = pool.items[i]
+                - for (var i = 0; i < bill.items.length; i++) {
+                    - var currentItem = bill.items[i]
                     tr
                         td.cash-name-column
                             = currentItem.username

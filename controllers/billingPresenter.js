@@ -5,28 +5,25 @@ module.exports = function(billingData) {
         var bills = _billingData.getBills();
         var billCandidatePools = _billingData.getBillCandidatePools();
         
-        //for(var bills in bills) {
-        //    bills[bills].setRequiresActionOfUser(req.session.username);
-        //}
-        
         res.render('billing/billingIndex', {
             title: 'Billing Index',
             billingData: bills,
             billCandidatePools: billCandidatePools,
-            usernames: accountData.getUsernames()
+            usernames: accountData.getUsernames(),
+            requiresActionOfUserMap: requiresActionOfUserMap(req.session.username, bills)
         });
     }
     
     module.showBill = function(req, res, next) {
         if (req.params.id != null) {
-            var bill = _billingData.getBill(req.params.id - 1, req.session.username);
+            var bill = _billingData.getBill(req.params.id, req.session.username);
         
             if (bill !== undefined) {
                 res.render('billing/bill', {
                     title: bill.name,
                     sumData: bill.calcSums(),
                     dateString: utils.getCurrentDateString(),
-                    pool: bill
+                    bill: bill
                 });
             } else {
                 res.writeHead(301, {Location: '/billing'});
@@ -53,7 +50,7 @@ module.exports = function(billingData) {
         if (typeof req.body.pools == 'string')
         req.body.pools = [req.body.pools];
         
-        _settlementData.addNewBill(
+        _billingData.addNewBill(
             req.body.name,
             req.body.pools
         );
@@ -61,15 +58,42 @@ module.exports = function(billingData) {
         res.writeHead(301, {Location: '/billing'});
         res.end();
     }
+
+        /* Checks for all pools if a user action is required */
+        function requiresActionOfUserMap(username, bills) {
+            var obj = {};
+            for(var bill in bills) {
+                obj[bill] = requiresActionOfUser(username, bills[bill].participants);
+            }
+            return obj;
+        }
+    
+        /* Sets the state of the bill for the current user */
+        function requiresActionOfUser(username, participants) {
+            if (!(username in participants)) {
+                return false;
+            }
+    
+            var settle = false;
+            //Does anyone want to change the status of the bill?
+            for(var name in participants) {
+                settle = settle || participants[name].settled;
+            }
+    
+            //Has the user not checked the field?
+            var requiresActionOfUser = settle  && !participants[username].settled;
+    
+            return requiresActionOfUser;
+        }
     
     function toggleBillUserState(username, status, id, res) {
-        settlement = _settlementData.getSettlement(id);
-        if (settlement === undefined) {
+        bill = _billingData.getBill(id);
+        if (bill === undefined) {
             res.status(404);
-            res.send("Settlement not found.");
+            res.send("bill not found.");
             return;
         }
-        if (!settlement.toggleStateForUser(username, status)) {
+        if (!bill.toggleStateForUser(username, status)) {
             res.status(403);
             res.send("invalid username or state.");
             return;

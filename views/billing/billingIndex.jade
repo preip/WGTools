@@ -35,8 +35,7 @@ mixin billingTableBody(status)
                 td Bill Name
             - for (var i = 0; i < bills.length; i++) {
                 - var currentItem = bills[i]
-                //-tr(requires-action=currentItem.requiresActionOfUser.toString())
-                tr
+                tr(requires-action=requiresActionOfUserMap[currentItem.id].toString())
                     td.pool-action-column
                         a(href='billing/' + currentItem.id)
 

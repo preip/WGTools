@@ -17,7 +17,7 @@ module.exports = function(dataPath, cashPoolData) {
     var _nextId = 0;
 
      /**
-     * The array of all settlements.
+     * The array of all bills.
      *
      * @property _accountData
      * @type array
@@ -97,7 +97,7 @@ module.exports = function(dataPath, cashPoolData) {
             participants: participantsWithState,
             status: "open"
         };
-        attachSettlementMethods(bill);
+        attachBillMethods(bill);
         
         _billingData[_nextId] = bill;
         saveData();
@@ -110,7 +110,6 @@ module.exports = function(dataPath, cashPoolData) {
         var result = [];
         var pools = _cashPoolData.getPools();
         for(var pool in pools){
-            //pools[pool].setRequiresActionOfUser(req.session.username);
             if (pools[pool].status === "closed" && !isPoolInBill(pool))
                 result.push({id: pools[pool].id, name: pools[pool].name});
         }
@@ -146,12 +145,6 @@ module.exports = function(dataPath, cashPoolData) {
         
         if (!fs.existsSync(_dataPath))
             fs.mkdirSync(_dataPath);
-
-        for(var id in _billingData) {
-            delete _billingData[id].poolData;
-            delete _billingData[id].requiresActionOfUser;
-            delete _billingData[id].items;
-        }
         
         var raw = JSON.stringify(_billingData, null, 4);
         fs.writeFileSync(path.join(_dataPath, "billing.json"), raw, 'utf8'); 
@@ -176,7 +169,6 @@ module.exports = function(dataPath, cashPoolData) {
     }
 
     function attachBillMethods(bill) {
-        bill.setRequiresActionOfUser = bill_setRequiresActionOfUser;
         bill.calcSums = bill_calcSums;
         bill.toggleStateForUser = bill_toggleStateForUser;
     }
@@ -184,24 +176,6 @@ module.exports = function(dataPath, cashPoolData) {
     //----------------------------------------------------------------------------------------------
     // Bill specific methods
     //----------------------------------------------------------------------------------------------
-    
-    function bill_setRequiresActionOfUser(username) {
-        //Is the user part of this bill?
-        if (!(username in this.participants)) {
-            this.requiresActionOfUser = false;
-            return false;
-        }
-
-        var settle = false;
-
-        //Does anyone want to change the status of the pool?
-        for(var name in this.participants) {
-            settle = settle || this.participants[name].settled;
-        }
-
-        //Has the use not checked the field?
-        this.requiresActionOfUser = settle && !this.participants[username].settled;
-    }
     
     function bill_calcSums() {
         var sums = {};
