@@ -117,8 +117,6 @@ module.exports = function(dataPath) {
         pool.compareEntries = pool_compareEntries;
         pool.calcSums = pool_calcSums;
         pool.setState = pool_setState;
-        //pool.setRequiresActionOfUser = pool_setRequiresActionOfUser;
-        //pool.resetClosedState = pool_resetClosedState;
         pool.toggleStateForUser = pool_toggleStateForUser;
     }
     
@@ -133,18 +131,30 @@ module.exports = function(dataPath) {
             return false;
         this.items.push(entry);
         this.items.sort(this.compareEntries);
-        
-        //this.resetClosedState();
+    
         
         savePool(this);
         return true;
+    }
+
+    function createDate(string) {
+        var parts = string.split(".");
+        return new Date(parseInt(parts[2]), parseInt(parts[1]), parseInt(parts[0]))
+    }
+
+    function isInTimeBounds(entry, pool) {
+        var date = createDate(entry.date);
+        var poolStartDate = createDate(pool.startDate);
+        var poolEndDate = createDate(pool.endDate);
+
+        return (date < poolStartDate) || (date > poolEndDate)
     }
     
     function pool_isEntryValid(entry) {
         if (entry.username == null)
             return false;
         
-        if (this.enforceTimeBounds && (entry.date < this.startDate || entry.date > this.endDate))
+        if (this.enforceTimeBounds && isInTimeBounds(entry, this))          
             return false;
         
         if (!(entry.username in this.participants))
@@ -194,14 +204,6 @@ module.exports = function(dataPath) {
         savePool(this);
         return true;
     }
-    
-    /*
-    function pool_resetClosedState() {
-        for (var username in this.participants) {
-            this.participants[username].closed = false;
-        }
-    }
-    */
     
     function pool_toggleStateForUser(username, status) {
         if (!(username in this.participants))
