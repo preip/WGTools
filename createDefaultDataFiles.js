@@ -175,11 +175,13 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
         participants: {
             "inhabitant_1" : {
                 "closed": false,
-                "settled": false
+                "settled": false,
+                "factor" : 1.0
             },
             "inhabitant_2" : {
                 "closed": false,
-                "settled": false
+                "settled": false,
+                "factor" : 1.0
             }
         },
         startDate: "01.07.2016",
@@ -229,15 +231,18 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
         participants: {
             "inhabitant_1" : {
                 "closed": false,
-                "settled": false
+                "settled": false,
+                "factor" : 1.0
             },
             "inhabitant_2": {
                 "closed": false,
-                "settled": false
+                "settled": false,
+                "factor" : 0.5
             },
             "inhabitant_3" : {
                 "closed": false,
-                "settled": false
+                "settled": false,
+                "factor" : 1.0
             }
         },
         startDate: "01.07.2016",

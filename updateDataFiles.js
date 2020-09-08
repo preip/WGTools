@@ -81,6 +81,24 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
         }
         currStep = 00000100;
     }
+    //----------------------------------------------------------------------------------------------
+    // Version 00000100 to 00000200
+    if (previousVersion < 00000200) {
+        console.log("> Updating from 00000100 to 00000200");
+        var raw = var raw = fs.readFileSync(path.join(cashPoolPath, cashPoolFiles[i]), 'utf8');
+        for (var i = 0; i < cashPoolFiles.length; i++) {
+            console.log("\t" + cashPoolFiles[i]);
+            var raw = fs.readFileSync(path.join(cashPoolPath, cashPoolFiles[i]), 'utf8');
+            var pool = JSON.parse(raw);
+            
+            for (user in pool.participants) {
+                pool.participants[user].factor = 1.0;
+            }
+            var raw = JSON.stringify(pool, null, 4);
+            fs.writeFileSync(path.join(cashPoolPath, cashPoolFiles[i]), raw, 'utf8');
+        }
+    }
+        
     console.log("> All data files have been successfully upgraded to version \'" + targetVersion + "\'!");
     
     config.version = targetVersion;
