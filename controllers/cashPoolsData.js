@@ -185,14 +185,17 @@ module.exports = function(dataPath) {
      * @return (dictionary) The sum for each user a float grouped by user name.
      */
     function pool_calcSums() {
+        // initialize the sums dictionary
         var sums = {};
-        for (var name in this.participants) {
-            sums[name] = 0.0;
+        for (var username in this.participants) {
+            sums[username] = 0.0;
         }
+        // calculate the total factor, i.e., the sum of the factors of each individual user
         var totalFactor = 0.0;
-        for (var name in this.participants) {
-            totalFactor += this.
+        for (var username in this.participants) {
+            totalFactor += this.getFactorForUser(username);
         }
+        // calculate the total cash that was paid into this pool and the sum that each user has paid individually
         var totalCash = 0.0;
         for (var i = 0; i < this.items.length; i++) {
             var curData = this.items[i];
@@ -200,9 +203,13 @@ module.exports = function(dataPath) {
             sums[curData.username] += val;
             totalCash += val;
         }
-        var totalCashFactored = totalCash * totalFactor;
+        //var totalCashFactored = totalCash * totalFactor;
         for (var username in sums) {
-            slice = totalCashFactored * getFactorForUser(username)
+            // normalize the factor between 1 and 0 proportionately for this user in relation to the total factor
+            var normalizedFactor = this.getFactorForUser(username) / totalFactor;
+            // calculate the slice from the total cash using the normalized factor
+            var slice = totalCash * normalizedFactor;
+            // subtract what the user has actually payed to get the correct difference
             sums[username] = slice - sums[username];
         }
         return sums;
@@ -231,7 +238,7 @@ module.exports = function(dataPath) {
     }
     
     function pool_getFactorForUser(username) {
-        return this.participants[name].factor !== undefined ? this.participants[name].factor : 1.0;
+        return this.participants[username].factor !== undefined ? this.participants[username].factor : 1.0;
     }
     
     function pool_toggleStateForUser(username, status) {

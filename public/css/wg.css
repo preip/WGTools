@@ -134,6 +134,10 @@ td.balance.name {
     text-align:right;
 }
 
+td.balance.factor {
+    width: 100px;
+}
+
 td.balance.balance {
     text-align: left;
 }
