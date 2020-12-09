@@ -24,6 +24,8 @@ mixin balanceEntry(name)
     tr(class=sumData[name]<=0 ? 'balance positive' : 'balance negative')
         td.balance.name
             = name
+        td.balance.factor
+            = pool.participants[name].factor
         td.balance.balance
             - if (sumData[name] <= 0)
                 = sumData[name].toFixed(2) * -1
@@ -126,10 +128,11 @@ block content
             .panel-body
                 table
                     tr.table-header
-                        td.balance.name name
-                        td.balance.balance balance
-                        td.balance.closed closed
-                        td.balance.settled settled
+                        td.balance.name Name
+                        td.balance.factor Factor
+                        td.balance.balance Balance
+                        td.balance.closed Closed
+                        td.balance.settled Settled
                     - for (var name in sumData) {
                         +balanceEntry(name)
                     - }
