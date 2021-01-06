@@ -25,7 +25,17 @@ mixin balanceEntry(name)
         td.balance.name
             = name
         td.balance.factor
-            = pool.participants[name].factor
+            if (name === username)
+                .btn-group.dropright
+                    button.btn.btn-secondary.dropdown-toggle(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+                        = pool.participants[name].factor * 100 + ' %'
+                    .dropdown-menu(aria-labelledby="dropdownMenuButton")
+                        each val in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+                            form(action=pool.id + '/setFactor?username=' + username + '&factor=' + val, method='post', class='inline')
+                                button.dropdown-item(type='submit')
+                                    = val * 100 + ' %'
+            else
+                = pool.participants[name].factor * 100 + ' %'
         td.balance.balance
             - if (sumData[name] <= 0)
                 = sumData[name].toFixed(2) * -1
@@ -45,97 +55,119 @@ mixin balanceEntry(name)
                     +toggleButton(pool.participants[name].settled, pool.participants[name].settled === false ? "Mark pool as settled" : "Mark pool as closed but not yet settled")
             - else
                 +statusIcon(pool.participants[name].settled)
-
 block content
-    <!-- Table of the pool entries --> 
-    .container
-        .panel.panel-default
-            .panel-heading Current Cash Items #{pool.startDate} - #{pool.endDate} Status: #{pool.status}
-            .panel-body
-            table
-                tr.table-header
-                    td.cash-name-column Name
-                    td.cash-description-column Description
-                    td.cash-date-column Date
-                    td.cash-value-column Value
-                - var total = 0.0;
-                - for (var i = 0; i < pool.items.length; i++) {
-                    - var currentItem = pool.items[i]
-                    tr
-                        td.cash-name-column
-                            = currentItem.username
-                        td.cash-description-column
-                            = currentItem.description
-                        td.cash-date-column
-                            = currentItem.date
-                        td.cash-value-column
-                            = currentItem.value
-                    - total += parseFloat(currentItem.value)
-                - }
-                tr
-                    td.cash-name-column
-                    td.cash-description-column
-                        b Total:
-                    td.cash-date-column 
-                    td.cash-value-column
-                        b
-                            = total.toFixed(2)
+    //- Table of the pool entries
+    .container.pool-container(id='entriesContainer')
+        .card
+            .card-header.d-flex.justify-content-between.align-items-center.text-white.bg-dark(id='entriesHeader')
+                div
+                    h2.mb-0
+                        = '"' + pool.name + '" entries'
+                    = 'from ' + pool.startDate + ' to ' + pool.endDate + ') - Status: ' + pool.status
+                button.btn.btn-dark(data-toggle='collapse', data-target='#entries', aria-expanded='true', aria-controls='entries')
+                    font(size='+2')
+                        i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+            .collapse.show(id='entries', aria-labelledby='entriesHeader', data-parent='#entriesContainer')
+                .card-body
+                    table
+                        tr.table-header
+                            td.cash-name-column Name
+                            td.cash-description-column Description
+                            td.cash-date-column Date
+                            td.cash-value-column Value
+                        - var total = 0.0;
+                        - for (var i = 0; i < pool.items.length; i++) {
+                            - var currentItem = pool.items[i]
+                            tr
+                                td.cash-name-column
+                                    = currentItem.username
+                                td.cash-description-column
+                                    = currentItem.description
+                                td.cash-date-column
+                                    = currentItem.date
+                                td.cash-value-column
+                                    = currentItem.value
+                            - total += parseFloat(currentItem.value)
+                        - }
+                        tr
+                            td.cash-name-column
+                            td.cash-description-column
+                                b Total:
+                            td.cash-date-column 
+                            td.cash-value-column
+                                b
+                                    = total.toFixed(2)
                     
-    <!-- Add new entries to the pool -->
+    //- Add new entries to the pool
     if (pool.status == "open")
-        .container
-            .panel.panel-primary
-                .panel-heading Add a new transaction
-                .panel-body 
-                    form(action="/cashPools/" + pool.id, method="post")
-                        .row
-                            .col-sm-2
-                                .form-group
-                                    label(for='name')
-                                        h5 name
-                                    select.form-control(type='text', id='username', name='username')
-                                        - for (var name in pool.participants) {
-                                            -if (name == username)
-                                                option(selected='selected')
-                                                    = name
-                                            - else
-                                                option
-                                                    = name
-                                        - }
-                            .col-sm-6
-                                .form-group
-                                    label(for='description')
-                                        h5 description
-                                    input.form-control(type='text', id='description', name='description', required)
-                            .col-sm-2
-                                .form-group
-                                    label(for='date')
-                                        h5 date
-                                    input.form-control(type='text', id='datepicker', name='date', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
-                            .col-sm-2
-                                .form-group
-                                    label(for='value')
-                                        h5 value
-                                    input.form-control(type='text', pattern="^\\d+\\.\\d{2}", id='value', name='value', required)
-                        .row
-                            .col-sm-10
-                            .col-sm-2
-                                button.btn.btn-primary.btn-block(type='submit') Submit
-    <!-- Table with the calculated sums for the user -->
-    .container
-        .panel.panel-default
-            .panel-heading Overview how much everyone needs to pay (red) or gets back (green)
-            .panel-body
-                table
-                    tr.table-header
-                        td.balance.name Name
-                        td.balance.factor Factor
-                        td.balance.balance Balance
-                        td.balance.closed Closed
-                        td.balance.settled Settled
-                    - for (var name in sumData) {
-                        +balanceEntry(name)
-                    - }
+        .container.pool-container(id='newEntryContainer')
+            .card
+                .card-header.d-flex.justify-content-between.align-items-center.text-white.bg-dark(id='newEntryHeader')
+                        h2.mb-0
+                            = 'Add a new transaction'
+                        button.btn.btn-dark(data-toggle='collapse', data-target='#newEntry', aria-expanded='true', aria-controls='balance')
+                            font(size='+2')
+                                i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+                .collapse.show(id='newEntry', aria-labelledby='entriesHeader', data-parent='#newEntryContainer')
+                    .card-body
+                        form(action="/cashPools/" + pool.id, method="post")
+                            .row
+                                .col-sm-2
+                                    .form-group
+                                        label(for='name')
+                                            h5 name
+                                        select.form-control(type='text', id='username', name='username')
+                                            - for (var name in pool.participants) {
+                                                -if (name == username)
+                                                    option(selected='selected')
+                                                        = name
+                                                - else
+                                                    option
+                                                        = name
+                                            - }
+                                .col-sm-6
+                                    .form-group
+                                        label(for='description')
+                                            h5 description
+                                        input.form-control(type='text', id='description', name='description', required)
+                                .col-sm-2
+                                    .form-group
+                                        label(for='date')
+                                            h5 date
+                                        input.form-control(type='text', id='datepicker', name='date', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
+                                .col-sm-2
+                                    .form-group
+                                        label(for='value')
+                                            h5 value
+                                        input.form-control(type='text', pattern="^\\d+\\.\\d{2}", id='value', name='value', required)
+                            .row
+                                .col-sm-10
+                                .col-sm-2
+                                    button.btn.btn-primary.btn-block(type='submit') Submit
+                                
+    //- Table with the calculated balance for each user
+    .container.pool-container(id='balanceContainer')
+        .card
+            .card-header.d-flex.justify-content-between.align-items-center.text-white.bg-dark(id='balanceHeader')
+                div
+                    h2.mb-0
+                        = 'Balance'
+                    = 'Overview how much everyone needs to pay (red) or gets back (green)'
+                button.btn.btn-dark(data-toggle='collapse', data-target='#balance', aria-expanded='true', aria-controls='balance')
+                    font(size='+2')
+                        i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+            .collapse.show(id='balance', aria-labelledby='balanceHeader', data-parent='#balanceContainer')
+                .card-body
+                    table
+                        tr.table-header
+                            td.balance.name Name
+                            td.balance.factor(data-container='body' data-toggle='popover' data-placement='right' data-content='States the involvement of each user in the pool in percent, e.g., how many percent of a given time span a user participated in a pool or how much they use certain items, etc.') Involvement
+                            td.balance.balance Balance
+                            td.balance.closed Closed
+                            td.balance.settled Settled
+                        - for (var name in sumData) {
+                            +balanceEntry(name)
+                        - }
                 
 
 block css
@@ -164,3 +196,14 @@ block scripts
                 }).datepicker("setDate", new Date());  
             }
         });
+        function toggle_list_collapse(object) {
+            var panel = object.parentNode.nextElementSibling;
+
+            if(object.className == "fa fa-chevron-down") {
+                object.setAttribute("class", "fa fa-chevron-up");
+                panel.setAttribute("class", "panel-body");
+            } else {
+                object.setAttribute("class", "fa fa-chevron-down");
+                panel.setAttribute("class", "panel-body collapse");
+            }
+        }

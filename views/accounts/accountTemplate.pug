@@ -8,19 +8,16 @@ block content
             = 'Please activate JavaScript and try again!'
             
 
-    - if (state !== undefinded) {
+    if (state !== undefinded)
         block accStateMessages
-    - }
-    - if (state === undefinded || state !== 'success') {
-        .col-md-4.col-md-offset-4
-            .modal-content
-                .login-panel.panel.panel-default
-                    .panel-heading
-                        p.panel-title(style='text-align:center')
-                            block accHeadline
-                    .panel-body
-                        block accContent
-    - }
+    if (state === undefinded || state !== 'success')
+        .col-md-6
+            .card
+                .card-header
+                    h2.login-header
+                        block accHeadline
+                .card-body
+                    block accContent
 
 block scripts
     script(type='text/javascript', src='/js/sha.js')

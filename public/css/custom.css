@@ -2,14 +2,18 @@
  * Navbar
  **************************************************************************************************/
 
-.navbar-default {
-    /*background: linear-gradient(#, blue);*/
-    background-color: #4CC3D9;
+.navbar {
     background: linear-gradient(to bottom, #e7e7e7, #f7f7f7, #ffffff, #f7f7f7);
+    background: #404040;
 }
 
-.navbar-nav li:hover {
-    background-color: #e7e7e7;
+.navbar .navbar-nav>li>a {
+    color: #fff;
+}
+
+.nav-link:hover {
+    background-color: #7f7f7f;
+    color: #000;
 }
 
 .anchor {
@@ -19,101 +23,200 @@
     visibility: hidden;
 }
 
+.navbar-left {
+    margin-left: 50px;
+}
+
+.navbar-right {
+    margin-right: 50px;
+}
+
+.navbar-dropdown {
+    margin-top: 0px;
+}
+
+.dropdown:hover>.dropdown-menu {
+  display: block;
+}
+
 /**************************************************************************************************
- * Portfolio
+ * Login
  **************************************************************************************************/
-
-.page-title {
-    background-color: #efefef;
-}
-
-.page-title h1 {
-    font-size: 500%;
-}
-
-.panel-project {
-    border-color: #efefef; /* was #bfbfbf*/
-    border-width: 2px;
-}
-/* The image for every project in the overview */
-.panel-project .thumbnail {
-    float:left;
-    margin-bottom:2px;
-    margin-left:0px;
-    margin-right:5px;
-}
-/* every odd numbered project image will be on the right */
-.panel-project:nth-child(odd) .thumbnail {
-    float:right;
-    margin-left:5px;
-    margin-right:0px;
-}
-.panel-project img {
-    width:200px;
-    height:200px;
-}
-.panel-project > .panel-heading {
-  color: #5f5f5f;
-  background-color: #efefef;
-  border-color: #efefef; /* was #bfbfbf */
-  border-width: 2px;
-}
-.panel-project > .panel-heading + .panel-collapse > .panel-body {
-  border-top-color: #ccebd1;
-}
-.panel-project > .panel-heading .badge {
-  color: #def2de;
-  background-color: #44a942;
-}
-.panel-project > .panel-footer + .panel-collapse > .panel-body {
-  border-bottom-color: #ccebd1;
-}
-.page-title {
-    text-align:center;
-}
-.project-title {
+ 
+.login-header {
     text-align: center;
-    margin: 0px;
-}
-.paragraph-headline {
-    text-align:center;
-}
-.jumbotron {
-    padding-left: 0px;
 }
 
 /**************************************************************************************************
- * Portfolio Tags
+ * Tables
  **************************************************************************************************/
+ 
+table{
+    width: 100%;
+    border-collapse: collapse;
+    padding: 5px;
+}
 
-.portfolio-tag-row {
-    margin-left: 0px;
-    margin-right: 0px;
-    margin-top: -8px;
-    margin-bottom: 10px;
+.table-header {
+    font-weight:bold;
 }
-.portfolio-tag-row > .label-default {
-    background-color: #9f9f9f;
+
+
+tr:nth-child(even) {
+    background-color: #E0E0E0;
 }
-.portfolio-tag-row a {
-    color:#dfdfdf;
+
+td {
+    position: relative;
+    padding: 2px;
 }
-.portfolio-tag-row a:hover {
-    color:#efefef;
+
+tr[requires-action="true"] {
+    background: #f8b20b;
 }
-.tag {
-    margin-left:2px;
-    margin-right:2px;
+
+tr.strikethrough td {
+    text-decoration: line-through;
 }
-.tag:nth-child(1) {
-    margin-left:0px;
+
+.verticalLine {
+    border-left: thick solid #ff0000;
 }
 
 /**************************************************************************************************
- * Sidebar
+ * Cash Pools list
+ **************************************************************************************************/
+ 
+.pool-action-column {
+    width: 1px;
+    margin: 2px;
+    white-space: nowrap;
+}
+ 
+.item-name-column {
+    width: 50%;
+}
+
+.icon {
+    color: white;
+    background-color: #337ab7;
+    display: inline-block;
+    border-radius: 4px;
+    padding: 4px 10px;
+    margin: 2px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.pool-container {
+    margin-bottom: 2em;
+}
+
+/**************************************************************************************************
+ * Cash Pool - Balance Sheet
  **************************************************************************************************/
 
-.sidebar-item {
-    margin-top: -8px;
-    margin-bottom: -8px;
+.balance.positive {
+    background-color: #E0F0E0;
+}
+ 
+.balance.negative {
+    background-color: #F0E0E0;
+}
+ 
+tr.balance td {
+    height: 42px;
+}
+
+td.balance.name {
+    text-align:right;
+}
+
+td.balance.factor {
+    width: 100px;
+}
+
+td.balance.balance {
+    text-align: left;
+}
+
+td.balance.closed {
+    width: 60px;
+    text-align : center;
+}
+
+td.balance.settled {
+    width: 60px;
+    text-align : center;
+}
+
+.toogle.slider {
+    position: relative;
+    display: inline-block;
+    background-color: gray;
+    width: 60px;
+    height: 34px;
+    border-radius: 17px
+}
+
+.toggle.button {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+.toggle.btn.inactive{
+    background-color: #e7e7e7;
+    color: black;
+}
+
+.toggle.btn.inactive p {
+    position: absolute;
+    font-size: 16pt;
+    left: 5px;
+    top: -1px;
+}
+
+.toggle.btn.active {
+    background-color: #e7e7e7; /* was #008CBA; */
+    color: black;              /* was white */
+    left: 28px;
+}
+
+.toggle.btn.active p {
+    position: absolute;
+    font-size: 16pt;
+    left: 3px;
+    top: -1px;
+}
+
+/**************************************************************************************************
+ * Cash Pool - List of entries
+ **************************************************************************************************/
+
+.cash-name-column {
+    width: 15%;
+    padding-left: 5px;
+}
+
+.cash-description.column {
+    width: 60%;
+}
+
+.cash-date-column {
+    width: 15%;
+}
+
+.cash-value-column {
+    width: 10%;
+    text-align: right;
+    padding-right: 5px;
 }

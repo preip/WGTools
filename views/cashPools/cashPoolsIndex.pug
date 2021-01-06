@@ -25,7 +25,6 @@ mixin poolDisclaimer(status)
             = "These pools have an unknown state. This should not happen, so please contact your admin if your see this."
 
 mixin poolTableBody(status)
-    +poolDisclaimer(status)
     //- Create a subset containing only the pools with the specified state
     - var pools = []
     - for (var key in cashPoolsData) {
@@ -55,35 +54,43 @@ mixin poolTableBody(status)
     - }
 
 mixin poolTable(status, collapse)
-   .container
-        .panel.panel-default
-            .panel-heading 
-                +poolTitle(status)
-
-                -if(collapse)
-                    i.fa.fa-chevron-down(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
-                -else
-                    i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
-            
-            -if(collapse)
-                .panel-body(class="collapse")
-                    +poolTableBody(status)
-            -else
-                .panel-body
-                    +poolTableBody(status)
-                    
-
-
+   .container.pool-container(id=status+'container')
+        .card
+            .card-header.d-flex.justify-content-between.align-items-center.text-white.bg-dark(id=status+'Header')
+                div
+                    h2.mb-0
+                        +poolTitle(status)
+                    +poolDisclaimer(status)
+                button.btn.btn-dark(data-toggle='collapse', data-target='#'+status, aria-expanded='true', aria-controls=status)
+                    font(size='+2')
+                        if(collapse)
+                            i.fa.fa-chevron-down(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+                        else
+                            i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+            if(collapse)
+                .collapse.hide(id=status, aria-labelledby=status+'Header', data-parent='#'+status+'Container')
+                    .card-body
+                        +poolTableBody(status)
+            else
+                .collapse.show(id=status, aria-labelledby=status+'Header', data-parent='#'+status+'Container')
+                    .card-body
+                        +poolTableBody(status)
 
 block content
     +poolTable('open', false)
     +poolTable('closed', true)
     +poolTable('settled', true)
 
-    .container
-            .panel.panel-primary
-                .panel-heading Add a new Pool
-                .panel-body 
+    .container.pool-container(id='addPoolContainer')
+        .card
+            .card-header.d-flex.justify-content-between.align-items-center.text-white.bg-dark(id='addPoolHeader')
+                h2.mb-0
+                    = 'Add a new pool'
+                button.btn.btn-dark(data-toggle='collapse', data-target='#addPool', aria-expanded='true', aria-controls='addPool')
+                    font(size='+2')
+                        i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+            .collapse.show(id='addPool', aria-labelledby='addPoolHeader', data-parent='#addPoolContainer')
+                .card-body
                     form(action="/cashPools", method="post")
                         .row
                             .col-sm-2

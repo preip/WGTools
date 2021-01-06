@@ -32,50 +32,78 @@ mixin balanceEntry(name)
 
 block content
     <!-- Table of the bill entries --> 
-    .container
-        .panel.panel-default
-            .panel-heading Billing overview #{bill.startDate} - #{bill.endDate} Status: #{bill.status}
-            .panel-body
-            table
-                tr.table-header
-                    td.cash-name-column Name
-                    td.cash-description-column Description
-                    td.cash-date-column Date
-                    td.cash-value-column Value
-                - var total = 0.0;
-                - for (var i = 0; i < bill.items.length; i++) {
-                    - var currentItem = bill.items[i]
-                    tr
-                        td.cash-name-column
-                            = currentItem.username
-                        td.cash-description-column
-                            a(href='/cashPools/' + currentItem.id)
-                                = currentItem.description
-                        td.cash-date-column
-                            = currentItem.date
-                        td.cash-value-column
-                            = (parseFloat(currentItem.value)).toFixed(2) * -1 
-                    - total += parseFloat(currentItem.value) 
-                - }
-                tr
-                    td.cash-name-column
-                    td.cash-description-column
-                        b Total:
-                    td.cash-date-column 
-                    td.cash-value-column
-                        b
-                            = total.toFixed(2) * -1
+    .container.pool-container(id='billContainer')
+        .card
+            .card-header.d-flex.justify-content-between.align-items-center.text-white.bg-dark(id='billHeader')
+                div
+                    h2.mb-0
+                        = 'Bill content'
+                    = 'from ' + bill.startDate + ' to ' + bill.endDate + ' - Status: ' + bill.status
+                button.btn.btn-dark(data-toggle='collapse', data-target='#bill', aria-expanded='true', aria-controls=status)
+                    font(size='+2')
+                        i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+            .collapse.show(id='bill', aria-labelledby='billHeader', data-parent='#billContainer')
+                .card-body
+                    table
+                        tr.table-header
+                            td.cash-name-column Name
+                            td.cash-description-column Description
+                            td.cash-date-column Date
+                            td.cash-value-column Value
+                        - var total = 0.0;
+                        - for (var i = 0; i < bill.items.length; i++) {
+                            - var currentItem = bill.items[i]
+                            tr
+                                td.cash-name-column
+                                    = currentItem.username
+                                td.cash-description-column
+                                    a(href='/cashPools/' + currentItem.id)
+                                        = currentItem.description
+                                td.cash-date-column
+                                    = currentItem.date
+                                td.cash-value-column
+                                    = (parseFloat(currentItem.value)).toFixed(2) * -1 
+                            - total += parseFloat(currentItem.value) 
+                        - }
+                        tr
+                            td.cash-name-column
+                            td.cash-description-column
+                                b Total:
+                            td.cash-date-column 
+                            td.cash-value-column
+                                b
+                                    = total.toFixed(2) * -1
 
     <!-- Table with the calculated sums for the user -->
-    .container
-        .panel.panel-default
-            .panel-heading Overview how much everyone needs to pay (red) or gets back (green)
-            .panel-body
-                table
-                    tr.table-header
-                        td.balance.name name
-                        td.balance.balance balance
-                        td.balance.settled settled
-                    - for (var name in sumData) {
-                        +balanceEntry(name)
-                    - }
+    .container.pool-container(id='sumContainer')
+        .card
+            .card-header.d-flex.justify-content-between.align-items-center.text-white.bg-dark(id='sumHeader')
+                div
+                    h2.mb-0
+                        = 'Overview'
+                    = 'how much everyone needs to pay (red) or gets back (green)'
+                button.btn.btn-dark(data-toggle='collapse', data-target='#sum', aria-expanded='true', aria-controls=status)
+                    font(size='+2')
+                        i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+            .collapse.show(id='sum', aria-labelledby='sumHeader', data-parent='#sumContainer')
+                .card-body
+                    table
+                        tr.table-header
+                            td.balance.name name
+                            td.balance.balance balance
+                            td.balance.settled settled
+                        - for (var name in sumData)
+                            +balanceEntry(name)
+block scripts
+    script(type='text/javascript').
+        function toggle_list_collapse(object) {
+            var panel = object.parentNode.nextElementSibling;
+
+            if(object.className == "fa fa-chevron-down") {
+                object.setAttribute("class", "fa fa-chevron-up");
+                panel.setAttribute("class", "panel-body");
+            } else {
+                object.setAttribute("class", "fa fa-chevron-down");
+                panel.setAttribute("class", "panel-body collapse");
+            }
+        }

@@ -18,7 +18,6 @@ mixin billingDisclaimer(status)
         = "These bills have been settled. They are just here for reference."
 
 mixin billingTableBody(status)
-    +billingDisclaimer(status)
     //- Create a subset containing only the bills with the specified state
     - var bills = []
     - for (var key in billingData) {
@@ -48,51 +47,62 @@ mixin billingTableBody(status)
     - }
     
 mixin billingTable(status, collapse)
-   .container
-        .panel.panel-default
-            .panel-heading 
-                +billingTitle(status)
-
-                -if(collapse)
-                    i.fa.fa-chevron-down(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
-                -else
-                    i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
-            
-            -if(collapse)
-                .panel-body(class="collapse")
-                    +billingTableBody(status)
-            -else
-                .panel-body
-                    +billingTableBody(status)
+   .container.pool-container(id=status+'container')
+        .card
+            .card-header.d-flex.justify-content-between.align-items-center.text-white.bg-dark(id=status+'Header')
+                div
+                    h2.mb-0
+                        +billingTitle(status)
+                    +billingDisclaimer(status)
+                button.btn.btn-dark(data-toggle='collapse', data-target='#'+status, aria-expanded='true', aria-controls=status)
+                    font(size='+2')
+                        if(collapse)
+                            i.fa.fa-chevron-down(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+                        else
+                            i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+            if(collapse)
+                .collapse.hide(id=status, aria-labelledby=status+'Header', data-parent='#'+status+'Container')
+                    .card-body
+                        +billingTableBody(status)
+            else
+                .collapse.show(id=status, aria-labelledby=status+'Header', data-parent='#'+status+'Container')
+                    .card-body
+                        +billingTableBody(status)
                     
 block content
     +billingTable('open', false)
-    +billingTable('settled', false)
+    +billingTable('settled', true)
     
-    .container
-        .panel.panel-primary
-            .panel-heading Create new bill
-            .panel-body 
-                form(action="/billing", method="post")
-                    .row
-                        .col-sm-2
-                            .form-group
-                                label(for='name')
-                                    h5 name
-                                input.form-control(type='text', id='name', name='name', required)     
-                        .col-sm-2
-                            .form-group
-                                label(for='available Pools')
-                                    h5 available Pools                                  
-                                select.form-control(type='text', id='pools', name='pools' multiple)
-                                    - for (var key in billCandidatePools) {
-                                            option(value=billCandidatePools[key].id)
-                                                = billCandidatePools[key].name
-                                    - }
-                    .row
-                        .col-sm-10
-                        .col-sm-2
-                            button.btn.btn-primary.btn-block(type='submit') Submit
+    .container.pool-container(id='newBillContainer')
+        .card
+            .card-header.d-flex.justify-content-between.align-items-center.text-white.bg-dark(id='newBillHeader')
+                h2.mb-0
+                    = 'Create new bill'
+                button.btn.btn-dark(data-toggle='collapse', data-target='#newBill', aria-expanded='true', aria-controls=status)
+                    font(size='+2')
+                        i.fa.fa-chevron-up(onclick="toggle_list_collapse(this);", style="float: right; cursor: pointer")
+            .collapse.show(id='newBill', aria-labelledby='newBillHeader', data-parent='#newBillContainer')
+                    .card-body
+                        form(action="/billing", method="post")
+                            .row
+                                .col-sm-2
+                                    .form-group
+                                        label(for='name')
+                                            h5 Name
+                                        input.form-control(type='text', id='name', name='name', placeholder='Bill name', required)     
+                                .col-sm-2
+                                    .form-group
+                                        label(for='available Pools')
+                                            h5 Available pools
+                                        select.form-control(type='text', id='pools', name='pools' multiple)
+                                            - for (var key in billCandidatePools) {
+                                                    option(value=billCandidatePools[key].id)
+                                                        = billCandidatePools[key].name
+                                            - }
+                            .row
+                                .col-sm-10
+                                .col-sm-2
+                                    button.btn.btn-primary.btn-block(type='submit') Submit
                 
 block scripts
     script(type='text/javascript').

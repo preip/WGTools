@@ -28,18 +28,18 @@ block accContent
             .form-group
                 label(for='username')
                     h5
-                        = 'Enter the desired username'
+                        = 'Username'
                 input.form-control(type='text', id='username', name='username', required)
             .form-group
                 label(for='newPwdPlain')
                     h5
-                        = 'Enter the desired password'
+                        = 'Password'
                 input.form-control(type='password', id='newPwdPlain', required, onChange='setPwdHash(\'newPwdPlain\', \'newPassword\')')
                 input.form-control(type='hidden', id='newPassword', name='newPassword', value='')
             .form-group
                 label(for='confirmPwdHash')
                     h5
-                        = 'Confirm the password'
+                        = 'Confirm password'
                 input.form-control(type='password', id='confirmPwdHash', required, onChange='setPwdHash(\'confirmPwdHash\', \'confirmPassword\')')
                 input.form-control(type='hidden', id='confirmPassword', name='confirmPassword', value='')
             .form-group
