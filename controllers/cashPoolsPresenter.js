@@ -36,8 +36,13 @@ module.exports = function(cashPoolData, settlementData) {
         setPoolState(req.query.state, req.params.id, res);
     }
     
+    // TODO: check given username with session name or just ignore username altogether
     module.toggleUserState = function(req, res, next) {
         togglePoolUserState(req.session.username, req.query.state, req.params.id, res);
+    }
+    
+    module.setFactor = function(req, res, next) {
+        setFactorForUser(req.session.username, req.query.factor, req.params.id, res);
     }
    
     module.addNewPool = function(req, res, next) {
@@ -155,7 +160,22 @@ module.exports = function(cashPoolData, settlementData) {
             res.send("invalid username or state.");
             return;
         }
-        
+        res.writeHead(301, {Location: '/cashPools/' + id});
+        res.end();
+    }
+    
+    function setFactorForUser(username, factor, id, res) {
+        pool = _cashPoolData.getPool(id);
+        if (pool === undefined) {
+            res.status(404);
+            res.send("Pool not found");
+            return;
+        }
+        if (!pool.setFactorForUser(username, factor)) {
+            res.status(403);
+            res.send("invalid username or factor.");
+            return;
+        }
         res.writeHead(301, {Location: '/cashPools/' + id});
         res.end();
     }

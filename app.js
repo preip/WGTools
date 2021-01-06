@@ -101,6 +101,8 @@ app.get('/cashPools/:id', accountController.isAuthenticated, cashPoolsController
 app.post('/cashPools/:id', accountController.isAuthenticated, cashPoolsController.addNewEntryToPool);
 app.post('/cashPools/:id/setState', accountController.isAuthenticated, cashPoolsController.setState);
 app.post('/cashPools/:id/toggleUserState', accountController.isAuthenticated, cashPoolsController.toggleUserState);
+app.post('/cashPools/:id/setFactor', accountController.isAuthenticated, cashPoolsController.setFactor);
+// Billing
 app.get('/billing', accountController.isAuthenticated, billingController.showBillingIndex)
 app.post('/billing', accountController.isAuthenticated, billingController.addNewBill);
 app.get('/billing/:id', accountController.isAuthenticated, billingController.showBill);

@@ -226,19 +226,21 @@ module.exports = function(dataPath) {
     function pool_setFactorForUser(username, factor) {
         if (!(username in this.participants))
             return false;
-        if (status !== "open")
+        if (this.participants[username].settled === true)
             return false;
         // only set the factor if the participant has not already closed the pool
-        if (this.participants[username].closed !== undefined && this.participants[username].closed !== true)
+        if (this.participants[username].closed !== undefined && this.participants[username].closed === true)
             return false;
-        // clamp factor between 0 and 1
-        factor = factor <= min ? min : factor >= max ? max : factor;
-        this.participants[username].factor = factor
+        // clamp factor between 0.0 and 1.0
+        // Note: Just error check instead of clamp?
+        factor = factor <= 0.0 ? 0.0 : factor >= 1.0 ? 1.0 : factor;
+        this.participants[username].factor = factor;
+        savePool(this);
         return true;
     }
     
     function pool_getFactorForUser(username) {
-        return this.participants[username].factor !== undefined ? this.participants[username].factor : 1.0;
+        return this.participants[username].factor !== undefined ? parseFloat(this.participants[username].factor) : 1.0;
     }
     
     function pool_toggleStateForUser(username, status) {
