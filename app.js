@@ -74,7 +74,7 @@ var billingData = require('./controllers/billingData')(path.join(__dirname, conf
  * View-Models
  */
 var accountController = require('./controllers/accountPresenter')();
-var cashPoolsController = require('./controllers/cashPoolsPresenter')(cashPoolData, billingData);
+var cashPoolsController = require('./controllers/cashPoolsPresenter')(cashPoolData);
 var billingController = require('./controllers/billingPresenter')(billingData);
 var calendarController = require('./controllers/calendar')(path.join(__dirname, config.dataPath));
 var shoppingListController = require('./controllers/shoppingList')(path.join(__dirname, config.dataPath));
@@ -99,9 +99,12 @@ app.get('/cashPools', accountController.isAuthenticated, cashPoolsController.sho
 app.post('/cashPools', accountController.isAuthenticated, cashPoolsController.addNewPool);
 app.get('/cashPools/:id', accountController.isAuthenticated, cashPoolsController.showCashPool);
 app.post('/cashPools/:id', accountController.isAuthenticated, cashPoolsController.addNewEntryToPool);
+app.post('/cashPools/:id/removeEntry', accountController.isAuthenticated, cashPoolsController.removeEntryFromPool);
 app.post('/cashPools/:id/setState', accountController.isAuthenticated, cashPoolsController.setState);
 app.post('/cashPools/:id/toggleUserState', accountController.isAuthenticated, cashPoolsController.toggleUserState);
 app.post('/cashPools/:id/setFactor', accountController.isAuthenticated, cashPoolsController.setFactor);
+app.get('/cashPools/:id/entry/:entryIndex', accountController.isAuthenticated, cashPoolsController.showEntry);
+app.post('/cashPools/:id/entry/:entryIndex', accountController.isAuthenticated, cashPoolsController.updatePoolEntry);
 // Billing
 app.get('/billing', accountController.isAuthenticated, billingController.showBillingIndex)
 app.post('/billing', accountController.isAuthenticated, billingController.addNewBill);

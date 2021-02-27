@@ -208,7 +208,7 @@ td.balance.settled {
 }
 
 .cash-description.column {
-    width: 60%;
+    width: 50%;
 }
 
 .cash-date-column {
@@ -219,4 +219,25 @@ td.balance.settled {
     width: 10%;
     text-align: right;
     padding-right: 5px;
+}
+
+.cash-button-column {
+    width: 10%;
+    text-align: right;
+}
+
+.cash-button {
+    border: 1px solid;
+    width: 25px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 5px;
+    background: transparent;
+    color: #000;
+}
+
+.cash-button:hover {
+    background: #aaa;
+    color: #000;
+    cursor: pointer;
 }

@@ -1,0 +1,43 @@
+extends ../templates/layout
+
+block content
+    .container.pool-container
+        .card
+            .card-header.text-white.bg-dark
+                h2.mb-0
+                    = 'Edit entry ' + entryIndex + ' of pool "' + pool.name + '"'
+            .card-body
+                form(action=entryIndex, method='post')
+                    .row
+                        .col-sm-6
+                            label(for='username')
+                                h5 Username
+                        .col-sm-6
+                            input.form-control(type='text', id='username', name='username', required, readonly, value=username)
+                    .row
+                        .col-sm-6
+                            label(for='description')
+                                h5 Description
+                        .col-sm-6
+                            input.form-control(type='text', id='description', name='description', required, value=entry.description)
+                    .row
+                        .col-sm-6
+                            label(for='date')
+                                h5 Date
+                        .col-sm-6
+                            //- input.form-control(type='text', id='blub', name='date', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required, value=entry.date.toString())
+                            if (pool.enforceTimeBounds)
+                                input.form-control(type='date', i='date', name='date', value=entry.date min=pool.startDate, max=pool.endDate, required)
+                            else
+                                input.form-control(type='date', id='date', value=entry.date, name='date', required)
+                    .row
+                        .col-sm-6
+                            label(for='value')
+                                h5 Value
+                        .col-sm-6
+                            input.form-control(type='text', pattern="^\\d+\\.\\d{2}", id='value', name='value', required, value=entry.value)
+                    .row
+                        .col-sm-6
+                            input(type='text', name='entryIndex', required, readonly, hidden, value=entryIndex)
+                        .col-sm-6
+                            button.btn.btn-primary.btn-block(type='submit') Submit

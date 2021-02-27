@@ -96,25 +96,27 @@ block content
                             .col-sm-2
                                 .form-group
                                     label(for='name')
-                                        h5 name
+                                        h5 Pool name
                                     input.form-control(type='text', id='name', name='name', required)
                             .col-sm-2
                                 .form-group
                                     label(for='owner')
-                                        h5 owner                                  
-                                    select.form-control(type='text', id='owner', name='owner')
-                                        - for (var i = 0; i < usernames.length; i++) {
-                                            -if (usernames[i] == username)
-                                                option(selected='selected')
-                                                    = usernames[i]
-                                            - else
-                                                option
-                                                    = usernames[i]
-                                        - }       
+                                        h5 Owner
+                                    input.form-control(type='text', id='owner', name='owner', required, readonly, value=username)
+                                    //- >> Dropdown to select users
+                                    //- select.form-control(type='text', id='owner', name='owner')
+                                    //-    - for (var i = 0; i < usernames.length; i++) {
+                                    //-        -if (usernames[i] == username)
+                                    //-            option(selected='selected')
+                                    //-                = usernames[i]
+                                    //-        - else
+                                    //-            option
+                                    //-                = usernames[i]
+                                    //-    - }       
                             .col-sm-2
                                 .form-group
                                     label(for='participants')
-                                        h5 participants                                  
+                                        h5 Participants                                  
                                     select.form-control(type='text', id='participants', name='participants' multiple)
                                         - for (var i = 0; i < usernames.length; i++) {
                                             -if (usernames[i] == username)
@@ -127,34 +129,25 @@ block content
                             .col-sm-2
                                 .form-group
                                     label(for='startDate')
-                                        h5 start
-                                    input.form-control(type='text', class='datepicker', name='startDate', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
+                                        h5 Start Date
+                                    input.form-control(type='date', name='startDate', required)
                             .col-sm-2
                                 .form-group
                                     label(for='endDate')
-                                        h5 end
-                                    input.form-control(type='text', class='datepicker', name='endDate', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
+                                        h5 End Date
+                                    input.form-control(type='date', name='endDate', required)
                             .col-sm-2
                                 .from-group
                                     lable(for='enforceTimeBounds')
-                                        h5 time bounds
+                                        h5 Time bounds
                                     input(type='checkbox', name='enforceTimeBounds')
                         .row
                             .col-sm-10
                             .col-sm-2
                                 button.btn.btn-primary.btn-block(type='submit') Submit
 
-block css
-    link(href='/css/bootstrap-datepicker.min.css', rel='stylesheet')
-                
 block scripts
-    script(type='text/javascript', src='/js/bootstrap-datepicker.min.js')
     script(type='text/javascript').
-        $(function() {
-            $('.datepicker').datepicker({ 
-                 format: 'dd.mm.yyyy'
-            }).datepicker("setDate", new Date());
-        });
         function toggle_list_collapse(object) {
             var panel = object.parentNode.nextElementSibling;
 

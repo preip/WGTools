@@ -71,10 +71,11 @@ block content
                 .card-body
                     table
                         tr.table-header
-                            td.cash-name-column Name
+                            td.cash-name-column Participant
                             td.cash-description-column Description
                             td.cash-date-column Date
                             td.cash-value-column Value
+                            td.cash-button-column
                         - var total = 0.0;
                         - for (var i = 0; i < pool.items.length; i++) {
                             - var currentItem = pool.items[i]
@@ -87,6 +88,14 @@ block content
                                     = currentItem.date
                                 td.cash-value-column
                                     = currentItem.value
+                                td.cash-button-column
+                                    if (currentItem.username === username)
+                                        .btn-group
+                                            a.cash-button(href=pool.id + '/entry/' + i)
+                                                i.fa.fa-edit
+                                            form(action=pool.id + '/removeEntry?entryIndex=' + i, method='get', class='inline')
+                                                button.cash-button(type='submit')
+                                                    i.fa.fa-trash
                             - total += parseFloat(currentItem.value)
                         - }
                         tr
@@ -115,30 +124,35 @@ block content
                                 .col-sm-2
                                     .form-group
                                         label(for='name')
-                                            h5 name
-                                        select.form-control(type='text', id='username', name='username')
-                                            - for (var name in pool.participants) {
-                                                -if (name == username)
-                                                    option(selected='selected')
-                                                        = name
-                                                - else
-                                                    option
-                                                        = name
-                                            - }
+                                            h5 Participant
+                                        input.form-control(type='text', id='username', name='username', required, readonly, value=username)
+                                        //- >> Dropdown to select users
+                                        //- select.form-control(type='text', id='username', name='username')
+                                        //-     - for (var name in pool.participants) {
+                                        //-        -if (name == username)
+                                        //-            option(selected='selected')
+                                        //-                = name
+                                        //-        - else
+                                        //-            option
+                                        //-                = name
+                                        //-    - }
                                 .col-sm-6
                                     .form-group
                                         label(for='description')
-                                            h5 description
+                                            h5 Description
                                         input.form-control(type='text', id='description', name='description', required)
                                 .col-sm-2
                                     .form-group
                                         label(for='date')
-                                            h5 date
-                                        input.form-control(type='text', id='datepicker', name='date', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required)
+                                            h5 Date
+                                        if (pool.enforceTimeBounds)
+                                            input.form-control(type='date', id='date', name='date', min='2000-01-01', max=pool.endDate, required)
+                                        else
+                                            input.form-control(type='date', id='date', name='date', required)
                                 .col-sm-2
                                     .form-group
                                         label(for='value')
-                                            h5 value
+                                            h5 Value
                                         input.form-control(type='text', pattern="^\\d+\\.\\d{2}", id='value', name='value', required)
                             .row
                                 .col-sm-10
@@ -169,33 +183,8 @@ block content
                             +balanceEntry(name)
                         - }
                 
-
-block css
-    link(href='/css/bootstrap-datepicker.min.css', rel='stylesheet')
-                
 block scripts
-    script(type='text/javascript', src='/js/bootstrap-datepicker.min.js')
-    script.
-        $(function() {
-            
-            var endDate = "#{pool.endDate}".split('.').reverse();
-            endDate = new Date(endDate);
-
-            var startDate = "#{pool.startDate}".split('.').reverse();
-            startDate = new Date(startDate);
-            
-            if (#{pool.enforceTimeBounds}) {
-                $('#datepicker').datepicker({ 
-                        format: 'dd.mm.yyyy',
-                        startDate: startDate,
-                        endDate: endDate
-                }).datepicker("setDate", new Date());
-            } else {
-                $('#datepicker').datepicker({ 
-                        format: 'dd.mm.yyyy'
-                }).datepicker("setDate", new Date());  
-            }
-        });
+    script(type='text/javascript').
         function toggle_list_collapse(object) {
             var panel = object.parentNode.nextElementSibling;
 

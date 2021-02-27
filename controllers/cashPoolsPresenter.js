@@ -1,4 +1,4 @@
-module.exports = function(cashPoolData, settlementData) {
+module.exports = function(cashPoolData) {
     
     const _cashPoolData = cashPoolData;
     
@@ -29,7 +29,39 @@ module.exports = function(cashPoolData, settlementData) {
                 res.writeHead(301, {Location: '/cashPools'});
                 res.end(); 
             }
-        } 
+        }
+    }
+    
+    module.showEntry = function(req, res, next) {
+        if (req.params.id === undefined || req.params.id === null) {
+            res.status(403);
+            res.send("Undefined pool");
+            return;
+        }
+        var pool = _cashPoolData.getPool(req.params.id);
+        if (pool === undefined) {
+            res.status(403);
+            res.send("Pool not found (invalid pool id)!");
+            return;
+        }
+        var entryIndex = parseInt(req.params.entryIndex);
+        if (entryIndex === undefined || entryIndex === null) {
+            res.status(403);
+            res.send("No entry index specified");
+            return;
+        }
+        var entry = pool.items[entryIndex];
+        if (entry === undefined) {
+            res.status(403);
+            res.send("No entry with the specified index was found");
+            return;
+        }
+        res.render('cashPools/editPoolEntry', {
+            title: pool.name + ' entry #' + entryIndex,
+            entryIndex: entryIndex,
+            pool: pool,
+            entry: entry
+        });
     }
     
     module.setState = function(req, res, next) {
@@ -49,9 +81,9 @@ module.exports = function(cashPoolData, settlementData) {
         //TODO: validation
         //In the case that no participants are selected.
         if (req.body.participants == null) {
-                res.status(401);
-                res.send("You have to select at least one participant");
-                return;
+            res.status(401);
+            res.send("You have to select at least one participant");
+            return;
         }
         //In the case that there is only one participant.
         if (typeof req.body.participants == 'string')
@@ -70,37 +102,116 @@ module.exports = function(cashPoolData, settlementData) {
     }
     
     module.addNewEntryToPool = function(req, res, next) {  
-        if (req.params.id != null) {
-            var pool = _cashPoolData.getPool(req.params.id);
-            
-            if (pool === undefined) {
-                res.status(404);
-                res.send("Pool not found");
-                return;
-            }
-            
-            if (pool.status != 'open') {
+        if (req.params.id === undefined || req.params.id === null) {
+            res.status(403);
+            res.send("Undefined pool");
+            return;
+        }
+        var pool = _cashPoolData.getPool(req.params.id);
+        if (pool === undefined) {
+            res.status(403);
+            res.send("Pool not found (invalid pool id)!");
+            return;
+        }
+        if (pool.status != 'open') {
                 res.status(403);
-                res.send("The pool is not open");
+                res.send("Can't add new entries, pool is not open!");
                 return;
-            }
-            
-            var entry = {
+        }
+        var entry = {
                 "username" : req.body.username,
                 "description" : req.body.description,
                 "date" : req.body.date,
                 "value" : req.body.value
-                }
-                
-            if (!pool.addNewEntry(entry)) {
-                res.status(400);
-                res.send("new entry is invalid");
+        }
+        if (!pool.addNewEntry(entry)) {
+                res.status(403);
+                res.send("Could not add new entry (entry is invalid)!");
                 return;
-            }
-            
-            res.writeHead(301, {Location: '/cashPools/' + req.params.id});
-            res.end();
-        } 
+        }
+        res.writeHead(301, {Location: '/cashPools/' + req.params.id});
+        res.end();
+    }
+    
+    module.updatePoolEntry = function(req, res, next) {
+        if (req.params.id === undefined || req.params.id === null) {
+            res.status(403);
+            res.send("Undefined pool");
+            return;
+        }
+        var pool = _cashPoolData.getPool(req.params.id);
+        if (pool === undefined) {
+            res.status(403);
+            res.send("Pool not found (invalid pool id)!");
+            return;
+        }
+        if (pool.status != 'open') {
+                res.status(403);
+                res.send("Can't add new entries, pool is not open!");
+                return;
+        }
+        var index = parseInt(req.body.entryIndex);
+        if (index < 0 || index > pool.items.length - 1) {
+            res.status(403);
+            res.send("Could not update entry (invalid index)!");
+            return;
+        }
+        var entry = {
+                "username" : req.body.username,
+                "description" : req.body.description,
+                "date" : req.body.date,
+                "value" : req.body.value
+        }
+        if (entry.username !== pool.items[index].username) {
+            res.status(403);
+            res.send("You are not allowed to update entries of other users!");
+            return;
+        }
+        if (!pool.updateEntry(entry, index)) {
+                res.status(403);
+                res.send("Could not add new entry (entry is invalid)!");
+                return;
+        }
+        res.writeHead(301, {Location: '/cashPools/' + req.params.id});
+        res.end();
+    }
+    
+    module.removeEntryFromPool = function(req, res, next) {
+        if (req.params.id === undefined || req.params.id === null) {
+            res.status(403);
+            res.send("Undefined pool");
+            return;
+        }
+        var pool = _cashPoolData.getPool(req.params.id);
+        if (pool === undefined) {
+            res.status(403);
+            res.send("Pool not found (invalid pool id)!");
+            return;
+        }
+        if (pool.status !== 'open') {
+            res.status(403);
+            res.send("Could not remove entry (pool not open)!");
+            return;
+        }
+        var index = req.query.entryIndex;
+        if (index < 0 || index > pool.items.length - 1) {
+            res.status(403);
+            res.send("Could not remove entry (invalid index)!");
+            return;
+        }
+        var entry = pool.items[index];
+        if (entry.username !== req.session.username) {
+            res.status(403);
+            res.send("No permission to remove entry (your are not the creator of this entry)!");
+            return;
+        }
+        if (!pool.removeEntry(index)) {
+            res.status(403);
+            res.send("Removing entry failed.");
+            return;
+        }
+        res.writeHead(301, {Location: '/cashPools/' + + req.params.id});
+        res.end();
     }
 
     /* Checks for all pools if a user action is required */

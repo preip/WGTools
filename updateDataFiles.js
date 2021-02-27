@@ -20,15 +20,15 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     }
     rl.close();
     
-    var targetVersion;
-    var previousVersion;
-    
+    var targetVersionString;
     try {
-        targetVersion = fs.readFileSync('./.version', 'utf8');;
+        targetVersionString = fs.readFileSync('./.version', 'utf8');
     } catch(err) {
         console.log("Could not read version file. Program will now terminate...");
         process.exit();
     }
+    var targetVersion = parseInt(targetVersionString);
+    var previousVersion;
     
     var config;
     try {
@@ -51,16 +51,17 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
         process.exit();
     }
     
-    console.log ("> Getting cash pool file list ... ");
+    console.log("> Getting cash pool file list ... ");
     var cashPoolPath = "./" + config.dataPath + "/cashPools/";
     var cashPoolFiles = fs.readdirSync(cashPoolPath);
+    console.log(">\t" + cashPoolFiles.length + " files found.");
     
     var previousVersion = parseInt(previousVersion);
     var currStep = previousVersion;
     
     //----------------------------------------------------------------------------------------------
     // Version 00000000 to 00000100
-    if (previousVersion < 00000100) {
+    if (previousVersion < 100) {
         console.log("> Updating from 00000000 to 00000100:");
         for (var i = 0; i < cashPoolFiles.length; i++) {
             console.log("\t" + cashPoolFiles[i]);
@@ -83,9 +84,8 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
     }
     //----------------------------------------------------------------------------------------------
     // Version 00000100 to 00000200
-    if (previousVersion < 00000200) {
+    if (previousVersion < 200) {
         console.log("> Updating from 00000100 to 00000200");
-        var raw = var raw = fs.readFileSync(path.join(cashPoolPath, cashPoolFiles[i]), 'utf8');
         for (var i = 0; i < cashPoolFiles.length; i++) {
             console.log("\t" + cashPoolFiles[i]);
             var raw = fs.readFileSync(path.join(cashPoolPath, cashPoolFiles[i]), 'utf8');
@@ -98,10 +98,32 @@ rl.question('> Do you want to continue? (yes/no):', function(answer) {
             fs.writeFileSync(path.join(cashPoolPath, cashPoolFiles[i]), raw, 'utf8');
         }
     }
+    //----------------------------------------------------------------------------------------------
+    // Version 00000200 to 00000200
+    if (previousVersion < 300) {
+        console.log("> Updating from 00000200 to 00000300");
+        for (var i = 0; i < cashPoolFiles.length; i++) {
+            console.log("\t" + cashPoolFiles[i]);
+            var raw = fs.readFileSync(path.join(cashPoolPath, cashPoolFiles[i]), 'utf8');
+            var pool = JSON.parse(raw);
+            // convert time bounds
+            var oldStart = pool.startDate.split('.');
+            pool.startDate = oldStart[2] + '-' + oldStart[1] + '-' + oldStart[0];
+            var oldEnd = pool.endDate.split('.');
+            pool.endDate = oldEnd[2] + '-' + oldEnd[1] + '-' + oldEnd[0];
+            // convert entry dates
+            for (var j = 0; j < pool.items.length; j++) {
+                var oldDate = pool.items[j].date.split('.');
+                pool.items[j].date = oldDate[2] + '-' + oldDate[1] + '-' + oldDate[0];
+            }
+            var raw = JSON.stringify(pool, null, 4);
+            fs.writeFileSync(path.join(cashPoolPath, cashPoolFiles[i]), raw, 'utf8');
+        }
+    }
         
     console.log("> All data files have been successfully upgraded to version \'" + targetVersion + "\'!");
     
-    config.version = targetVersion;
+    config.version = targetVersionString;
     var configRaw = JSON.stringify(config, null, 4);
     fs.writeFileSync(path.join(__dirname, 'config.json'), configRaw, 'utf8');
     console.log("> Version of config file has also been updated.");

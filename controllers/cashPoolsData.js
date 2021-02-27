@@ -114,6 +114,8 @@ module.exports = function(dataPath) {
    
     function attachPoolMethods(pool) {
         pool.addNewEntry = pool_addNewEntry;
+        pool.updateEntry = pool_updateEntry;
+        pool.removeEntry = pool_removeEntry;
         pool.isEntryValid = pool_isEntryValid;
         pool.compareEntries = pool_compareEntries;
         pool.calcSums = pool_calcSums;
@@ -133,6 +135,28 @@ module.exports = function(dataPath) {
         this.items.push(entry);
         this.items.sort(this.compareEntries);
     
+        savePool(this);
+        return true;
+    }
+    
+    function pool_updateEntry(entry, index) {
+        if (this.status !== 'open' || !this.isEntryValid(entry))
+            return false;
+        if (index < 0 || index > this.items.length - 1)
+            return false;
+        this.items[index] = entry;
+        this.items.sort(this.compareEntries);
+    
+        savePool(this);
+        return true;
+    }
+    
+    function pool_removeEntry(index) {
+        if (this.status !== 'open')
+            return false;
+        if (index < 0 || index > this.items.length - 1)
+            return false;
+        this.items.splice(index, 1);
         savePool(this);
         return true;
     }
@@ -164,15 +188,15 @@ module.exports = function(dataPath) {
     }
     
     function pool_compareEntries(entry1, entry2) {
-        date1 = entry1.date.split('.');
-        date2 = entry2.date.split('.');
-        yearDiff = parseInt(date1[2]) - parseInt(date2[2])
+        date1 = entry1.date.split('-');
+        date2 = entry2.date.split('-');
+        yearDiff = parseInt(date1[0]) - parseInt(date2[0])
         if (yearDiff != 0)
             return yearDiff
         monthDiff = parseInt(date1[1]) - parseInt(date2[1])
         if (monthDiff != 0)
             return monthDiff
-        return parseInt(date1[0]) - parseInt(date2[0])
+        return parseInt(date1[2]) - parseInt(date2[2])
     }
     
     /**
