@@ -25,7 +25,7 @@ block content
                             label(for='date')
                                 h5 Date
                         .col-sm-6
-                            //- input.form-control(type='text', id='blub', name='date', pattern='^\\d{2}\\.\\d{2}\\.\\d{4}', required, value=entry.date.toString())
+                            //- input.form-control(type='text', id='blub', name='date', pattern='^-?\d+(\.|\,)\d{2}', required, value=entry.date.toString())
                             if (pool.enforceTimeBounds)
                                 input.form-control(type='date', i='date', name='date', value=entry.date min=pool.startDate, max=pool.endDate, required)
                             else

@@ -122,7 +122,7 @@ module.exports = function(cashPoolData) {
                 "username" : req.body.username,
                 "description" : req.body.description,
                 "date" : req.body.date,
-                "value" : req.body.value
+                "value" : req.body.value.replace(',', '.')
         }
         if (!pool.addNewEntry(entry)) {
                 res.status(403);
